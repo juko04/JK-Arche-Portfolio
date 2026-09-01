@@ -1,35 +1,5 @@
-const KEY = 'julian-kotara-portfolio-v1';
-const editable = [...document.querySelectorAll('.editable')];
-const images = [...document.querySelectorAll('.image-editable')];
-const editButton = document.querySelector('.edit-toggle');
-
-function restore() {
-  const saved = JSON.parse(localStorage.getItem(KEY) || '{}');
-  editable.forEach((el, i) => { if (saved.text?.[i]) el.innerHTML = saved.text[i]; });
-  images.forEach(el => { const src = saved.images?.[el.dataset.imageKey]; if (src) el.querySelector('img').src = src; });
-}
-function save() {
-  const data = { text: editable.map(el => el.innerHTML), images: {} };
-  images.forEach(el => data.images[el.dataset.imageKey] = el.querySelector('img').src);
-  localStorage.setItem(KEY, JSON.stringify(data));
-}
-function setEditing(on) {
-  document.body.classList.toggle('is-editing', on);
-  editButton.setAttribute('aria-pressed', on);
-  editButton.innerHTML = on ? 'Done editing <span>×</span>' : 'Edit portfolio <span>↗</span>';
-  editable.forEach(el => el.contentEditable = on ? 'true' : 'false');
-  if (!on) save();
-}
-editButton.addEventListener('click', () => setEditing(!document.body.classList.contains('is-editing')));
-editable.forEach(el => el.addEventListener('input', save));
-images.forEach(el => el.addEventListener('click', () => {
-  if (!document.body.classList.contains('is-editing')) return;
-  const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*';
-  input.onchange = () => { const file = input.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = () => { el.querySelector('img').src = reader.result; save(); }; reader.readAsDataURL(file); };
-  input.click();
-}));
-document.querySelector('#download').addEventListener('click', () => { save(); const file = new Blob([localStorage.getItem(KEY)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = 'portfolio-content.json'; a.click(); URL.revokeObjectURL(a.href); });
-document.querySelector('#import').addEventListener('change', e => { const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = () => { try { localStorage.setItem(KEY, reader.result); location.reload(); } catch { alert('That file could not be imported.'); } }; reader.readAsText(file); });
-document.querySelector('#reset').addEventListener('click', () => { if (confirm('Reset all edits and uploaded images?')) { localStorage.removeItem(KEY); location.reload(); } });
-document.querySelector('#year').textContent = new Date().getFullYear();
-restore();
+const data={mountain:['01','Residential / 2025','Luxury Mountain Home','assets/projects/mountain-home.jpg','A home in western North Carolina inspired by the mellow peaks it sits in. Custom windows mimic the gently sloping mountains, while its stepped form creates generous outdoor spaces without sacrificing interior programming.',[['Role','Architectural design'],['Focus','Daylight · circulation'],['Location','Western North Carolina']]],museum:['02','Cultural / 2025',"Children's Museum",'assets/projects/childrens-museum.jpg','On Pearl Street Pedestrian Mall, the Children’s Museum creates a third space for families while supporting office spaces. Interlocking forms and generous window facades make a community hub in central Boulder.',[['Role','Architectural design'],['Focus','Massing · circulation'],['Location','Boulder, Colorado']]],lobby:['03','Lighting Design / 2025','University Central Lobby','assets/projects/central-lobby.jpg','A central lobby connecting multi-disciplinary students across five floors. The lighting design evolved through feedback from project architects and the lighting team to create an experience that works from both inside and out.',[['Role','Lighting design'],['Focus','Interior + facade experience'],['Process','Iterative fixture studies']]],bench:['04','Research / 2025','Exterior Bench Lighting Study','assets/projects/bench-study.jpg','A redesigned exterior bench became a park centerpiece. Three water-inspired schemes were evaluated through mockups to test practicality, lighting methods, and luminaire options before selecting a preferred direction.',[['Role','Lighting design'],['Focus','Mockups · night studies'],['Outcome','Preferred scheme selected']]],photo:['05','Personal / Ongoing','Photography','assets/projects/photography.jpg','Light can dramatically change a scene’s composition and reveal exceptional details. This natural effect in both natural and artificial spaces rewards time and attention - a visual puzzle that informs how I look at the built environment.',[['Subject','Light play + architecture'],['Approach','Unexpected perspectives'],['Medium','Digital photography']]]};
+const dialog=document.querySelector('#project-dialog'),rail=document.querySelector('#project-rail'),cards=[...document.querySelectorAll('.project-card')];
+function openProject(card){const [index,type,title,image,description,meta]=data[card.dataset.project];document.querySelector('#dialog-index').textContent=index;document.querySelector('#dialog-type').textContent=type;document.querySelector('#dialog-title').textContent=title;document.querySelector('#dialog-description').textContent=description;const img=document.querySelector('#dialog-img');img.src=image;img.alt=title;document.querySelector('#dialog-meta').innerHTML=meta.map(([label,value])=>`<div><dt>${label}</dt><dd>${value}</dd></div>`).join('');dialog.showModal()}
+cards.forEach(card=>card.addEventListener('click',()=>document.body.classList.contains('is-editing')?replaceImage(card):openProject(card)));document.querySelector('.close-dialog').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});document.querySelector('#next').addEventListener('click',()=>rail.scrollBy({left:rail.clientWidth*.72,behavior:'smooth'}));document.querySelector('#previous').addEventListener('click',()=>rail.scrollBy({left:-rail.clientWidth*.72,behavior:'smooth'}));rail.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){e.preventDefault();rail.scrollLeft+=e.deltaY}},{passive:false});
+const key='jk-portfolio-rail-edits',edit=document.querySelector('#edit-toggle'),editable=[...document.querySelectorAll('.editable')];function save(){localStorage.setItem(key,JSON.stringify({text:editable.map(x=>x.innerHTML),images:cards.map(x=>x.querySelector('img').src)}))}function restore(){const saved=JSON.parse(localStorage.getItem(key)||'{}');editable.forEach((x,i)=>{if(saved.text?.[i])x.innerHTML=saved.text[i]});cards.forEach((x,i)=>{if(saved.images?.[i])x.querySelector('img').src=saved.images[i]})}function replaceImage(card){const input=document.createElement('input');input.type='file';input.accept='image/*';input.onchange=()=>{if(!input.files[0])return;const reader=new FileReader();reader.onload=()=>{card.querySelector('img').src=reader.result;save()};reader.readAsDataURL(input.files[0])};input.click()}edit.addEventListener('click',()=>{const on=!document.body.classList.contains('is-editing');document.body.classList.toggle('is-editing',on);edit.textContent=on?'Done':'Edit';editable.forEach(x=>x.contentEditable=on?'true':'false');if(!on)save()});editable.forEach(x=>x.addEventListener('input',save));document.querySelector('#reset').addEventListener('click',()=>{localStorage.removeItem(key);location.reload()});restore();

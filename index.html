@@ -1,95 +1,11 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Julian Kotara - Architectural Engineering Portfolio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="site-shell">
-      <header class="nav">
-        <a class="wordmark" href="#top" aria-label="Home">JK<span>.</span></a>
-        <nav>
-          <a href="#work">Selected work</a>
-          <a href="#about">About</a>
-        </nav>
-        <button class="edit-toggle" type="button" aria-pressed="false">Edit portfolio <span>↗</span></button>
-      </header>
-
-      <main id="top">
-        <section class="hero">
-          <p class="eyebrow editable">Architectural engineering · lighting design</p>
-          <h1 class="editable">Making space feel<br /><em>considered.</em></h1>
-          <div class="hero-bottom">
-            <p class="intro editable">Julian Kotara is an architectural engineer exploring the intersection of light, material, and the human experience of place.</p>
-            <a class="scroll-link" href="#work">Scroll to explore <span>↓</span></a>
-          </div>
-          <div class="hero-image image-editable" data-image-key="hero">
-            <img src="assets/page-4.jpg" alt="Illuminated university building facade at night" />
-            <span class="image-action">Replace image</span>
-          </div>
-        </section>
-
-        <section class="work" id="work">
-          <div class="section-head">
-            <p class="eyebrow">Selected work</p>
-            <p class="count">( 01 — 05 )</p>
-          </div>
-          <div class="projects">
-            <a class="project-card project-wide" href="#mountain-home" data-project="mountain-home">
-              <div class="project-image image-editable" data-image-key="mountain-card"><img src="assets/page-2.jpg" alt="Luxury Mountain Home rendering" /><span class="image-action">Replace image</span></div>
-              <div class="project-meta"><p class="project-number">01</p><h2 class="editable">Luxury Mountain Home</h2><p class="editable">Residential · 2025</p><span class="arrow">↗</span></div>
-            </a>
-            <a class="project-card" href="#childrens-museum" data-project="childrens-museum">
-              <div class="project-image image-editable" data-image-key="museum-card"><img src="assets/page-3.jpg" alt="Children's Museum rendering" /><span class="image-action">Replace image</span></div>
-              <div class="project-meta"><p class="project-number">02</p><h2 class="editable">Children's Museum</h2><p class="editable">Cultural · 2025</p><span class="arrow">↗</span></div>
-            </a>
-            <a class="project-card" href="#central-lobby" data-project="central-lobby">
-              <div class="project-image image-editable" data-image-key="lobby-card"><img src="assets/page-4.jpg" alt="University Building Central Lobby" /><span class="image-action">Replace image</span></div>
-              <div class="project-meta"><p class="project-number">03</p><h2 class="editable">University Central Lobby</h2><p class="editable">Lighting design · 2025</p><span class="arrow">↗</span></div>
-            </a>
-            <a class="project-card project-wide" href="#bench-study" data-project="bench-study">
-              <div class="project-image image-editable" data-image-key="bench-card"><img src="assets/page-5.jpg" alt="Exterior Bench Lighting Study" /><span class="image-action">Replace image</span></div>
-              <div class="project-meta"><p class="project-number">04</p><h2 class="editable">Exterior Bench Lighting Study</h2><p class="editable">Lighting design · Research</p><span class="arrow">↗</span></div>
-            </a>
-            <a class="project-card project-wide photo-card" href="#photography" data-project="photography">
-              <div class="project-image image-editable" data-image-key="photo-card"><img src="assets/page-7.jpg" alt="Architectural photography" /><span class="image-action">Replace image</span></div>
-              <div class="project-meta"><p class="project-number">05</p><h2 class="editable">Photography</h2><p class="editable">Light play · Architecture</p><span class="arrow">↗</span></div>
-            </a>
-          </div>
-        </section>
-
-        <section class="project-details">
-          <article class="detail" id="mountain-home">
-            <div class="detail-label"><p>01 / Residential</p><h2 class="editable">Luxury Mountain Home</h2></div>
-            <div class="detail-content"><p class="lead editable">A home in western North Carolina inspired by the mellow peaks it sits in. Custom windows mimic the gently sloping mountains, while its stepped form creates generous outdoor spaces without sacrificing interior programming.</p><div class="detail-grid"><div class="image-editable" data-image-key="mountain-detail"><img src="assets/page-2.jpg" alt="Mountain home interiors and model" /><span class="image-action">Replace image</span></div><dl><div><dt>Role</dt><dd class="editable">Architectural Design</dd></div><div><dt>Focus</dt><dd class="editable">Daylight · circulation · residential</dd></div><div><dt>Year</dt><dd class="editable">2025</dd></div></dl></div></div>
-          </article>
-          <article class="detail" id="childrens-museum">
-            <div class="detail-label"><p>02 / Cultural</p><h2 class="editable">Children's Museum</h2></div>
-            <div class="detail-content"><p class="lead editable">On Pearl Street Pedestrian Mall, a children's museum provides a third space for families while supporting office spaces. Interlocking forms and generous window facades create a community hub in central Boulder.</p><div class="detail-grid"><div class="image-editable" data-image-key="museum-detail"><img src="assets/page-3.jpg" alt="Museum design diagrams and renderings" /><span class="image-action">Replace image</span></div><dl><div><dt>Role</dt><dd class="editable">Architectural Design</dd></div><div><dt>Focus</dt><dd class="editable">Massing · circulation · community</dd></div><div><dt>Location</dt><dd class="editable">Boulder, Colorado</dd></div></dl></div></div>
-          </article>
-          <article class="detail" id="central-lobby">
-            <div class="detail-label"><p>03 / Lighting</p><h2 class="editable">University Building Central Lobby</h2></div>
-            <div class="detail-content"><p class="lead editable">A central lobby connects multi-disciplinary students across five floors. The lighting design evolved through feedback from the project architects and lighting team to create a satisfying experience for both interior and exterior viewers.</p><div class="detail-grid"><div class="image-editable" data-image-key="lobby-detail"><img src="assets/page-4.jpg" alt="Lobby lighting images and plan" /><span class="image-action">Replace image</span></div><dl><div><dt>Role</dt><dd class="editable">Lighting Design</dd></div><div><dt>Focus</dt><dd class="editable">Interior + facade experience</dd></div><div><dt>Process</dt><dd class="editable">Iterative fixture studies</dd></div></dl></div></div>
-          </article>
-          <article class="detail" id="bench-study">
-            <div class="detail-label"><p>04 / Research</p><h2 class="editable">Exterior Bench Lighting Study</h2></div>
-            <div class="detail-content"><p class="lead editable">A redesigned exterior bench became a park centerpiece. Three water-inspired schemes were evaluated through mockups to test practicality, lighting methods, and luminaire options before moving forward with a preferred direction.</p><div class="detail-grid"><div class="image-editable" data-image-key="bench-detail"><img src="assets/page-5.jpg" alt="Lighting study renderings" /><span class="image-action">Replace image</span></div><dl><div><dt>Role</dt><dd class="editable">Lighting Design</dd></div><div><dt>Focus</dt><dd class="editable">Mockups · night studies</dd></div><div><dt>Outcome</dt><dd class="editable">Preferred scheme selected</dd></div></dl></div></div>
-          </article>
-          <article class="detail" id="photography">
-            <div class="detail-label"><p>05 / Personal</p><h2 class="editable">Photography</h2></div>
-            <div class="detail-content"><p class="lead editable">Light can dramatically change a scene's composition and reveal exceptional details. This natural effect in both natural and artificial spaces rewards time and attention - a visual puzzle that informs how I look at the built environment.</p><div class="detail-grid"><div class="image-editable" data-image-key="photo-detail"><img src="assets/page-6.jpg" alt="Light play photography" /><span class="image-action">Replace image</span></div><dl><div><dt>Subject</dt><dd class="editable">Light play + architecture</dd></div><div><dt>Approach</dt><dd class="editable">Unexpected perspectives</dd></div><div><dt>Medium</dt><dd class="editable">Digital photography</dd></div></dl></div></div>
-          </article>
-        </section>
-        <section class="about" id="about"><p class="eyebrow">Get in touch</p><h2 class="editable">Let’s make a memorable<br /><em>first impression.</em></h2><a class="email editable" href="mailto:hello@juliankotara.com">hello@juliankotara.com <span>↗</span></a><p class="about-note editable">Available for architectural engineering and lighting design opportunities.</p></section>
-      </main>
-      <footer><span>© <span id="year"></span> Julian Kotara</span><span>Architectural Engineering · CU Boulder</span></footer>
-    </div>
-    <div class="edit-panel" aria-hidden="true"><strong>Editing mode</strong><p>Edit any text directly. Click an image to replace it from your computer. Your changes are saved in this browser.</p><div class="panel-actions"><button id="download" type="button">Download content</button><label for="import">Import content</label><input id="import" type="file" accept="application/json" hidden /><button id="reset" type="button">Reset</button></div></div>
-    <script src="script.js"></script>
-  </body>
-</html>
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Julian Kotara — Architectural Engineering</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head><body>
+<header class="glass-nav"><a class="monogram" href="#top" aria-label="Julian Kotara home">JK<span>.</span></a><nav aria-label="Main navigation"><a href="#work">Work</a><a href="#about">About</a></nav><button id="edit-toggle" class="nav-button" type="button" aria-pressed="false">Edit</button></header>
+<main id="top"><section class="intro"><p class="kicker editable">Portfolio / 2026</p><h1 class="editable">Julian<br>Kotara</h1><p class="role editable">Architectural engineer<br>with a focus in lighting.</p><p class="intro-copy editable">I make light, space, and material feel deliberate — from early concept through the small decisions that shape how a place is experienced.</p><a class="explore" href="#work">Explore selected work <span>↓</span></a></section>
+<section class="work-section" id="work"><div class="work-head"><p class="kicker">Selected work</p><h2>Move <em>through</em> the work.</h2><p>Scroll sideways or use the arrows.</p></div><div class="rail-controls"><button class="rail-button" id="previous" aria-label="Previous projects">←</button><button class="rail-button" id="next" aria-label="Next projects">→</button></div><div class="project-rail" id="project-rail" tabindex="0" aria-label="Selected projects">
+<button class="project-card first" data-project="mountain"><img src="assets/projects/mountain-home.jpg" alt="Luxury mountain home rendering"><span class="card-shade"></span><span class="project-index">01</span><span class="card-copy"><strong>Luxury<br>Mountain Home</strong><small>Residential / 2025</small></span><span class="open-mark">↗</span></button>
+<button class="project-card" data-project="museum"><img src="assets/projects/childrens-museum.jpg" alt="Children's Museum rendering"><span class="card-shade"></span><span class="project-index">02</span><span class="card-copy"><strong>Children's<br>Museum</strong><small>Cultural / 2025</small></span><span class="open-mark">↗</span></button>
+<button class="project-card" data-project="lobby"><img src="assets/projects/central-lobby.jpg" alt="Illuminated central lobby facade"><span class="card-shade"></span><span class="project-index">03</span><span class="card-copy"><strong>University<br>Central Lobby</strong><small>Lighting Design / 2025</small></span><span class="open-mark">↗</span></button>
+<button class="project-card wide" data-project="bench"><img src="assets/projects/bench-study.jpg" alt="Exterior bench lighting studies"><span class="card-shade"></span><span class="project-index">04</span><span class="card-copy"><strong>Exterior Bench<br>Lighting Study</strong><small>Research / 2025</small></span><span class="open-mark">↗</span></button>
+<button class="project-card" data-project="photo"><img src="assets/projects/photography.jpg" alt="Architectural photograph"><span class="card-shade"></span><span class="project-index">05</span><span class="card-copy"><strong>Photography</strong><small>Light / Architecture</small></span><span class="open-mark">↗</span></button></div></section>
+<section class="about" id="about"><p class="kicker">About / Contact</p><h2 class="editable">I design for the way light changes <em>everything.</em></h2><div><p class="editable">Currently studying Architectural Engineering at the University of Colorado Boulder. Available for lighting design and architectural engineering opportunities.</p><a class="contact editable" href="mailto:hello@juliankotara.com">hello@juliankotara.com <span>↗</span></a></div></section></main>
+<dialog id="project-dialog"><button class="close-dialog" aria-label="Close project">×</button><div class="dialog-image"><img id="dialog-img" alt=""></div><div class="dialog-info"><p id="dialog-type" class="kicker"></p><p id="dialog-index" class="dialog-index"></p><h2 id="dialog-title"></h2><p id="dialog-description" class="dialog-description"></p><dl id="dialog-meta"></dl></div></dialog><div class="edit-note">Edit text directly. Click a project image to replace it.<button id="reset" type="button">Reset changes</button></div><script src="script.js"></script></body></html>

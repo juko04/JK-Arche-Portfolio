@@ -38,8 +38,10 @@
     <section class="photo-carousel-wrapper" aria-label="Featured Photography Carousel">
       <div class="carousel-viewport" id="photo-carousel">
         <!-- Slide 1 (Active Photography) -->
+        <div class="carousel-slide active" data-index="0">
           <img src="assets/photography/photo-1.jpg" alt="Architectural Light Study">
           <div class="carousel-caption-overlay">
+            <div>
               <h3 class="slide-title">Angular Daylight &amp; High-Contrast Shadow</h3>
               <p class="slide-meta">Natural Light Study · Architectural Geometry</p>
             </div>
@@ -49,25 +51,45 @@
 
         <!-- Slide 2 (Dedicated Photography Slot) -->
         <div class="carousel-slide placeholder-slide" data-index="1">
-          <span class="placeholder-tag">+ Add Photo 02</span>
-          <h3 class="placeholder-title" style="color: #fff; font-size: 20px; margin: 10px 0 6px;">Night Light &amp; Artificial Illumination</h3>
-          <p class="placeholder-desc" style="color: rgba(255,255,255,0.6); font-size: 13px;">Save your image to <code>assets/photography/photo-2.jpg</code> and add the &lt;img&gt; tag here.</p>
+          <div class="placeholder-inner">
+            <span class="placeholder-tag">+ Add Photo 02</span>
+            <h3 class="placeholder-title">Night Light &amp; Artificial Illumination</h3>
+            <p class="placeholder-desc">Save image to <code>assets/photography/photo-2.jpg</code></p>
+          </div>
+          <div class="carousel-caption-overlay">
+            <div>
+              <h3 class="slide-title">Night Atmosphere &amp; Luminous Reflection</h3>
+              <p class="slide-meta">Artificial Lighting Series · Low Light Exposure</p>
+            </div>
             <span class="carousel-counter" style="color: #fff;">02 / 04</span>
           </div>
         </div>
 
-          <span class="placeholder-tag">+ Add Photo 03</span>
-          <h3 class="placeholder-title" style="color: #fff; font-size: 20px; margin: 10px 0 6px;">Spatial Perspective &amp; Monochromes</h3>
-          <p class="placeholder-desc" style="color: rgba(255,255,255,0.6); font-size: 13px;">Save your image to <code>assets/photography/photo-3.jpg</code> and add the &lt;img&gt; tag here.</p>
+        <!-- Slide 3 (Dedicated Photography Slot) -->
+        <div class="carousel-slide placeholder-slide" data-index="2">
+          <div class="placeholder-inner">
+            <span class="placeholder-tag">+ Add Photo 03</span>
+            <h3 class="placeholder-title">Spatial Perspective &amp; Monochromes</h3>
+            <p class="placeholder-desc">Save image to <code>assets/photography/photo-3.jpg</code></p>
+          </div>
           <div class="carousel-caption-overlay">
             <div>
               <h3 class="slide-title">Geometry, Rhythm &amp; Void</h3>
               <p class="slide-meta">Monochrome Series · Framing the Built Environment</p>
             </div>
+            <span class="carousel-counter" style="color: #fff;">03 / 04</span>
+          </div>
+        </div>
+
+        <!-- Slide 4 (Dedicated Photography Slot) -->
         <div class="carousel-slide placeholder-slide" data-index="3">
-          <span class="placeholder-tag">+ Add Photo 04</span>
-          <h3 class="placeholder-title" style="color: #fff; font-size: 20px; margin: 10px 0 6px;">Materiality, Texture &amp; Grazing Light</h3>
-          <p class="placeholder-desc" style="color: rgba(255,255,255,0.6); font-size: 13px;">Save your image to <code>assets/photography/photo-4.jpg</code> and add the &lt;img&gt; tag here.</p>
+          <div class="placeholder-inner">
+            <span class="placeholder-tag">+ Add Photo 04</span>
+            <h3 class="placeholder-title">Materiality, Texture &amp; Grazing Light</h3>
+            <p class="placeholder-desc">Save image to <code>assets/photography/photo-4.jpg</code></p>
+          </div>
+          <div class="carousel-caption-overlay">
+            <div>
               <h3 class="slide-title">Material Interaction with Daylight</h3>
               <p class="slide-meta">Texture &amp; Shadow Detail</p>
             </div>
@@ -76,6 +98,11 @@
         </div>
       </div>
 
+      <!-- Controls Bar -->
+      <div class="carousel-bar">
+        <span class="carousel-counter" id="carousel-indicator">01 / 04</span>
+        <div class="carousel-nav-buttons">
+          <button class="carousel-btn" id="carousel-prev" aria-label="Previous photograph">←</button>
           <button class="carousel-btn" id="carousel-next" aria-label="Next photograph">→</button>
         </div>
       </div>

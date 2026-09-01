@@ -991,9 +991,31 @@ em {
   align-items: center;
   justify-content: center;
   text-align: center;
-  border: 1.5px dashed rgba(255, 255, 255, 0.2);
-  padding: 40px 24px;
+  border: 1.5px dashed rgba(255, 255, 255, 0.18);
+  padding: 40px 30px 120px;
+  box-sizing: border-box;
 }
+
+.placeholder-inner {
+  max-width: 500px;
+  margin: auto 0;
+}
+
+.placeholder-inner .placeholder-title {
+  font-size: clamp(18px, 2.2vw, 30px);
+  font-weight: 600;
+  color: #ffffff;
+  margin: 10px 0 8px;
+  line-height: 1.15;
+}
+
+.placeholder-inner .placeholder-desc {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.5;
+  margin: 0;
+}
+
 
 
 .carousel-caption-overlay {
@@ -1562,5 +1584,236 @@ body.is-editing img:hover {
     gap: 10px;
   }
 }
+
+/* ==========================================================================
+   Advanced Customizer: Snapping Guides, Shapes, & Contextual Inspector
+   ========================================================================== */
+
+/* Smart Alignment Snapping Guides */
+.snap-guide-x {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #ff523b;
+  z-index: 99998;
+  pointer-events: none;
+  box-shadow: 0 0 4px rgba(255, 82, 59, 0.8);
+}
+
+.snap-guide-y {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #ff523b;
+  z-index: 99998;
+  pointer-events: none;
+  box-shadow: 0 0 4px rgba(255, 82, 59, 0.8);
+}
+
+/* User-Created Custom Shapes */
+.custom-shape {
+  position: absolute;
+  z-index: 4;
+  box-sizing: border-box;
+  transition: box-shadow 0.2s ease;
+}
+
+.custom-shape.shape-circle {
+  border-radius: 50%;
+  border: 1.5px solid var(--line-strong);
+  background: transparent;
+}
+
+.custom-shape.shape-circle.filled {
+  background: var(--field-light);
+  border: none;
+}
+
+.custom-shape.shape-rect {
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--line-strong);
+  background: transparent;
+}
+
+.custom-shape.shape-rect.filled {
+  background: var(--paper-card);
+  border: 1px solid var(--line);
+}
+
+.custom-shape.shape-line {
+  height: 2px;
+  background: var(--line-strong);
+  border: none;
+}
+
+.custom-shape.shape-pill {
+  border-radius: 50px;
+  border: 1px solid var(--line-strong);
+  background: var(--glass);
+  backdrop-filter: blur(8px);
+}
+
+/* Active Selection Outline */
+body.is-editing .active-selected {
+  outline: 2px solid var(--terracotta) !important;
+  outline-offset: 4px !important;
+  box-shadow: 0 0 0 4px rgba(154, 74, 60, 0.2);
+}
+
+/* Contextual Property Inspector */
+.element-inspector {
+  position: fixed;
+  z-index: 10001;
+  background: rgba(22, 25, 19, 0.96);
+  color: #edeae2;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 6px 14px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--sans);
+  font-size: 11px;
+  user-select: none;
+  transform: translateX(-50%);
+  pointer-events: auto;
+  animation: fadeInInspector 0.18s ease forwards;
+}
+
+@keyframes fadeInInspector {
+  from { opacity: 0; transform: translate(-50%, 6px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.inspector-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.inspector-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #edeae2;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 4px 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+}
+
+.inspector-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.inspector-btn.active {
+  background: var(--terracotta);
+  border-color: var(--terracotta);
+  color: #ffffff;
+}
+
+.inspector-btn.danger {
+  color: #ff7b72;
+  border-color: rgba(255, 123, 114, 0.3);
+}
+
+.inspector-btn.danger:hover {
+  background: #ff7b72;
+  color: #000000;
+  border-color: #ff7b72;
+}
+
+.inspector-select {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 3px 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  cursor: pointer;
+  outline: none;
+}
+
+.inspector-select option {
+  background: #22251f;
+  color: #fff;
+}
+
+.inspector-color-input {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid #fff;
+  cursor: pointer;
+  padding: 0;
+  background: none;
+  overflow: hidden;
+}
+
+.inspector-color-input::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.inspector-color-input::-webkit-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+
+/* Shape creation dropdown */
+.shape-menu-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.shape-dropdown-menu {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 0;
+  background: rgba(24, 27, 21, 0.96);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 10002;
+}
+
+.shape-option-btn {
+  background: transparent;
+  color: #edeae2;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  text-align: left;
+  font-family: var(--sans);
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s ease;
+}
+
+.shape-option-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
 
 

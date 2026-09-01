@@ -1,11 +1,144 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Julian Kotara — Architectural Engineering</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head><body>
-<header class="glass-nav"><a class="monogram" href="#top" aria-label="Julian Kotara home">JK<span>.</span></a><nav aria-label="Main navigation"><a href="work.html">Work</a><a href="about.html">About</a></nav><button id="edit-toggle" class="nav-button" type="button" aria-pressed="false">Edit</button></header>
-<main id="top"><section class="intro"><p class="kicker editable">Portfolio / 2026</p><h1 class="editable">Julian<br>Kotara</h1><p class="role editable">Architectural engineer<br>with a focus in lighting.</p><p class="intro-copy editable">I make light, space, and material feel deliberate — from early concept through the small decisions that shape how a place is experienced.</p><a class="explore" href="#work">Explore selected work <span>↓</span></a></section>
-<section class="work-section" id="work"><div class="work-head"><p class="kicker">Selected work</p><h2>Move <em>through</em> the work.</h2><p>Scroll sideways or use the arrows.</p></div><div class="rail-controls"><button class="rail-button" id="previous" aria-label="Previous projects">←</button><button class="rail-button" id="next" aria-label="Next projects">→</button></div><div class="project-rail" id="project-rail" tabindex="0" aria-label="Selected projects">
-<button class="project-card first" data-project="mountain"><img src="assets/projects/mountain-home.jpg" alt="Luxury mountain home rendering"><span class="card-shade"></span><span class="project-index">01</span><span class="card-copy"><strong>Luxury<br>Mountain Home</strong><small>Residential / 2025</small></span><span class="open-mark">↗</span></button>
-<button class="project-card" data-project="museum"><img src="assets/projects/childrens-museum.jpg" alt="Children's Museum rendering"><span class="card-shade"></span><span class="project-index">02</span><span class="card-copy"><strong>Children's<br>Museum</strong><small>Cultural / 2025</small></span><span class="open-mark">↗</span></button>
-<button class="project-card" data-project="lobby"><img src="assets/projects/central-lobby.jpg" alt="Illuminated central lobby facade"><span class="card-shade"></span><span class="project-index">03</span><span class="card-copy"><strong>University<br>Central Lobby</strong><small>Lighting Design / 2025</small></span><span class="open-mark">↗</span></button>
-<button class="project-card wide" data-project="bench"><img src="assets/projects/bench-study.jpg" alt="Exterior bench lighting studies"><span class="card-shade"></span><span class="project-index">04</span><span class="card-copy"><strong>Exterior Bench<br>Lighting Study</strong><small>Research / 2025</small></span><span class="open-mark">↗</span></button>
-<button class="project-card" data-project="photo"><img src="assets/projects/photography.jpg" alt="Architectural photograph"><span class="card-shade"></span><span class="project-index">05</span><span class="card-copy"><strong>Photography</strong><small>Light / Architecture</small></span><span class="open-mark">↗</span></button></div></section>
-<section class="about" id="about"><p class="kicker">About / Contact</p><h2 class="editable">I design for the way light changes <em>everything.</em></h2><div><p class="editable">Currently studying Architectural Engineering at the University of Colorado Boulder. Available for lighting design and architectural engineering opportunities.</p><a class="contact editable" href="mailto:hello@juliankotara.com">hello@juliankotara.com <span>↗</span></a></div></section></main>
-<dialog id="project-dialog"><button class="close-dialog" aria-label="Close project">×</button><div class="dialog-image"><img id="dialog-img" alt=""></div><div class="dialog-info"><p id="dialog-type" class="kicker"></p><p id="dialog-index" class="dialog-index"></p><h2 id="dialog-title"></h2><p id="dialog-description" class="dialog-description"></p><dl id="dialog-meta"></dl></div></dialog><div class="edit-note">Edit text directly. Click a project image to replace it.<button id="reset" type="button">Reset changes</button></div><script src="script.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Julian Kotara — Architectural & Lighting Design</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="glass-nav">
+    <a class="monogram" href="index.html" aria-label="Julian Kotara home">JK<span>.</span></a>
+    <nav aria-label="Main navigation">
+      <a href="work.html">Work</a>
+      <a href="photography.html">Photography</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main id="top">
+    <!-- Hero / Intro -->
+    <section class="intro">
+      <div class="intro-top">
+        <p class="kicker">Architectural Engineering · Lighting Design</p>
+        <h1>Julian<br>Kotara</h1>
+      </div>
+
+      <div class="intro-body">
+        <p class="role">Designing for the dialogue between light, form, and spatial atmosphere.</p>
+        <p class="intro-copy">
+          From daylighting studies and photometric concepts to architectural massing and material texture, I explore how light shapes human experience in the built environment.
+        </p>
+      </div>
+
+      <div class="intro-bottom">
+        <a class="explore" href="#work">Explore selected work <span>↓</span></a>
+        <span class="intro-meta">CU Boulder · Portfolio 2026</span>
+      </div>
+    </section>
+
+    <!-- Selected Work Horizontal Rail -->
+    <section class="work-section" id="work">
+      <div class="work-head">
+        <div class="work-head-text">
+          <p class="kicker">Selected Projects</p>
+          <h2>Move <em>through</em> the work.</h2>
+          <p>Scroll sideways or use controls</p>
+        </div>
+        <div class="rail-controls">
+          <button class="rail-button" id="previous" aria-label="Previous project">←</button>
+          <button class="rail-button" id="next" aria-label="Next project">→</button>
+        </div>
+      </div>
+
+      <div class="project-rail" id="project-rail" tabindex="0" aria-label="Selected projects gallery">
+        <!-- 01 Mountain Home -->
+        <a class="project-card" href="project-mountain.html" data-project="mountain">
+          <img src="assets/projects/mountain-home.jpg" alt="Luxury Mountain Home rendering" loading="lazy">
+          <span class="card-shade"></span>
+          <span class="project-index">01</span>
+          <span class="open-mark">↗</span>
+          <span class="card-copy">
+            <strong>Luxury<br>Mountain Home</strong>
+            <small>Residential · Daylight Studies / 2025</small>
+          </span>
+        </a>
+
+        <!-- 02 Children's Museum -->
+        <a class="project-card" href="project-museum.html" data-project="museum">
+          <img src="assets/projects/childrens-museum.jpg" alt="Children's Museum architectural design" loading="lazy">
+          <span class="card-shade"></span>
+          <span class="project-index">02</span>
+          <span class="open-mark">↗</span>
+          <span class="card-copy">
+            <strong>Children's<br>Museum</strong>
+            <small>Cultural · Massing & Transparency / 2025</small>
+          </span>
+        </a>
+
+        <!-- 03 Central Lobby -->
+        <a class="project-card" href="project-lobby.html" data-project="lobby">
+          <img src="assets/projects/central-lobby.jpg" alt="University Central Lobby lighting design" loading="lazy">
+          <span class="card-shade"></span>
+          <span class="project-index">03</span>
+          <span class="open-mark">↗</span>
+          <span class="card-copy">
+            <strong>University<br>Central Lobby</strong>
+            <small>Lighting Design · Interior & Facade / 2025</small>
+          </span>
+        </a>
+
+        <!-- 04 Bench Study -->
+        <a class="project-card wide" href="project-bench.html" data-project="bench">
+          <img src="assets/projects/bench-study.jpg" alt="Exterior Bench Lighting Studies" loading="lazy">
+          <span class="card-shade"></span>
+          <span class="project-index">04</span>
+          <span class="open-mark">↗</span>
+          <span class="card-copy">
+            <strong>Exterior Bench<br>Lighting Study</strong>
+            <small>Lighting Research · Mockups & Optics / 2025</small>
+          </span>
+        </a>
+
+        <!-- 05 Photography -->
+        <a class="project-card" href="photography.html" data-project="photo">
+          <img src="assets/projects/photography.jpg" alt="Architectural photography study" loading="lazy">
+          <span class="card-shade"></span>
+          <span class="project-index">05</span>
+          <span class="open-mark">↗</span>
+          <span class="card-copy">
+            <strong>Photography &<br>Light Studies</strong>
+            <small>Visual Studies · Shadow & Geometry</small>
+          </span>
+        </a>
+      </div>
+    </section>
+
+    <!-- About / Contact Section -->
+    <section class="about" id="about">
+      <p class="kicker">About / Contact</p>
+      <h2>I design for the way light changes <em>everything.</em></h2>
+      <div class="about-content">
+        <p>
+          Architectural Engineering student at the University of Colorado Boulder with an emphasis on lighting design. Exploring the intersection of architectural form, illumination, and human perception.
+        </p>
+        <a class="contact-link" href="mailto:hello@juliankotara.com">
+          hello@juliankotara.com <span>↗</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
+

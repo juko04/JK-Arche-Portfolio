@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photography & Light Studies — Julian Kotara</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="photo-page">
+
+  <!-- Navigation -->
+  <header class="glass-nav">
+    <a class="monogram" href="index.html" aria-label="Julian Kotara home">JK<span>.</span></a>
+    <nav aria-label="Main navigation">
+      <a href="work.html">Work</a>
+      <a href="photography.html" class="active">Photography</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <main class="photo-container">
+    <!-- Header -->
+    <div class="photo-header">
+      <p class="kicker">Visual Studies / Ongoing</p>
+      <h1>Light, Shadow<br>&amp; <em>Space.</em></h1>
+      <p class="photo-intro">
+        Light transforms composition, reveals material texture, and sculpts depth. Photography is both a creative study and a visual laboratory that constantly informs how I design lighting for the built environment.
+      </p>
+    </div>
+
+    <!-- Interactive Carousel Showcase -->
+    <section class="photo-carousel-wrapper" aria-label="Featured Photography Carousel">
+      <div class="carousel-viewport" id="photo-carousel">
+        <!-- Slide 1 -->
+        <div class="carousel-slide active" data-index="0">
+          <img src="assets/projects/photography.jpg" alt="Architectural Light Study">
+          <div class="carousel-caption-overlay">
+            <div>
+              <h3 class="slide-title">Angular Daylight &amp; High-Contrast Shadow</h3>
+              <p class="slide-meta">Natural Light Study · Architectural Geometry</p>
+            </div>
+            <span class="carousel-counter" style="color: #fff;">01 / 04</span>
+          </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="carousel-slide" data-index="1">
+          <img src="assets/projects/central-lobby.jpg" alt="Illuminated Multi-story Central Lobby">
+          <div class="carousel-caption-overlay">
+            <div>
+              <h3 class="slide-title">Nighttime Facade &amp; Illuminated Atrium</h3>
+              <p class="slide-meta">Artificial Lighting · Five-Story Volume</p>
+            </div>
+            <span class="carousel-counter" style="color: #fff;">02 / 04</span>
+          </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="carousel-slide" data-index="2">
+          <img src="assets/projects/bench-study.jpg" alt="Night Luminaire & Reflection Study">
+          <div class="carousel-caption-overlay">
+            <div>
+              <h3 class="slide-title">Water Reflection &amp; Linear Luminaire Optics</h3>
+              <p class="slide-meta">Mockup Analysis · Night Study</p>
+            </div>
+            <span class="carousel-counter" style="color: #fff;">03 / 04</span>
+          </div>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="carousel-slide" data-index="3">
+          <img src="assets/projects/mountain-home.jpg" alt="Mountain Residence Daylighting">
+          <div class="carousel-caption-overlay">
+            <div>
+              <h3 class="slide-title">Fenestration Rhythm &amp; Valley Daylight</h3>
+              <p class="slide-meta">Residential · Daylight &amp; Form</p>
+            </div>
+            <span class="carousel-counter" style="color: #fff;">04 / 04</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls Bar -->
+      <div class="carousel-bar">
+        <span class="carousel-counter" id="carousel-indicator">01 / 04</span>
+        <div class="carousel-nav-buttons">
+          <button class="carousel-btn" id="carousel-prev" aria-label="Previous photograph">←</button>
+          <button class="carousel-btn" id="carousel-next" aria-label="Next photograph">→</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Curated Photo Stream / Additional Upload Slots -->
+    <section>
+      <div class="photo-stream-header">
+        <div>
+          <p class="kicker">Curated Photo Stream</p>
+          <h2 style="font-size: clamp(28px, 3.5vw, 48px); letter-spacing: -0.04em;">Selected Studies &amp; Series</h2>
+        </div>
+      </div>
+
+      <div class="photo-grid">
+        <!-- Photo Card 1 -->
+        <div class="photo-card">
+          <img src="assets/projects/photography.jpg" alt="Light Study" loading="lazy">
+          <div class="photo-card-info">
+            <h4>Light Play &amp; Architecture</h4>
+            <span>01 / Perspective</span>
+          </div>
+        </div>
+
+        <!-- Photo Card 2 -->
+        <div class="photo-card">
+          <img src="assets/projects/central-lobby.jpg" alt="Lobby Lighting" loading="lazy">
+          <div class="photo-card-info">
+            <h4>Vertical Illumination</h4>
+            <span>02 / Atmosphere</span>
+          </div>
+        </div>
+
+        <!-- Photo Card 3 -->
+        <div class="photo-card">
+          <img src="assets/projects/bench-study.jpg" alt="Bench Mockup" loading="lazy">
+          <div class="photo-card-info">
+            <h4>Optic &amp; Surface Reflection</h4>
+            <span>03 / Research</span>
+          </div>
+        </div>
+
+        <!-- Photo Upload Placeholder 1 -->
+        <div class="photo-placeholder-card">
+          <span class="placeholder-tag">+ Add Photo</span>
+          <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Future Photo Slot</h4>
+          <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Add image URL to grid</p>
+        </div>
+
+        <!-- Photo Upload Placeholder 2 -->
+        <div class="photo-placeholder-card">
+          <span class="placeholder-tag">+ Add Photo</span>
+          <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Future Photo Slot</h4>
+          <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Add image URL to grid</p>
+        </div>
+
+        <!-- Photo Upload Placeholder 3 -->
+        <div class="photo-placeholder-card">
+          <span class="placeholder-tag">+ Add Photo</span>
+          <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Future Photo Slot</h4>
+          <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Add image URL to grid</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Lightweight Carousel Controller
+    document.addEventListener('DOMContentLoaded', () => {
+      const slides = document.querySelectorAll('.carousel-slide');
+      const prevBtn = document.querySelector('#carousel-prev');
+      const nextBtn = document.querySelector('#carousel-next');
+      const indicator = document.querySelector('#carousel-indicator');
+      let currentIndex = 0;
+      const totalSlides = slides.length;
+
+      function updateSlide(newIndex) {
+        slides[currentIndex].classList.remove('active');
+        currentIndex = (newIndex + totalSlides) % totalSlides;
+        slides[currentIndex].classList.add('active');
+        if (indicator) {
+          indicator.textContent = `${String(currentIndex + 1).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}`;
+        }
+      }
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => updateSlide(currentIndex - 1));
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => updateSlide(currentIndex + 1));
+      }
+
+      // Keyboard arrow navigation
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+          updateSlide(currentIndex - 1);
+        } else if (e.key === 'ArrowRight') {
+          updateSlide(currentIndex + 1);
+        }
+      });
+
+      // Touch swipe support
+      let touchStartX = 0;
+      const carouselViewport = document.querySelector('#photo-carousel');
+      if (carouselViewport) {
+        carouselViewport.addEventListener('touchstart', (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        carouselViewport.addEventListener('touchend', (e) => {
+          const touchEndX = e.changedTouches[0].screenX;
+          if (touchStartX - touchEndX > 50) {
+            updateSlide(currentIndex + 1);
+          } else if (touchEndX - touchStartX > 50) {
+            updateSlide(currentIndex - 1);
+          }
+        }, { passive: true });
+      }
+    });
+  </script>
+</body>
+</html>
+

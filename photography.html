@@ -37,11 +37,9 @@
     <!-- Interactive Carousel Showcase -->
     <section class="photo-carousel-wrapper" aria-label="Featured Photography Carousel">
       <div class="carousel-viewport" id="photo-carousel">
-        <!-- Slide 1 -->
-        <div class="carousel-slide active" data-index="0">
-          <img src="assets/projects/photography.jpg" alt="Architectural Light Study">
+        <!-- Slide 1 (Active Photography) -->
+          <img src="assets/photography/photo-1.jpg" alt="Architectural Light Study">
           <div class="carousel-caption-overlay">
-            <div>
               <h3 class="slide-title">Angular Daylight &amp; High-Contrast Shadow</h3>
               <p class="slide-meta">Natural Light Study · Architectural Geometry</p>
             </div>
@@ -49,54 +47,39 @@
           </div>
         </div>
 
-        <!-- Slide 2 -->
-        <div class="carousel-slide" data-index="1">
-          <img src="assets/projects/central-lobby.jpg" alt="Illuminated Multi-story Central Lobby">
-          <div class="carousel-caption-overlay">
-            <div>
-              <h3 class="slide-title">Nighttime Facade &amp; Illuminated Atrium</h3>
-              <p class="slide-meta">Artificial Lighting · Five-Story Volume</p>
-            </div>
+        <!-- Slide 2 (Dedicated Photography Slot) -->
+        <div class="carousel-slide placeholder-slide" data-index="1">
+          <span class="placeholder-tag">+ Add Photo 02</span>
+          <h3 class="placeholder-title" style="color: #fff; font-size: 20px; margin: 10px 0 6px;">Night Light &amp; Artificial Illumination</h3>
+          <p class="placeholder-desc" style="color: rgba(255,255,255,0.6); font-size: 13px;">Save your image to <code>assets/photography/photo-2.jpg</code> and add the &lt;img&gt; tag here.</p>
             <span class="carousel-counter" style="color: #fff;">02 / 04</span>
           </div>
         </div>
 
-        <!-- Slide 3 -->
-        <div class="carousel-slide" data-index="2">
-          <img src="assets/projects/bench-study.jpg" alt="Night Luminaire & Reflection Study">
+          <span class="placeholder-tag">+ Add Photo 03</span>
+          <h3 class="placeholder-title" style="color: #fff; font-size: 20px; margin: 10px 0 6px;">Spatial Perspective &amp; Monochromes</h3>
+          <p class="placeholder-desc" style="color: rgba(255,255,255,0.6); font-size: 13px;">Save your image to <code>assets/photography/photo-3.jpg</code> and add the &lt;img&gt; tag here.</p>
           <div class="carousel-caption-overlay">
             <div>
-              <h3 class="slide-title">Water Reflection &amp; Linear Luminaire Optics</h3>
-              <p class="slide-meta">Mockup Analysis · Night Study</p>
+              <h3 class="slide-title">Geometry, Rhythm &amp; Void</h3>
+              <p class="slide-meta">Monochrome Series · Framing the Built Environment</p>
             </div>
-            <span class="carousel-counter" style="color: #fff;">03 / 04</span>
-          </div>
-        </div>
-
-        <!-- Slide 4 -->
-        <div class="carousel-slide" data-index="3">
-          <img src="assets/projects/mountain-home.jpg" alt="Mountain Residence Daylighting">
-          <div class="carousel-caption-overlay">
-            <div>
-              <h3 class="slide-title">Fenestration Rhythm &amp; Valley Daylight</h3>
-              <p class="slide-meta">Residential · Daylight &amp; Form</p>
+        <div class="carousel-slide placeholder-slide" data-index="3">
+          <span class="placeholder-tag">+ Add Photo 04</span>
+          <h3 class="placeholder-title" style="color: #fff; font-size: 20px; margin: 10px 0 6px;">Materiality, Texture &amp; Grazing Light</h3>
+          <p class="placeholder-desc" style="color: rgba(255,255,255,0.6); font-size: 13px;">Save your image to <code>assets/photography/photo-4.jpg</code> and add the &lt;img&gt; tag here.</p>
+              <h3 class="slide-title">Material Interaction with Daylight</h3>
+              <p class="slide-meta">Texture &amp; Shadow Detail</p>
             </div>
             <span class="carousel-counter" style="color: #fff;">04 / 04</span>
           </div>
         </div>
       </div>
 
-      <!-- Controls Bar -->
-      <div class="carousel-bar">
-        <span class="carousel-counter" id="carousel-indicator">01 / 04</span>
-        <div class="carousel-nav-buttons">
-          <button class="carousel-btn" id="carousel-prev" aria-label="Previous photograph">←</button>
           <button class="carousel-btn" id="carousel-next" aria-label="Next photograph">→</button>
         </div>
       </div>
     </section>
-
-    <!-- Curated Photo Stream / Additional Upload Slots -->
     <section>
       <div class="photo-stream-header">
         <div>
@@ -106,52 +89,41 @@
       </div>
 
       <div class="photo-grid">
-        <!-- Photo Card 1 -->
+        <!-- Photo Card 1 (Active Photography) -->
         <div class="photo-card">
-          <img src="assets/projects/photography.jpg" alt="Light Study" loading="lazy">
+          <img src="assets/photography/photo-1.jpg" alt="Light Study" loading="lazy">
           <div class="photo-card-info">
             <h4>Light Play &amp; Architecture</h4>
             <span>01 / Perspective</span>
           </div>
         </div>
 
-        <!-- Photo Card 2 -->
-        <div class="photo-card">
-          <img src="assets/projects/central-lobby.jpg" alt="Lobby Lighting" loading="lazy">
-          <div class="photo-card-info">
-            <h4>Vertical Illumination</h4>
-            <span>02 / Atmosphere</span>
-          </div>
-        </div>
-
-        <!-- Photo Card 3 -->
-        <div class="photo-card">
-          <img src="assets/projects/bench-study.jpg" alt="Bench Mockup" loading="lazy">
-          <div class="photo-card-info">
-            <h4>Optic &amp; Surface Reflection</h4>
-            <span>03 / Research</span>
-          </div>
-        </div>
-
-        <!-- Photo Upload Placeholder 1 -->
-        <div class="photo-placeholder-card">
-          <span class="placeholder-tag">+ Add Photo</span>
-          <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Future Photo Slot</h4>
-          <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Add image URL to grid</p>
-        </div>
-
         <!-- Photo Upload Placeholder 2 -->
         <div class="photo-placeholder-card">
-          <span class="placeholder-tag">+ Add Photo</span>
-          <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Future Photo Slot</h4>
-          <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Add image URL to grid</p>
+          <span class="placeholder-tag">+ Add Photo 02</span>
+          <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Night &amp; Artificial Light</h4>
+          <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Drop image in assets/photography/</p>
         </div>
 
         <!-- Photo Upload Placeholder 3 -->
         <div class="photo-placeholder-card">
-          <span class="placeholder-tag">+ Add Photo</span>
-          <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Future Photo Slot</h4>
-          <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Add image URL to grid</p>
+          <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Geometry &amp; Monochromes</h4>
+          <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Drop image in assets/photography/</p>
+
+        <!-- Photo Upload Placeholder 4 -->
+        <div class="photo-placeholder-card">
+          <span class="placeholder-tag">+ Add Photo 04</span>
+          <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Daylight &amp; Materiality</h4>
+          <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Drop image in assets/photography/</p>
+        </div>
+
+        <!-- Photo Upload Placeholder 5 -->
+        <div class="photo-placeholder-card">
+          <span class="placeholder-tag">+ Add Photo 05</span>
+          <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Urban &amp; Civic Atmosphere</h4>
+          <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Drop image in assets/photography/</p>
+          <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Shadow Studies</h4>
+          <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Drop image in assets/photography/</p>
         </div>
       </div>
     </section>
@@ -159,44 +131,27 @@
 
   <script>
     // Lightweight Carousel Controller
-    document.addEventListener('DOMContentLoaded', () => {
-      const slides = document.querySelectorAll('.carousel-slide');
-      const prevBtn = document.querySelector('#carousel-prev');
-      const nextBtn = document.querySelector('#carousel-next');
-      const indicator = document.querySelector('#carousel-indicator');
       let currentIndex = 0;
       const totalSlides = slides.length;
 
-      function updateSlide(newIndex) {
         slides[currentIndex].classList.remove('active');
         currentIndex = (newIndex + totalSlides) % totalSlides;
         slides[currentIndex].classList.add('active');
         if (indicator) {
-          indicator.textContent = `${String(currentIndex + 1).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}`;
-        }
-      }
 
       if (prevBtn) {
         prevBtn.addEventListener('click', () => updateSlide(currentIndex - 1));
-      }
 
       if (nextBtn) {
         nextBtn.addEventListener('click', () => updateSlide(currentIndex + 1));
       }
-
-      // Keyboard arrow navigation
-      document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft') {
           updateSlide(currentIndex - 1);
         } else if (e.key === 'ArrowRight') {
-          updateSlide(currentIndex + 1);
         }
       });
 
       // Touch swipe support
-      let touchStartX = 0;
-      const carouselViewport = document.querySelector('#photo-carousel');
-      if (carouselViewport) {
         carouselViewport.addEventListener('touchstart', (e) => {
           touchStartX = e.changedTouches[0].screenX;
         }, { passive: true });

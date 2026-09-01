@@ -1,313 +1,95 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juko's Portfolio</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-
-        header {
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        nav {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        nav h1 {
-            font-size: 1.8rem;
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-            gap: 2rem;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: #667eea;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        /* Hero Section */
-        .hero {
-            background: white;
-            border-radius: 10px;
-            padding: 4rem 2rem;
-            margin-bottom: 3rem;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .hero h2 {
-            font-size: 3rem;
-            color: #667eea;
-            margin-bottom: 1rem;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: #666;
-            margin-bottom: 2rem;
-        }
-
-        .cta-button {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 0.8rem 2rem;
-            border-radius: 5px;
-            text-decoration: none;
-            transition: background 0.3s;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .cta-button:hover {
-            background: #764ba2;
-        }
-
-        /* Projects Section */
-        .projects {
-            background: white;
-            border-radius: 10px;
-            padding: 3rem 2rem;
-            margin-bottom: 3rem;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .projects h3 {
-            font-size: 2rem;
-            color: #333;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-
-        .project-card {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 1.5rem;
-            border-left: 4px solid #667eea;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .project-card h4 {
-            color: #667eea;
-            margin-bottom: 0.5rem;
-        }
-
-        .project-card p {
-            color: #666;
-            font-size: 0.95rem;
-        }
-
-        /* About Section */
-        .about {
-            background: white;
-            border-radius: 10px;
-            padding: 3rem 2rem;
-            margin-bottom: 3rem;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .about h3 {
-            font-size: 2rem;
-            color: #333;
-            margin-bottom: 1rem;
-        }
-
-        .about p {
-            color: #666;
-            line-height: 1.8;
-            margin-bottom: 1rem;
-        }
-
-        /* Contact Section */
-        .contact {
-            background: white;
-            border-radius: 10px;
-            padding: 3rem 2rem;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .contact h3 {
-            font-size: 2rem;
-            color: #333;
-            margin-bottom: 2rem;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .social-links a {
-            color: #667eea;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border: 2px solid #667eea;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-
-        .social-links a:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        footer {
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-        }
-
-        @media (max-width: 768px) {
-            nav ul {
-                gap: 1rem;
-                font-size: 0.9rem;
-            }
-
-            .hero h2 {
-                font-size: 2rem;
-            }
-
-            .projects h3, .about h3, .contact h3 {
-                font-size: 1.5rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Julian Kotara - Architectural Engineering Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="nav">
+        <a class="wordmark" href="#top" aria-label="Home">JK<span>.</span></a>
         <nav>
-            <h1>Juko</h1>
-            <ul>
-                <li><a href="#about">About</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
+          <a href="#work">Selected work</a>
+          <a href="#about">About</a>
         </nav>
-    </header>
+        <button class="edit-toggle" type="button" aria-pressed="false">Edit portfolio <span>↗</span></button>
+      </header>
 
-    <div class="container">
-        <!-- Hero Section -->
-        <div class="hero">
-            <h2>Welcome to My Portfolio</h2>
-            <p>I'm passionate about creating amazing digital experiences and bringing ideas to life through code.</p>
-            <button class="cta-button" onclick="alert('Thanks for your interest!')">Get Started</button>
-        </div>
+      <main id="top">
+        <section class="hero">
+          <p class="eyebrow editable">Architectural engineering · lighting design</p>
+          <h1 class="editable">Making space feel<br /><em>considered.</em></h1>
+          <div class="hero-bottom">
+            <p class="intro editable">Julian Kotara is an architectural engineer exploring the intersection of light, material, and the human experience of place.</p>
+            <a class="scroll-link" href="#work">Scroll to explore <span>↓</span></a>
+          </div>
+          <div class="hero-image image-editable" data-image-key="hero">
+            <img src="assets/page-4.jpg" alt="Illuminated university building facade at night" />
+            <span class="image-action">Replace image</span>
+          </div>
+        </section>
 
-        <!-- About Section -->
-        <div class="about" id="about">
-            <h3>About Me</h3>
-            <p>
-                Hi! I'm a developer and creator passionate about building beautiful, functional websites and applications. 
-                With a background in web development, I love turning creative ideas into reality.
-            </p>
-            <p>
-                When I'm not coding, you can find me exploring new technologies, designing user interfaces, or contributing to open-source projects.
-            </p>
-        </div>
+        <section class="work" id="work">
+          <div class="section-head">
+            <p class="eyebrow">Selected work</p>
+            <p class="count">( 01 — 05 )</p>
+          </div>
+          <div class="projects">
+            <a class="project-card project-wide" href="#mountain-home" data-project="mountain-home">
+              <div class="project-image image-editable" data-image-key="mountain-card"><img src="assets/page-2.jpg" alt="Luxury Mountain Home rendering" /><span class="image-action">Replace image</span></div>
+              <div class="project-meta"><p class="project-number">01</p><h2 class="editable">Luxury Mountain Home</h2><p class="editable">Residential · 2025</p><span class="arrow">↗</span></div>
+            </a>
+            <a class="project-card" href="#childrens-museum" data-project="childrens-museum">
+              <div class="project-image image-editable" data-image-key="museum-card"><img src="assets/page-3.jpg" alt="Children's Museum rendering" /><span class="image-action">Replace image</span></div>
+              <div class="project-meta"><p class="project-number">02</p><h2 class="editable">Children's Museum</h2><p class="editable">Cultural · 2025</p><span class="arrow">↗</span></div>
+            </a>
+            <a class="project-card" href="#central-lobby" data-project="central-lobby">
+              <div class="project-image image-editable" data-image-key="lobby-card"><img src="assets/page-4.jpg" alt="University Building Central Lobby" /><span class="image-action">Replace image</span></div>
+              <div class="project-meta"><p class="project-number">03</p><h2 class="editable">University Central Lobby</h2><p class="editable">Lighting design · 2025</p><span class="arrow">↗</span></div>
+            </a>
+            <a class="project-card project-wide" href="#bench-study" data-project="bench-study">
+              <div class="project-image image-editable" data-image-key="bench-card"><img src="assets/page-5.jpg" alt="Exterior Bench Lighting Study" /><span class="image-action">Replace image</span></div>
+              <div class="project-meta"><p class="project-number">04</p><h2 class="editable">Exterior Bench Lighting Study</h2><p class="editable">Lighting design · Research</p><span class="arrow">↗</span></div>
+            </a>
+            <a class="project-card project-wide photo-card" href="#photography" data-project="photography">
+              <div class="project-image image-editable" data-image-key="photo-card"><img src="assets/page-7.jpg" alt="Architectural photography" /><span class="image-action">Replace image</span></div>
+              <div class="project-meta"><p class="project-number">05</p><h2 class="editable">Photography</h2><p class="editable">Light play · Architecture</p><span class="arrow">↗</span></div>
+            </a>
+          </div>
+        </section>
 
-        <!-- Projects Section -->
-        <div class="projects" id="projects">
-            <h3>Featured Projects</h3>
-            <div class="project-grid">
-                <div class="project-card">
-                    <h4>Project One</h4>
-                    <p>A modern web application built with HTML, CSS, and JavaScript. Features a clean UI and responsive design.</p>
-                </div>
-                <div class="project-card">
-                    <h4>Project Two</h4>
-                    <p>An interactive portfolio site showcasing my latest work. Demonstrates my skills in web design and development.</p>
-                </div>
-                <div class="project-card">
-                    <h4>Project Three</h4>
-                    <p>A collaborative project focused on user experience. Built with modern tools and best practices in mind.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Contact Section -->
-        <div class="contact" id="contact">
-            <h3>Let's Connect</h3>
-            <p style="color: #666; margin-bottom: 2rem;">Feel free to reach out for collaborations or just a friendly hello!</p>
-            <div class="social-links">
-                <a href="mailto:your.email@example.com">Email</a>
-                <a href="https://github.com" target="_blank">GitHub</a>
-                <a href="https://linkedin.com" target="_blank">LinkedIn</a>
-                <a href="https://twitter.com" target="_blank">Twitter</a>
-            </div>
-        </div>
+        <section class="project-details">
+          <article class="detail" id="mountain-home">
+            <div class="detail-label"><p>01 / Residential</p><h2 class="editable">Luxury Mountain Home</h2></div>
+            <div class="detail-content"><p class="lead editable">A home in western North Carolina inspired by the mellow peaks it sits in. Custom windows mimic the gently sloping mountains, while its stepped form creates generous outdoor spaces without sacrificing interior programming.</p><div class="detail-grid"><div class="image-editable" data-image-key="mountain-detail"><img src="assets/page-2.jpg" alt="Mountain home interiors and model" /><span class="image-action">Replace image</span></div><dl><div><dt>Role</dt><dd class="editable">Architectural Design</dd></div><div><dt>Focus</dt><dd class="editable">Daylight · circulation · residential</dd></div><div><dt>Year</dt><dd class="editable">2025</dd></div></dl></div></div>
+          </article>
+          <article class="detail" id="childrens-museum">
+            <div class="detail-label"><p>02 / Cultural</p><h2 class="editable">Children's Museum</h2></div>
+            <div class="detail-content"><p class="lead editable">On Pearl Street Pedestrian Mall, a children's museum provides a third space for families while supporting office spaces. Interlocking forms and generous window facades create a community hub in central Boulder.</p><div class="detail-grid"><div class="image-editable" data-image-key="museum-detail"><img src="assets/page-3.jpg" alt="Museum design diagrams and renderings" /><span class="image-action">Replace image</span></div><dl><div><dt>Role</dt><dd class="editable">Architectural Design</dd></div><div><dt>Focus</dt><dd class="editable">Massing · circulation · community</dd></div><div><dt>Location</dt><dd class="editable">Boulder, Colorado</dd></div></dl></div></div>
+          </article>
+          <article class="detail" id="central-lobby">
+            <div class="detail-label"><p>03 / Lighting</p><h2 class="editable">University Building Central Lobby</h2></div>
+            <div class="detail-content"><p class="lead editable">A central lobby connects multi-disciplinary students across five floors. The lighting design evolved through feedback from the project architects and lighting team to create a satisfying experience for both interior and exterior viewers.</p><div class="detail-grid"><div class="image-editable" data-image-key="lobby-detail"><img src="assets/page-4.jpg" alt="Lobby lighting images and plan" /><span class="image-action">Replace image</span></div><dl><div><dt>Role</dt><dd class="editable">Lighting Design</dd></div><div><dt>Focus</dt><dd class="editable">Interior + facade experience</dd></div><div><dt>Process</dt><dd class="editable">Iterative fixture studies</dd></div></dl></div></div>
+          </article>
+          <article class="detail" id="bench-study">
+            <div class="detail-label"><p>04 / Research</p><h2 class="editable">Exterior Bench Lighting Study</h2></div>
+            <div class="detail-content"><p class="lead editable">A redesigned exterior bench became a park centerpiece. Three water-inspired schemes were evaluated through mockups to test practicality, lighting methods, and luminaire options before moving forward with a preferred direction.</p><div class="detail-grid"><div class="image-editable" data-image-key="bench-detail"><img src="assets/page-5.jpg" alt="Lighting study renderings" /><span class="image-action">Replace image</span></div><dl><div><dt>Role</dt><dd class="editable">Lighting Design</dd></div><div><dt>Focus</dt><dd class="editable">Mockups · night studies</dd></div><div><dt>Outcome</dt><dd class="editable">Preferred scheme selected</dd></div></dl></div></div>
+          </article>
+          <article class="detail" id="photography">
+            <div class="detail-label"><p>05 / Personal</p><h2 class="editable">Photography</h2></div>
+            <div class="detail-content"><p class="lead editable">Light can dramatically change a scene's composition and reveal exceptional details. This natural effect in both natural and artificial spaces rewards time and attention - a visual puzzle that informs how I look at the built environment.</p><div class="detail-grid"><div class="image-editable" data-image-key="photo-detail"><img src="assets/page-6.jpg" alt="Light play photography" /><span class="image-action">Replace image</span></div><dl><div><dt>Subject</dt><dd class="editable">Light play + architecture</dd></div><div><dt>Approach</dt><dd class="editable">Unexpected perspectives</dd></div><div><dt>Medium</dt><dd class="editable">Digital photography</dd></div></dl></div></div>
+          </article>
+        </section>
+        <section class="about" id="about"><p class="eyebrow">Get in touch</p><h2 class="editable">Let’s make a memorable<br /><em>first impression.</em></h2><a class="email editable" href="mailto:hello@juliankotara.com">hello@juliankotara.com <span>↗</span></a><p class="about-note editable">Available for architectural engineering and lighting design opportunities.</p></section>
+      </main>
+      <footer><span>© <span id="year"></span> Julian Kotara</span><span>Architectural Engineering · CU Boulder</span></footer>
     </div>
-
-    <footer>
-        <p>&copy; 2024 Juko's Portfolio. All rights reserved.</p>
-    </footer>
-
-    <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('nav a').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-
-        console.log('Portfolio website loaded successfully!');
-    </script>
-</body>
+    <div class="edit-panel" aria-hidden="true"><strong>Editing mode</strong><p>Edit any text directly. Click an image to replace it from your computer. Your changes are saved in this browser.</p><div class="panel-actions"><button id="download" type="button">Download content</button><label for="import">Import content</label><input id="import" type="file" accept="application/json" hidden /><button id="reset" type="button">Reset</button></div></div>
+    <script src="script.js"></script>
+  </body>
 </html>

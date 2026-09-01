@@ -383,5 +383,11 @@ document.addEventListener('DOMContentLoaded', () => {
       </nav>
     </main>
   `;
+
+  // Dynamically attach editor tools
+  const editorScript = document.createElement('script');
+  editorScript.src = 'editor.js';
+  document.body.appendChild(editorScript);
 });
+
 

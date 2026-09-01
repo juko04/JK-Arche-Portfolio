@@ -107,8 +107,10 @@
 
         <!-- Photo Upload Placeholder 3 -->
         <div class="photo-placeholder-card">
+          <span class="placeholder-tag">+ Add Photo 03</span>
           <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Geometry &amp; Monochromes</h4>
           <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Drop image in assets/photography/</p>
+        </div>
 
         <!-- Photo Upload Placeholder 4 -->
         <div class="photo-placeholder-card">
@@ -122,6 +124,11 @@
           <span class="placeholder-tag">+ Add Photo 05</span>
           <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Urban &amp; Civic Atmosphere</h4>
           <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Drop image in assets/photography/</p>
+        </div>
+
+        <!-- Photo Upload Placeholder 6 -->
+        <div class="photo-placeholder-card">
+          <span class="placeholder-tag">+ Add Photo 06</span>
           <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Shadow Studies</h4>
           <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Drop image in assets/photography/</p>
         </div>
@@ -131,27 +138,45 @@
 
   <script>
     // Lightweight Carousel Controller
+    document.addEventListener('DOMContentLoaded', () => {
+      const slides = document.querySelectorAll('.carousel-slide');
+      const prevBtn = document.querySelector('#carousel-prev');
+      const nextBtn = document.querySelector('#carousel-next');
+      const indicator = document.querySelector('#carousel-indicator');
       let currentIndex = 0;
       const totalSlides = slides.length;
 
+      function updateSlide(newIndex) {
+        if (!slides.length) return;
         slides[currentIndex].classList.remove('active');
         currentIndex = (newIndex + totalSlides) % totalSlides;
         slides[currentIndex].classList.add('active');
         if (indicator) {
+          indicator.textContent = `${String(currentIndex + 1).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}`;
+        }
+      }
 
       if (prevBtn) {
         prevBtn.addEventListener('click', () => updateSlide(currentIndex - 1));
+      }
 
       if (nextBtn) {
         nextBtn.addEventListener('click', () => updateSlide(currentIndex + 1));
       }
+
+      // Keyboard arrow navigation
+      document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft') {
           updateSlide(currentIndex - 1);
         } else if (e.key === 'ArrowRight') {
+          updateSlide(currentIndex + 1);
         }
       });
 
       // Touch swipe support
+      let touchStartX = 0;
+      const carouselViewport = document.querySelector('#photo-carousel');
+      if (carouselViewport) {
         carouselViewport.addEventListener('touchstart', (e) => {
           touchStartX = e.changedTouches[0].screenX;
         }, { passive: true });
@@ -167,6 +192,6 @@
       }
     });
   </script>
+  <script src="editor.js"></script>
 </body>
 </html>
-

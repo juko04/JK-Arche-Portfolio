@@ -1087,16 +1087,17 @@ em {
 }
 
 /* ==========================================================================
-   Full-Page Photography Collage & Dynamic Filtering System
+   Full-Page Tight Flush Architectural Photo Collage & Dynamic Filter Engine
    ========================================================================== */
+
 .photo-container {
-  max-width: 1680px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: clamp(100px, 12vh, 140px) clamp(20px, 4vw, 60px) 100px;
 }
 
 .photo-header {
-  margin-bottom: 30px;
+  margin-bottom: 24px;
 }
 
 .photo-header h1 {
@@ -1112,7 +1113,7 @@ em {
   font-size: clamp(15px, 1.2vw, 18px);
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.72);
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 /* Category Filter Navigation Bar */
@@ -1122,8 +1123,8 @@ em {
   justify-content: space-between;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 16px 0;
-  margin: 30px 0 35px;
+  padding: 14px 0;
+  margin: 24px 0 30px;
   gap: 16px;
   flex-wrap: wrap;
 }
@@ -1138,7 +1139,7 @@ em {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.16);
   color: #ffffff;
-  padding: 8px 18px;
+  padding: 7px 16px;
   border-radius: 30px;
   font-family: var(--mono);
   font-size: 11px;
@@ -1169,26 +1170,29 @@ em {
   letter-spacing: 0.08em;
 }
 
-/* Full-Page Collage Grid */
+/* Full-Page Tight Collage Grid (Matching Screenshots 1 & 2) */
 .photo-collage-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  grid-auto-rows: 270px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 280px;
   grid-auto-flow: dense;
-  gap: 14px;
+  gap: 8px;
+  background: #0d0f0b;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   margin-bottom: 80px;
-  transition: all 0.4s ease;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
 }
 
-/* Collage Item & Span Classes */
+/* Collage Item & Multi-Cell Spans */
 .collage-item {
   position: relative;
-  border-radius: 6px;
   overflow: hidden;
   background: #151812;
-  border: 1px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease, box-shadow 0.35s ease;
+  border-radius: 2px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
 }
 
 .collage-item.is-tall {
@@ -1209,10 +1213,7 @@ em {
 }
 
 .collage-item:hover {
-  transform: translateY(-3px);
   z-index: 10;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
-  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .collage-item img {
@@ -1220,25 +1221,25 @@ em {
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
 }
 
 .collage-item:hover img {
-  transform: scale(1.035);
+  transform: scale(1.04);
 }
 
-/* Bottom-Left Hover Caption */
+/* Bottom-Left Hover Caption (Invisible by default, reveals on hover) */
 .collage-caption {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 40%, rgba(10, 12, 8, 0.88) 100%);
+  background: linear-gradient(180deg, transparent 45%, rgba(8, 10, 6, 0.92) 100%);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 22px 20px;
+  padding: 20px 18px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
 }
 
@@ -1248,8 +1249,8 @@ em {
 }
 
 .collage-caption-inner {
-  transform: translateY(10px);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(8px);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   text-align: left;
 }
 
@@ -1263,16 +1264,16 @@ em {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--field);
-  margin-bottom: 4px;
+  margin-bottom: 3px;
   display: block;
   font-weight: 500;
 }
 
 .collage-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: #ffffff;
-  margin: 0 0 4px;
+  margin: 0 0 2px;
   line-height: 1.25;
 }
 
@@ -1280,23 +1281,37 @@ em {
   font-size: 11px;
   color: rgba(255, 255, 255, 0.7);
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.35;
 }
 
-/* Responsive Collage Grid Rules */
-@media (max-width: 1000px) {
+/* Responsive Breakpoints */
+@media (max-width: 1100px) {
   .photo-collage-grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: 240px;
-    gap: 10px;
+    gap: 6px;
+    padding: 6px;
   }
 }
 
-@media (max-width: 680px) {
+@media (max-width: 750px) {
+  .photo-collage-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 200px;
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .collage-item.is-wide,
+  .collage-item.is-featured {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 500px) {
   .photo-collage-grid {
     grid-template-columns: 1fr;
-    grid-auto-rows: auto;
-    gap: 12px;
+    grid-auto-rows: 260px;
   }
 
   .collage-item,
@@ -1305,13 +1320,11 @@ em {
   .collage-item.is-featured {
     grid-row: auto !important;
     grid-column: auto !important;
-    height: 320px;
   }
 
-  /* Always show a soft bottom scrim on mobile touch */
   .collage-caption {
     opacity: 1;
-    background: linear-gradient(180deg, transparent 50%, rgba(10, 12, 8, 0.8) 100%);
+    background: linear-gradient(180deg, transparent 55%, rgba(8, 10, 6, 0.85) 100%);
   }
 
   .collage-caption-inner {
@@ -1401,12 +1414,6 @@ em {
   color: #000000;
 }
 
-
-
-.photo-placeholder-card:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.4);
-}
 
 /* ==========================================================================
    About Page (about.html)

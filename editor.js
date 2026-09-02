@@ -1,11 +1,11 @@
 /**
  * Julian Kotara — Portfolio Interactive Visual Customizer & Pro Editor
- * Fully Scoped per Page, Layer Ordering (Z-Index), Dynamic Landscape PDF Booklet,
- * Zero-Jitter Alignment Snapping, Shape Engine, Dedicated Inspectors, & Universal Dragging.
+ * Photoshop / InDesign Style Bounding Box & Corner/Edge Transform Grips + Rotation,
+ * Layer Stacking Order, Zero-Jitter Alignment Snapping, Shape Engine, & Dynamic Landscape PDF.
  */
 
 (function () {
-  const STORAGE_KEY = 'jk_portfolio_customizer_v4';
+  const STORAGE_KEY = 'jk_portfolio_customizer_v5';
 
   // Preset Color Palettes (Preserves exact lightness & contrast)
   const COLOR_PRESETS = [
@@ -38,6 +38,8 @@
   let isEditing = false;
   let activeElement = null;
   let inspectorEl = null;
+  let transformBox = null;
+  let isTransforming = false;
   let snapGuideX = null;
   let snapGuideY = null;
 
@@ -56,10 +58,10 @@
     return state.pages[key];
   }
 
-  // Load from localStorage (with backward compatibility)
+  // Load from localStorage
   function loadState() {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('jk_portfolio_customizer_v3') || localStorage.getItem('jk_portfolio_customizer_v2');
+      const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('jk_portfolio_customizer_v4') || localStorage.getItem('jk_portfolio_customizer_v3') || localStorage.getItem('jk_portfolio_customizer_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.pages) {
@@ -167,16 +169,169 @@
       }
     });
 
-    // 7. Restore Positions
+    // 7. Restore Positions, Dimensions & Rotations
     Object.keys(page.positions || {}).forEach((id) => {
       const el = document.getElementById(id) || document.querySelector(`[data-custom-id="${id}"]`) || document.querySelector(id);
       if (el && page.positions[id]) {
-        const { x, y } = page.positions[id];
-        el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-        el.dataset.dragX = x;
-        el.dataset.dragY = y;
+        const { x, y, width, height, rotate } = page.positions[id];
+        if (width) el.style.width = width;
+        if (height) el.style.height = height;
+        const rot = rotate || 0;
+        el.style.transform = `translate3d(${x || 0}px, ${y || 0}px, 0) rotate(${rot}deg)`;
+        el.dataset.dragX = x || 0;
+        el.dataset.dragY = y || 0;
+        el.dataset.rotate = rot;
       }
     });
+  }
+
+  // --------------------------------------------------------------------------
+  // Photoshop / InDesign Style Transform Bounding Box & Grips Engine
+  // --------------------------------------------------------------------------
+  function createTransformBox() {
+    if (transformBox) return;
+    transformBox = document.createElement('div');
+    transformBox.className = 'transform-bounding-box';
+    transformBox.id = 'transform-bounding-box';
+    transformBox.style.display = 'none';
+
+    transformBox.innerHTML = `
+      <div class="handle-rot-stem"></div>
+      <div class="handle-rot" data-handle="rot" title="Drag to Rotate (Hold Shift for 15° snap)"></div>
+      <div class="transform-handle handle-nw" data-handle="nw" title="Resize Top-Left"></div>
+      <div class="transform-handle handle-n" data-handle="n" title="Resize Top"></div>
+      <div class="transform-handle handle-ne" data-handle="ne" title="Resize Top-Right"></div>
+      <div class="transform-handle handle-e" data-handle="e" title="Resize Right"></div>
+      <div class="transform-handle handle-se" data-handle="se" title="Resize Bottom-Right"></div>
+      <div class="transform-handle handle-s" data-handle="s" title="Resize Bottom"></div>
+      <div class="transform-handle handle-sw" data-handle="sw" title="Resize Bottom-Left"></div>
+      <div class="transform-handle handle-w" data-handle="w" title="Resize Left"></div>
+    `;
+
+    document.body.appendChild(transformBox);
+
+    // Handle Pointer Down
+    transformBox.querySelectorAll('[data-handle]').forEach(h => {
+      h.addEventListener('mousedown', onHandleMouseDown);
+      h.addEventListener('touchstart', onHandleMouseDown, { passive: false });
+    });
+  }
+
+  function updateTransformBox() {
+    if (!transformBox) createTransformBox();
+    if (!activeElement || !isEditing) {
+      if (transformBox) transformBox.style.display = 'none';
+      return;
+    }
+
+    const rect = activeElement.getBoundingClientRect();
+    transformBox.style.display = 'block';
+    transformBox.style.width = `${rect.width}px`;
+    transformBox.style.height = `${rect.height}px`;
+    transformBox.style.left = `${rect.left}px`;
+    transformBox.style.top = `${rect.top}px`;
+    const rot = parseFloat(activeElement.dataset.rotate) || 0;
+    transformBox.style.transform = `rotate(${rot}deg)`;
+  }
+
+  function onHandleMouseDown(e) {
+    if (!activeElement || !isEditing) return;
+    e.stopPropagation();
+    e.preventDefault();
+
+    isTransforming = true;
+    const handleType = e.currentTarget.dataset.handle;
+    const isTouch = e.type === 'touchstart';
+    const startX = isTouch ? e.touches[0].clientX : e.clientX;
+    const startY = isTouch ? e.touches[0].clientY : e.clientY;
+
+    const initialWidth = activeElement.offsetWidth;
+    const initialHeight = activeElement.offsetHeight;
+    const initialDragX = parseFloat(activeElement.dataset.dragX) || 0;
+    const initialDragY = parseFloat(activeElement.dataset.dragY) || 0;
+    const initialRotate = parseFloat(activeElement.dataset.rotate) || 0;
+
+    const rect = activeElement.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    function onMove(evt) {
+      if (!isTransforming) return;
+      const clientX = evt.type === 'touchmove' ? evt.touches[0].clientX : evt.clientX;
+      const clientY = evt.type === 'touchmove' ? evt.touches[0].clientY : evt.clientY;
+
+      if (handleType === 'rot') {
+        // Rotation Handle Calculation
+        const rad = Math.atan2(clientY - centerY, clientX - centerX);
+        let deg = Math.round((rad * (180 / Math.PI)) + 90);
+        if (evt.shiftKey) {
+          deg = Math.round(deg / 15) * 15;
+        }
+        deg = (deg % 360 + 360) % 360;
+
+        activeElement.dataset.rotate = deg;
+        activeElement.style.transform = `translate3d(${initialDragX}px, ${initialDragY}px, 0) rotate(${deg}deg)`;
+      } else {
+        // Resize Handles Calculation
+        let deltaX = clientX - startX;
+        let deltaY = clientY - startY;
+
+        // Un-rotate delta if element is currently rotated
+        if (initialRotate !== 0) {
+          const rad = -initialRotate * (Math.PI / 180);
+          const cos = Math.cos(rad);
+          const sin = Math.sin(rad);
+          const rotDeltaX = deltaX * cos - deltaY * sin;
+          const rotDeltaY = deltaX * sin + deltaY * cos;
+          deltaX = rotDeltaX;
+          deltaY = rotDeltaY;
+        }
+
+        let newW = initialWidth;
+        let newH = initialHeight;
+
+        if (handleType.includes('e')) newW = Math.max(15, initialWidth + deltaX);
+        if (handleType.includes('w')) newW = Math.max(15, initialWidth - deltaX);
+        if (handleType.includes('s')) newH = Math.max(10, initialHeight + deltaY);
+        if (handleType.includes('n')) newH = Math.max(10, initialHeight - deltaY);
+
+        activeElement.style.width = `${Math.round(newW)}px`;
+        activeElement.style.height = `${Math.round(newH)}px`;
+      }
+
+      updateTransformBox();
+      positionInspector();
+      if (evt.type === 'touchmove') evt.preventDefault();
+    }
+
+    function onUp() {
+      if (!isTransforming) return;
+      isTransforming = false;
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('touchend', onUp);
+
+      const id = getElementKey(activeElement);
+      const page = getPageData();
+      if (!page.positions) page.positions = {};
+      const rot = parseFloat(activeElement.dataset.rotate) || 0;
+      page.positions[id] = {
+        x: parseFloat(activeElement.dataset.dragX) || 0,
+        y: parseFloat(activeElement.dataset.dragY) || 0,
+        width: activeElement.style.width || `${activeElement.offsetWidth}px`,
+        height: activeElement.style.height || `${activeElement.offsetHeight}px`,
+        rotate: rot
+      };
+      saveState();
+      updateTransformBox();
+      positionInspector();
+    }
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend', onUp);
   }
 
   // --------------------------------------------------------------------------
@@ -219,11 +374,10 @@
 
     function onMouseDown(e) {
       if (!isEditing) return;
-      if (e.target.closest('.element-inspector') || e.target.closest('.editor-toolbar')) return;
+      if (e.target.closest('.element-inspector') || e.target.closest('.editor-toolbar') || e.target.closest('.transform-bounding-box')) return;
 
       selectElement(element);
 
-      // If user is editing text without holding Alt, let them select text
       if (e.target.isContentEditable && !e.altKey && e.target !== element) {
         return;
       }
@@ -236,7 +390,6 @@
 
       initialRect = element.getBoundingClientRect();
 
-      // Pre-cache static bounding boxes of other elements at dragstart (prevents delta feedback jitter)
       cachedTargets = [];
       const candidateElements = document.querySelectorAll(
         '.draggable-item, .geo-circle, .custom-shape, h1, h2, h3, p, .kicker, .role, .project-card, .work-list-item, .about-content'
@@ -329,12 +482,12 @@
 
       const finalTranslateX = candidateX + snapOffsetX;
       const finalTranslateY = candidateY + snapOffsetY;
+      const rot = parseFloat(element.dataset.rotate) || 0;
 
-      element.style.transform = `translate3d(${finalTranslateX}px, ${finalTranslateY}px, 0)`;
+      element.style.transform = `translate3d(${finalTranslateX}px, ${finalTranslateY}px, 0) rotate(${rot}deg)`;
       element.dataset.tempX = finalTranslateX;
       element.dataset.tempY = finalTranslateY;
 
-      // Render Snap Visual Guides
       if (snapLineX !== null && snapGuideX) {
         snapGuideX.style.top = `${snapLineX}px`;
         snapGuideX.style.display = 'block';
@@ -349,6 +502,7 @@
         snapGuideY.style.display = 'none';
       }
 
+      updateTransformBox();
       positionInspector();
       if (e.type === 'touchmove') e.preventDefault();
     }
@@ -365,13 +519,21 @@
 
       const finalX = parseFloat(element.dataset.tempX) || initialTranslateX;
       const finalY = parseFloat(element.dataset.tempY) || initialTranslateY;
+      const rot = parseFloat(element.dataset.rotate) || 0;
 
       element.dataset.dragX = finalX;
       element.dataset.dragY = finalY;
 
       const page = getPageData();
-      page.positions[id] = { x: finalX, y: finalY };
+      page.positions[id] = {
+        x: finalX,
+        y: finalY,
+        width: element.style.width || `${element.offsetWidth}px`,
+        height: element.style.height || `${element.offsetHeight}px`,
+        rotate: rot
+      };
       saveState();
+      updateTransformBox();
       positionInspector();
     }
 
@@ -380,7 +542,7 @@
   }
 
   // --------------------------------------------------------------------------
-  // Selection & Contextual Property Inspector Bar (With Layer Ordering)
+  // Selection & Contextual Property Inspector Bar (Grips handle sizing & rotation)
   // --------------------------------------------------------------------------
   function selectElement(el) {
     if (activeElement === el) return;
@@ -390,8 +552,10 @@
     if (activeElement && isEditing) {
       activeElement.classList.add('active-selected');
       renderInspector(activeElement);
+      updateTransformBox();
     } else {
       hideInspector();
+      if (transformBox) transformBox.style.display = 'none';
     }
   }
 
@@ -405,7 +569,7 @@
   function positionInspector() {
     if (!inspectorEl || !activeElement) return;
     const rect = activeElement.getBoundingClientRect();
-    const topPos = Math.max(12, rect.top - 48);
+    const topPos = Math.max(12, rect.top - 54);
     const leftPos = Math.min(Math.max(160, rect.left + rect.width / 2), window.innerWidth - 160);
 
     inspectorEl.style.top = `${topPos}px`;
@@ -436,27 +600,15 @@
     let html = '';
 
     if (isShape) {
-      // SHAPES ONLY: Size, Colors, Layer, Delete
+      // SHAPES ONLY: Color Picker (Size & rotation are now handled on visual handles!)
       html += `
-        <div class="inspector-group">
-          <span style="font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,0.7);">Width</span>
-          <button class="inspector-btn" id="insp-w-down" title="Decrease Width">-</button>
-          <button class="inspector-btn" id="insp-w-up" title="Increase Width">+</button>
-        </div>
-
-        <div class="inspector-group">
-          <span style="font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,0.7);">Height</span>
-          <button class="inspector-btn" id="insp-h-down" title="Decrease Height">-</button>
-          <button class="inspector-btn" id="insp-h-up" title="Increase Height">+</button>
-        </div>
-
         <div class="inspector-group">
           <label style="font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,0.7);">Color</label>
           <input type="color" class="inspector-color-input" id="insp-shape-color" title="Shape Color" value="${rgbToHex(window.getComputedStyle(el).backgroundColor) || '#b7bd91'}">
         </div>
       `;
     } else if (isText) {
-      // TEXT ONLY: Font Family, Size, Bold, Italic, Color, Layer, Delete
+      // TEXT ONLY: Font Family, Size, Bold, Italic, Color
       html += `
         <div class="inspector-group">
           <select class="inspector-select" id="insp-font-family" title="Font Family">
@@ -515,30 +667,8 @@
       showToast();
     });
 
-    // Hook Inspector Events
+    // Hook Shape Color
     if (isShape) {
-      inspectorEl.querySelector('#insp-w-up')?.addEventListener('click', () => {
-        const w = parseFloat(window.getComputedStyle(el).width) || 100;
-        applyElementStyle(el, 'width', `${Math.round(w * 1.15)}px`);
-        positionInspector();
-      });
-      inspectorEl.querySelector('#insp-w-down')?.addEventListener('click', () => {
-        const w = parseFloat(window.getComputedStyle(el).width) || 100;
-        applyElementStyle(el, 'width', `${Math.max(10, Math.round(w * 0.85))}px`);
-        positionInspector();
-      });
-
-      inspectorEl.querySelector('#insp-h-up')?.addEventListener('click', () => {
-        const h = parseFloat(window.getComputedStyle(el).height) || 100;
-        applyElementStyle(el, 'height', `${Math.round(h * 1.15)}px`);
-        positionInspector();
-      });
-      inspectorEl.querySelector('#insp-h-down')?.addEventListener('click', () => {
-        const h = parseFloat(window.getComputedStyle(el).height) || 100;
-        applyElementStyle(el, 'height', `${Math.max(2, Math.round(h * 0.85))}px`);
-        positionInspector();
-      });
-
       inspectorEl.querySelector('#insp-shape-color')?.addEventListener('input', (e) => {
         if (el.classList.contains('shape-line')) {
           applyElementStyle(el, 'backgroundColor', e.target.value);
@@ -549,30 +679,36 @@
       });
     }
 
+    // Hook Text Events
     if (isText) {
       inspectorEl.querySelector('#insp-font-family')?.addEventListener('change', (e) => {
         applyElementStyle(el, 'fontFamily', e.target.value);
+        updateTransformBox();
       });
 
       inspectorEl.querySelector('#insp-size-up')?.addEventListener('click', () => {
         const curr = parseFloat(window.getComputedStyle(el).fontSize) || 16;
         applyElementStyle(el, 'fontSize', `${curr + 2}px`);
+        updateTransformBox();
       });
       inspectorEl.querySelector('#insp-size-down')?.addEventListener('click', () => {
         const curr = parseFloat(window.getComputedStyle(el).fontSize) || 16;
         applyElementStyle(el, 'fontSize', `${Math.max(10, curr - 2)}px`);
+        updateTransformBox();
       });
 
       inspectorEl.querySelector('#insp-bold')?.addEventListener('click', (e) => {
         const isBold = el.style.fontWeight === 'bold' || window.getComputedStyle(el).fontWeight >= 600;
         applyElementStyle(el, 'fontWeight', isBold ? '400' : '700');
         e.currentTarget.classList.toggle('active', !isBold);
+        updateTransformBox();
       });
 
       inspectorEl.querySelector('#insp-italic')?.addEventListener('click', (e) => {
         const isItalic = el.style.fontStyle === 'italic';
         applyElementStyle(el, 'fontStyle', isItalic ? 'normal' : 'italic');
         e.currentTarget.classList.toggle('active', !isItalic);
+        updateTransformBox();
       });
 
       inspectorEl.querySelector('#insp-color')?.addEventListener('input', (e) => {
@@ -611,6 +747,7 @@
 
     el.remove();
     hideInspector();
+    if (transformBox) transformBox.style.display = 'none';
     activeElement = null;
     saveState();
   }
@@ -623,7 +760,7 @@
   }
 
   // --------------------------------------------------------------------------
-  // Basic Shapes Creation (Scoped to Current Page & Centered in Viewport)
+  // Basic Shapes Creation
   // --------------------------------------------------------------------------
   function createShapeDOM(shapeData) {
     const parent = document.querySelector('.intro') || document.querySelector('.project-detail') || document.querySelector('.sub-hero') || document.querySelector('main') || document.body;
@@ -736,13 +873,11 @@
       document.body.appendChild(booklet);
     }
 
-    // Pull live customized content from DOM / localStorage
     const heroTitle = document.querySelector('#hero-title')?.innerHTML.replace(/<br>/gi, ' ') || 'Julian Kotara';
     const heroKicker = document.querySelector('#hero-kicker')?.innerText || 'Architectural Engineering · Lighting Design';
     const heroRole = document.querySelector('#hero-role')?.innerText || 'Designing for the dialogue between light, form, and spatial atmosphere.';
     const heroCopy = document.querySelector('#hero-copy')?.innerText || 'From daylighting studies and photometric concepts to architectural massing and material texture, I explore how light shapes human experience in the built environment.';
 
-    // Dynamic Live Landscape Sheets
     booklet.innerHTML = `
       <!-- Sheet 1: Cover Sheet -->
       <div class="print-sheet print-cover-sheet">
@@ -975,8 +1110,6 @@
           <span>Page 07</span>
         </div>
       </div>
-
-
     `;
   }
 
@@ -1049,7 +1182,6 @@
 
     document.body.appendChild(toolbar);
 
-    // Toggle Edit Mode
     const toggleBtn = toolbar.querySelector('#editor-mode-toggle');
     const label = toolbar.querySelector('#editor-toggle-label');
 
@@ -1066,6 +1198,7 @@
       if (!on) {
         selectElement(null);
         hideSnapGuides();
+        if (transformBox) transformBox.style.display = 'none';
         restoreDOM();
       }
     }
@@ -1126,8 +1259,9 @@
 
     // Reset All
     toolbar.querySelector('#editor-reset').addEventListener('click', () => {
-      if (confirm('Reset all custom text, added shapes, positions, and color edits back to defaults?')) {
+      if (confirm('Reset all custom text, added shapes, positions, sizes, rotations, and color edits back to defaults?')) {
         localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem('jk_portfolio_customizer_v4');
         localStorage.removeItem('jk_portfolio_customizer_v3');
         localStorage.removeItem('jk_portfolio_customizer_v2');
         localStorage.removeItem('jk_portfolio_customizer_state');
@@ -1147,9 +1281,24 @@
     // Deselect on backdrop click
     document.addEventListener('mousedown', (e) => {
       if (!isEditing) return;
-      if (e.target.closest('.editor-toolbar') || e.target.closest('.element-inspector') || e.target.closest('.draggable-item')) return;
+      if (e.target.closest('.editor-toolbar') || e.target.closest('.element-inspector') || e.target.closest('.draggable-item') || e.target.closest('.transform-bounding-box')) return;
       selectElement(null);
     });
+
+    // Keep transform box synced with window scroll and resize
+    window.addEventListener('scroll', () => {
+      if (activeElement && isEditing) {
+        updateTransformBox();
+        positionInspector();
+      }
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      if (activeElement && isEditing) {
+        updateTransformBox();
+        positionInspector();
+      }
+    }, { passive: true });
   }
 
   // --------------------------------------------------------------------------
@@ -1161,7 +1310,7 @@
     );
 
     editableTargets.forEach((el, index) => {
-      if (el.closest('.editor-toolbar') || el.closest('.glass-nav') || el.closest('.print-portfolio-booklet')) return;
+      if (el.closest('.editor-toolbar') || el.closest('.glass-nav') || el.closest('.print-portfolio-booklet') || el.closest('.transform-bounding-box')) return;
 
       el.classList.add('editable');
       const key = el.id ? el.id : `edit-${index}-${el.tagName.toLowerCase()}`;
@@ -1172,11 +1321,12 @@
         if (!page.texts) page.texts = {};
         page.texts[key] = el.innerHTML;
         saveState();
+        updateTransformBox();
       });
     });
 
     // Image replacement
-    const images = document.querySelectorAll('main img, .project-hero-media img, .carousel-slide img');
+    const images = document.querySelectorAll('main img, .project-hero-media img, .carousel-slide img, .collage-item img');
     images.forEach((img, idx) => {
       if (img.closest('.print-portfolio-booklet')) return;
       const imgKey = img.id ? img.id : `img-${idx}`;
@@ -1200,6 +1350,7 @@
             if (!page.images) page.images = {};
             page.images[imgKey] = evt.target.result;
             saveState();
+            updateTransformBox();
           };
           reader.readAsDataURL(file);
         };
@@ -1214,8 +1365,8 @@
   function init() {
     loadState();
     createSnapGuides();
+    createTransformBox();
 
-    // Universal Draggable Selectors (Setup IDs FIRST so restoreDOM finds them reliably!)
     const draggableSelectors = [
       '.geo-circle-1',
       '.geo-circle-2',

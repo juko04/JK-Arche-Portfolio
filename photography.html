@@ -30,274 +30,303 @@
       <p class="kicker">Visual Studies / Ongoing</p>
       <h1>Light, Shadow<br>&amp; <em>Space.</em></h1>
       <p class="photo-intro">
-        Light transforms composition, reveals material texture, and sculpts depth. Photography is both a creative study and a visual laboratory that constantly informs how I design architectural form and illumination for the built environment.
+        Light transforms composition, reveals material texture, and sculpts depth. An ongoing visual laboratory capturing architectural form, luminous atmospheres, and analog observations.
       </p>
-
-      <!-- Category Filter Navigation -->
-      <div class="photo-nav-filter">
-        <a href="#all" class="photo-filter-btn active" data-filter="all">All Visual Studies</a>
-        <a href="#light-studies" class="photo-filter-btn" data-filter="light">01 / Light Studies (7)</a>
-        <a href="#arch-studies" class="photo-filter-btn" data-filter="arch">02 / Architecture Studies (6)</a>
-      </div>
     </div>
 
-    <!-- =====================================================================
-         SECTION 1: LIGHT & ATMOSPHERE STUDIES
-         ===================================================================== -->
-    <section class="photo-series-section" id="light-studies">
-      <div class="photo-series-header">
-        <div>
-          <p class="kicker">Series 01</p>
-          <h2>Light &amp; Atmosphere</h2>
-        </div>
-        <p class="series-desc">
-          Exploring the gradients between direct luminaire output, surface reflectivity, and nighttime ambient presence.
-        </p>
+    <!-- Filter & Shuffle Bar -->
+    <div class="photo-filter-bar">
+      <div class="photo-filter-group" id="filter-group">
+        <button class="photo-filter-btn active" data-filter="all">All Studies (13)</button>
+        <button class="photo-filter-btn" data-filter="light">01 / Light Studies (7)</button>
+        <button class="photo-filter-btn" data-filter="arch">02 / Architecture Studies (6)</button>
+        <button class="photo-filter-btn" id="shuffle-btn" title="Shuffle collage order">🎲 Shuffle</button>
       </div>
+      <span class="photo-counter-badge" id="photo-count">Showing 13 photographs</span>
+    </div>
 
-      <!-- Featured Light Studies Carousel -->
-      <section class="photo-carousel-wrapper" aria-label="Featured Light Studies Carousel">
-        <div class="carousel-viewport" id="photo-carousel">
-          <!-- Slide 1 -->
-          <div class="carousel-slide active" data-index="0">
-            <img src="assets/photography/light/IMG_6082.JPG" alt="Atmospheric Night Light & Horizon Study">
-            <div class="carousel-caption-overlay">
-              <div>
-                <h3 class="slide-title">Luminous Horizon &amp; Night Sky Gradient</h3>
-                <p class="slide-meta">Ambient Light Study · Exposure &amp; Gradient Dynamics</p>
-              </div>
-              <span class="carousel-counter" style="color: #fff;">01 / 04</span>
-            </div>
-          </div>
+    <!-- Full-Page Collage Grid (No text until hover) -->
+    <div class="photo-collage-grid" id="collage-grid">
 
-          <!-- Slide 2 -->
-          <div class="carousel-slide" data-index="1">
-            <img src="assets/photography/light/IMG_1770.JPG" alt="Vertical Luminaire & High-Contrast Shadow">
-            <div class="carousel-caption-overlay">
-              <div>
-                <h3 class="slide-title">Vertical Luminaire Grazing &amp; Shadow Depth</h3>
-                <p class="slide-meta">Artificial Illumination · Optical Grazing Angle</p>
-              </div>
-              <span class="carousel-counter" style="color: #fff;">02 / 04</span>
-            </div>
-          </div>
-
-          <!-- Slide 3 -->
-          <div class="carousel-slide" data-index="2">
-            <img src="assets/photography/light/IMG_2694 2.JPG" alt="Reflected Light & Specular Texture">
-            <div class="carousel-caption-overlay">
-              <div>
-                <h3 class="slide-title">Reflective Glazing &amp; Material Highlights</h3>
-                <p class="slide-meta">Surface Photometrics · Specular Reflectance</p>
-              </div>
-              <span class="carousel-counter" style="color: #fff;">03 / 04</span>
-            </div>
-          </div>
-
-          <!-- Slide 4 -->
-          <div class="carousel-slide" data-index="3">
-            <img src="assets/photography/light/IMG_0251.JPG" alt="Spatial Daylight & Interior Atmosphere">
-            <div class="carousel-caption-overlay">
-              <div>
-                <h3 class="slide-title">Interior Daylight &amp; Spatial Contrast</h3>
-                <p class="slide-meta">Natural Light Study · Geometric Shadows</p>
-              </div>
-              <span class="carousel-counter" style="color: #fff;">04 / 04</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Carousel Bar -->
-        <div class="carousel-bar">
-          <span class="carousel-counter" id="carousel-indicator">01 / 04</span>
-          <div class="carousel-nav-buttons">
-            <button class="carousel-btn" id="carousel-prev" aria-label="Previous photograph">←</button>
-            <button class="carousel-btn" id="carousel-next" aria-label="Next photograph">→</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Light Studies Curated Grid -->
-      <div class="light-photo-grid">
-        <div class="photo-card">
-          <img src="assets/photography/light/IMG_0251.JPG" alt="Interior Daylight Atmosphere" loading="lazy">
-          <div class="photo-card-info">
-            <h4>Interior Daylight Atmosphere</h4>
-            <span>01 / Daylight</span>
-          </div>
-        </div>
-
-        <div class="photo-card">
-          <img src="assets/photography/light/IMG_1770.JPG" alt="Vertical Optical Luminescence" loading="lazy">
-          <div class="photo-card-info">
-            <h4>Vertical Luminaire Grazing</h4>
-            <span>02 / Optics</span>
-          </div>
-        </div>
-
-        <div class="photo-card">
-          <img src="assets/photography/light/IMG_2556.JPG" alt="Warm Ambient Tone Study" loading="lazy">
-          <div class="photo-card-info">
-            <h4>Ambient Warmth &amp; Illumination</h4>
-            <span>03 / Atmosphere</span>
-          </div>
-        </div>
-
-        <div class="photo-card">
-          <img src="assets/photography/light/IMG_2694 2.JPG" alt="Reflected Glazing Highlights" loading="lazy">
-          <div class="photo-card-info">
-            <h4>Reflected Light &amp; Surface</h4>
-            <span>04 / Reflectance</span>
-          </div>
-        </div>
-
-        <div class="photo-card">
-          <img src="assets/photography/light/IMG_3223.JPG" alt="Specular Beam Highlight Study" loading="lazy">
-          <div class="photo-card-info">
-            <h4>Specular Highlights &amp; Shadows</h4>
-            <span>05 / Shadow</span>
-          </div>
-        </div>
-
-        <div class="photo-card">
-          <img src="assets/photography/light/IMG_6082.JPG" alt="Atmospheric Horizon Night Study" loading="lazy">
-          <div class="photo-card-info">
-            <h4>Atmospheric Horizon Gradient</h4>
-            <span>06 / Horizon</span>
-          </div>
-        </div>
-
-        <div class="photo-card">
-          <img src="assets/photography/light/FF88A2C2-5958-4D14-BE92-8A539F8DD89C_1_105_c.jpeg" alt="Diffused Architectural Light" loading="lazy">
-          <div class="photo-card-info">
-            <h4>Diffused Light &amp; Geometry</h4>
-            <span>07 / Diffuse</span>
+      <!-- ================= ARCHITECTURE ITEMS ================= -->
+      <!-- Arch 1 (Tall Portrait Monolith) -->
+      <div class="collage-item is-tall" data-category="arch" data-title="Vertical Massing & Urban Elevation" data-tag="02 / Architecture" data-meta="Vertical Monolith · Monolithic Facade">
+        <img src="assets/photography/arch/IMG_6268 2.jpeg" alt="Vertical Massing Study" loading="lazy">
+        <div class="collage-caption">
+          <div class="collage-caption-inner">
+            <span class="collage-tag">02 / Architecture</span>
+            <h3 class="collage-title">Vertical Massing &amp; Urban Elevation</h3>
+            <p class="collage-meta">Vertical Monolith · Monolithic Facade</p>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- =====================================================================
-         SECTION 2: ARCHITECTURE & SPATIAL GEOMETRY STUDIES
-         ===================================================================== -->
-    <section class="photo-series-section" id="arch-studies">
-      <div class="photo-series-header">
-        <div>
-          <p class="kicker">Series 02</p>
-          <h2>Architecture &amp; Form</h2>
-        </div>
-        <p class="series-desc">
-          Examining structural rhythm, monolithic massing, spatial voids, and 35mm analog film observations of the built environment.
-        </p>
-      </div>
-
-      <!-- Architectural Asymmetric Exhibition Layout -->
-      <div class="arch-exhibition-layout">
-        <!-- Feature Split: Tall Vertical Massing + 35mm Film Trilogy -->
-        <div class="arch-feature-split">
-          <!-- Tall Vertical Feature -->
-          <div class="arch-portrait-card">
-            <img src="assets/photography/arch/IMG_6268 2.jpeg" alt="Vertical Monolith & Urban Massing" loading="lazy">
-            <div class="photo-card-info">
-              <h4>Vertical Massing &amp; Elevation Study</h4>
-              <span>01 / Monolith</span>
-            </div>
-          </div>
-
-          <!-- 35mm Analog Film Trilogy Column -->
-          <div class="arch-film-column">
-            <div class="arch-film-card">
-              <img src="assets/photography/arch/kotara004502-R1-026-11A.jpg" alt="35mm Analog Study 11A" loading="lazy">
-              <div class="photo-card-info">
-                <h4>35mm Film Architectural Study · Exp 11A</h4>
-                <span>02 / Analog</span>
-              </div>
-            </div>
-
-            <div class="arch-film-card">
-              <img src="assets/photography/arch/kotara004502-R1-052-24A.jpg" alt="35mm Analog Study 24A" loading="lazy">
-              <div class="photo-card-info">
-                <h4>35mm Film Architectural Study · Exp 24A</h4>
-                <span>03 / Analog</span>
-              </div>
-            </div>
-
-            <div class="arch-film-card">
-              <img src="assets/photography/arch/kotara004502-R1-060-28A.jpg" alt="35mm Analog Study 28A" loading="lazy">
-              <div class="photo-card-info">
-                <h4>35mm Film Architectural Study · Exp 28A</h4>
-                <span>04 / Analog</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Wide-Angle Structural Diptych -->
-        <div class="arch-duo-grid">
-          <div class="photo-card">
-            <img src="assets/photography/arch/IMG_6335.jpeg" alt="Structural Rhythm & Facade Alignment" loading="lazy">
-            <div class="photo-card-info">
-              <h4>Structural Rhythm &amp; Facade Alignment</h4>
-              <span>05 / Facade</span>
-            </div>
-          </div>
-
-          <div class="photo-card">
-            <img src="assets/photography/arch/073330D1-6DA4-4260-8F37-C975744056BB_1_105_c.jpeg" alt="Spatial Perspective & Tonal Depth" loading="lazy">
-            <div class="photo-card-info">
-              <h4>Spatial Perspective &amp; Tonal Depth</h4>
-              <span>06 / Perspective</span>
-            </div>
+      <!-- Arch 2 (Wide Structural Facade) -->
+      <div class="collage-item is-wide" data-category="arch" data-title="Structural Rhythm & Facade Alignment" data-tag="02 / Architecture" data-meta="Repetitive Geometry · Glazing & Shadow">
+        <img src="assets/photography/arch/IMG_6335.jpeg" alt="Structural Facade Alignment" loading="lazy">
+        <div class="collage-caption">
+          <div class="collage-caption-inner">
+            <span class="collage-tag">02 / Architecture</span>
+            <h3 class="collage-title">Structural Rhythm &amp; Facade Alignment</h3>
+            <p class="collage-meta">Repetitive Geometry · Glazing &amp; Shadow</p>
           </div>
         </div>
       </div>
-    </section>
+
+      <!-- Arch 3 (35mm Analog 11A) -->
+      <div class="collage-item" data-category="arch" data-title="35mm Film Study · Exposure 11A" data-tag="02 / Architecture · Analog" data-meta="Analog Film Series · Natural Daylight Depth">
+        <img src="assets/photography/arch/kotara004502-R1-026-11A.jpg" alt="35mm Film Architectural Study 11A" loading="lazy">
+        <div class="collage-caption">
+          <div class="collage-caption-inner">
+            <span class="collage-tag">02 / Architecture · Analog</span>
+            <h3 class="collage-title">35mm Film Study · Exposure 11A</h3>
+            <p class="collage-meta">Analog Film Series · Natural Daylight Depth</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arch 4 (35mm Analog 24A) -->
+      <div class="collage-item" data-category="arch" data-title="35mm Film Study · Exposure 24A" data-tag="02 / Architecture · Analog" data-meta="Analog Film Series · Spatial Framing">
+        <img src="assets/photography/arch/kotara004502-R1-052-24A.jpg" alt="35mm Film Architectural Study 24A" loading="lazy">
+        <div class="collage-caption">
+          <div class="collage-caption-inner">
+            <span class="collage-tag">02 / Architecture · Analog</span>
+            <h3 class="collage-title">35mm Film Study · Exposure 24A</h3>
+            <p class="collage-meta">Analog Film Series · Spatial Framing</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arch 5 (35mm Analog 28A) -->
+      <div class="collage-item" data-category="arch" data-title="35mm Film Study · Exposure 28A" data-tag="02 / Architecture · Analog" data-meta="Analog Film Series · Material Texture">
+        <img src="assets/photography/arch/kotara004502-R1-060-28A.jpg" alt="35mm Film Architectural Study 28A" loading="lazy">
+        <div class="collage-caption">
+          <div class="collage-caption-inner">
+            <span class="collage-tag">02 / Architecture · Analog</span>
+            <h3 class="collage-title">35mm Film Study · Exposure 28A</h3>
+            <p class="collage-meta">Analog Film Series · Material Texture</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arch 6 (Spatial Perspective) -->
+      <div class="collage-item" data-category="arch" data-title="Spatial Perspective & Monochromes" data-tag="02 / Architecture" data-meta="Geometric Void · Atmospheric Tonal Depth">
+        <img src="assets/photography/arch/073330D1-6DA4-4260-8F37-C975744056BB_1_105_c.jpeg" alt="Spatial Perspective Monochromes" loading="lazy">
+        <div class="collage-caption">
+          <div class="collage-caption-inner">
+            <span class="collage-tag">02 / Architecture</span>
+            <h3 class="collage-title">Spatial Perspective &amp; Monochromes</h3>
+            <p class="collage-meta">Geometric Void · Atmospheric Tonal Depth</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= LIGHT STUDIES ITEMS ================= -->
+      <!-- Light 1 (Featured Night Horizon) -->
+      <div class="collage-item is-wide" data-category="light" data-title="Luminous Horizon & Atmospheric Gradient" data-tag="01 / Light Studies" data-meta="Night Sky Luminescence · Color Temperature Gradient">
+        <img src="assets/photography/light/IMG_6082.JPG" alt="Atmospheric Night Light & Horizon" loading="lazy">
+        <div class="collage-caption">
+          <div class="collage-caption-inner">
+            <span class="collage-tag">01 / Light Studies</span>
+            <h3 class="collage-title">Luminous Horizon &amp; Atmospheric Gradient</h3>
+            <p class="collage-meta">Night Sky Luminescence · Color Temperature Gradient</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Light 2 (Tall Portrait Fixture Grazing) -->
+      <div class="collage-item is-tall" data-category="light" data-title="Vertical Luminaire Grazing & Shadow Depth" data-tag="01 / Light Studies" data-meta="Optical Grazing Angle · Artificial Illumination">
+        <img src="assets/photography/light/IMG_1770.JPG" alt="Vertical Luminaire Grazing" loading="lazy">
+        <div class="collage-caption">
+          <div class="collage-caption-inner">
+            <span class="collage-tag">01 / Light Studies</span>
+            <h3 class="collage-title">Vertical Luminaire Grazing &amp; Shadow Depth</h3>
+            <p class="collage-meta">Optical Grazing Angle · Artificial Illumination</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Light 3 (Interior Daylighting) -->
+      <div class="collage-item is-wide" data-category="light" data-title="Interior Daylight & Geometric Contrast" data-tag="01 / Light Studies" data-meta="Aperture Daylight · High-Contrast Geometric Shadows">
+        <img src="assets/photography/light/IMG_0251.JPG" alt="Interior Daylight & Geometric Contrast" loading="lazy">
+        <div class="collage-caption">
+          <div class="collage-caption-inner">
+            <span class="collage-tag">01 / Light Studies</span>
+            <h3 class="collage-title">Interior Daylight &amp; Geometric Contrast</h3>
+            <p class="collage-meta">Aperture Daylight · High-Contrast Geometric Shadows</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Light 4 (Reflective Glazing) -->
+      <div class="collage-item" data-category="light" data-title="Reflected Glazing & Surface Highlights" data-tag="01 / Light Studies" data-meta="Surface Photometrics · Specular Reflectance">
+        <img src="assets/photography/light/IMG_2694 2.JPG" alt="Reflected Glazing Texture" loading="lazy">
+        <div class="collage-caption">
+          <div class="collage-caption-inner">
+            <span class="collage-tag">01 / Light Studies</span>
+            <h3 class="collage-title">Reflected Glazing &amp; Surface Highlights</h3>
+            <p class="collage-meta">Surface Photometrics · Specular Reflectance</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Light 5 (Warm Ambient Tone) -->
+      <div class="collage-item" data-category="light" data-title="Ambient Warmth & Spatial Illumination" data-tag="01 / Light Studies" data-meta="Warm Illumination · Atmospheric Room Volume">
+        <img src="assets/photography/light/IMG_2556.JPG" alt="Warm Ambient Tone Study" loading="lazy">
+        <div class="collage-caption">
+          <div class="collage-caption-inner">
+            <span class="collage-tag">01 / Light Studies</span>
+            <h3 class="collage-title">Ambient Warmth &amp; Spatial Illumination</h3>
+            <p class="collage-meta">Warm Illumination · Atmospheric Room Volume</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Light 6 (Specular Highlights) -->
+      <div class="collage-item" data-category="light" data-title="Specular Highlights & Night Reflection" data-tag="01 / Light Studies" data-meta="Point Source Optics · Low-Light Contrast">
+        <img src="assets/photography/light/IMG_3223.JPG" alt="Specular Beam Highlight Study" loading="lazy">
+        <div class="collage-caption">
+          <div class="collage-caption-inner">
+            <span class="collage-tag">01 / Light Studies</span>
+            <h3 class="collage-title">Specular Highlights &amp; Night Reflection</h3>
+            <p class="collage-meta">Point Source Optics · Low-Light Contrast</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Light 7 (Soft Diffused Architectural Light) -->
+      <div class="collage-item" data-category="light" data-title="Diffused Light & Minimal Geometry" data-tag="01 / Light Studies" data-meta="Soft Daylight Gradient · Subtle Shadow Transition">
+        <img src="assets/photography/light/FF88A2C2-5958-4D14-BE92-8A539F8DD89C_1_105_c.jpeg" alt="Soft Diffused Light Study" loading="lazy">
+        <div class="collage-caption">
+          <div class="collage-caption-inner">
+            <span class="collage-tag">01 / Light Studies</span>
+            <h3 class="collage-title">Diffused Light &amp; Minimal Geometry</h3>
+            <p class="collage-meta">Soft Daylight Gradient · Subtle Shadow Transition</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </main>
 
+  <!-- Lightbox Modal -->
+  <div class="photo-lightbox" id="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
+    <button class="lightbox-close" id="lightbox-close" aria-label="Close image">✕</button>
+    <div class="lightbox-content">
+      <img class="lightbox-img" id="lightbox-img" src="" alt="Enlarged view">
+      <div class="lightbox-caption">
+        <h3 id="lightbox-title"></h3>
+        <p id="lightbox-meta"></p>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Lightweight Carousel Controller
     document.addEventListener('DOMContentLoaded', () => {
-      const slides = document.querySelectorAll('.carousel-slide');
-      const prevBtn = document.querySelector('#carousel-prev');
-      const nextBtn = document.querySelector('#carousel-next');
-      const indicator = document.querySelector('#carousel-indicator');
-      let currentIndex = 0;
-      const totalSlides = slides.length;
+      const grid = document.getElementById('collage-grid');
+      const items = Array.from(grid.querySelectorAll('.collage-item'));
+      const filterBtns = document.querySelectorAll('.photo-filter-btn:not(#shuffle-btn)');
+      const shuffleBtn = document.getElementById('shuffle-btn');
+      const countBadge = document.getElementById('photo-count');
 
-      function updateSlide(newIndex) {
-        if (!slides.length) return;
-        slides[currentIndex].classList.remove('active');
-        currentIndex = (newIndex + totalSlides) % totalSlides;
-        slides[currentIndex].classList.add('active');
-        if (indicator) {
-          indicator.textContent = `${String(currentIndex + 1).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}`;
+      let currentFilter = 'all';
+
+      // Fisher-Yates Shuffle algorithm
+      function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
         }
+        return arr;
       }
 
-      if (prevBtn) {
-        prevBtn.addEventListener('click', () => updateSlide(currentIndex - 1));
-      }
+      // Interleave Light and Arch items visually
+      function interleaveItems() {
+        const lightItems = items.filter(el => el.dataset.category === 'light');
+        const archItems = items.filter(el => el.dataset.category === 'arch');
+        
+        shuffleArray(lightItems);
+        shuffleArray(archItems);
 
-      if (nextBtn) {
-        nextBtn.addEventListener('click', () => updateSlide(currentIndex + 1));
-      }
-
-      // Keyboard arrow navigation
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') {
-          updateSlide(currentIndex - 1);
-        } else if (e.key === 'ArrowRight') {
-          updateSlide(currentIndex + 1);
+        const mixed = [];
+        const maxLen = Math.max(lightItems.length, archItems.length);
+        for (let i = 0; i < maxLen; i++) {
+          if (i < archItems.length) mixed.push(archItems[i]);
+          if (i < lightItems.length) mixed.push(lightItems[i]);
         }
-      });
+        
+        mixed.forEach(el => grid.appendChild(el));
+      }
 
-      // Filter smooth scroll & active state
-      const filterBtns = document.querySelectorAll('.photo-filter-btn');
+      function applyFilter(filter) {
+        currentFilter = filter;
+        let visibleCount = 0;
+
+        items.forEach(item => {
+          const cat = item.dataset.category;
+          if (filter === 'all' || cat === filter) {
+            item.classList.remove('is-hidden');
+            visibleCount++;
+          } else {
+            item.classList.add('is-hidden');
+          }
+        });
+
+        // Update badge text
+        const label = filter === 'all' ? 'All Visual Studies' : filter === 'light' ? 'Light Studies' : 'Architecture Studies';
+        countBadge.textContent = `Showing ${visibleCount} ${label.toLowerCase()}`;
+      }
+
+      // Filter button handlers
       filterBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', () => {
           filterBtns.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
+          applyFilter(btn.dataset.filter);
         });
+      });
+
+      // Shuffle button handler
+      shuffleBtn.addEventListener('click', () => {
+        const visibleItems = items.filter(item => !item.classList.contains('is-hidden'));
+        shuffleArray(visibleItems).forEach(el => grid.appendChild(el));
+      });
+
+      // Initial state: Interleave/shuffle all items
+      interleaveItems();
+
+      // Lightbox functionality
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const lightboxTitle = document.getElementById('lightbox-title');
+      const lightboxMeta = document.getElementById('lightbox-meta');
+      const lightboxClose = document.getElementById('lightbox-close');
+
+      items.forEach(item => {
+        item.addEventListener('click', () => {
+          const img = item.querySelector('img');
+          lightboxImg.src = img.src;
+          lightboxTitle.textContent = item.dataset.title;
+          lightboxMeta.textContent = `${item.dataset.tag} · ${item.dataset.meta}`;
+          lightbox.classList.add('active');
+          lightbox.setAttribute('aria-hidden', 'false');
+        });
+      });
+
+      function closeLightbox() {
+        lightbox.classList.remove('active');
+        lightbox.setAttribute('aria-hidden', 'true');
+      }
+
+      lightboxClose.addEventListener('click', closeLightbox);
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+          closeLightbox();
+        }
       });
     });
   </script>

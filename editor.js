@@ -900,25 +900,82 @@
         </div>
       </div>
 
-      <!-- Sheet 6: Photography & Visual Studies -->
+      <!-- Sheet 6: Photography · Light & Atmosphere Studies (5 Images + Narrative Space) -->
       <div class="print-sheet">
         <div class="print-project-header">
           <div>
-            <h2>Photography &amp; Visual Studies</h2>
-            <p style="font-size: 1.1vw; font-weight: 500; margin: 0.3vw 0 0; color: var(--ink); opacity: 0.85;">Light, Shadow &amp; Architectural Space</p>
+            <h2>Photography · Light &amp; Atmosphere</h2>
+            <p style="font-size: 1.1vw; font-weight: 500; margin: 0.3vw 0 0; color: var(--ink); opacity: 0.85;">Optical Studies, Grazing Angles &amp; Night Luminous Ambient Gradients</p>
           </div>
-          <p class="print-meta">Visual Studies · Ongoing<br>Natural &amp; Artificial Illumination</p>
+          <p class="print-meta">Visual Studies · Series 01<br>Natural &amp; Artificial Illumination</p>
         </div>
-        <div class="print-photo-grid">
-          <img src="assets/photography/light/IMG_6082.JPG" alt="Atmospheric Night Light &amp; Horizon Study">
-          <img src="assets/photography/arch/IMG_6268 2.jpeg" alt="Vertical Architectural Massing Study">
+        <div class="print-photo-sheet-layout">
+          <div class="print-photo-text-col">
+            <div>
+              <p class="print-narrative-lead">"Exploring the gradients between direct luminaire output, surface reflectivity, and nighttime ambient presence."</p>
+              <p class="print-narrative-text">A visual laboratory investigating how light sculpts volume, reveals material micro-texture, and transforms spatial perception. From high-contrast grazing angles to quiet horizon transitions, these photographic studies directly inform fixture placement and photometric distributions in my architectural work.</p>
+            </div>
+            <div class="print-highlights-box">
+              <h4>Series Focus Areas</h4>
+              <ul>
+                <li>Optical grazing and specular surface reflectance</li>
+                <li>Low-light color temperature transitions</li>
+                <li>Interior natural daylighting and shadow boundaries</li>
+              </ul>
+            </div>
+          </div>
+          <div class="print-photo-5mosaic">
+            <img class="mosaic-lead" src="assets/photography/light/IMG_6082.JPG" alt="Atmospheric Night Light &amp; Horizon Study">
+            <img src="assets/photography/light/IMG_1770.JPG" alt="Vertical Luminaire Grazing Study">
+            <img src="assets/photography/light/IMG_0251.JPG" alt="Interior Daylight Atmosphere">
+            <img src="assets/photography/light/IMG_2694 2.JPG" alt="Reflected Glazing Surface">
+            <img src="assets/photography/light/IMG_2556.JPG" alt="Ambient Warmth Tone">
+          </div>
         </div>
-
         <div class="print-sheet-footer">
-          <span>Julian Kotara · Visual &amp; Lighting Studies</span>
+          <span>Julian Kotara · Light Studies</span>
           <span>Page 06</span>
         </div>
       </div>
+
+      <!-- Sheet 7: Photography · Architecture & Spatial Form (5 Images + Narrative Space) -->
+      <div class="print-sheet">
+        <div class="print-project-header">
+          <div>
+            <h2>Photography · Architecture &amp; Form</h2>
+            <p style="font-size: 1.1vw; font-weight: 500; margin: 0.3vw 0 0; color: var(--ink); opacity: 0.85;">Structural Rhythm, Monolithic Massing &amp; 35mm Analog Observations</p>
+          </div>
+          <p class="print-meta">Visual Studies · Series 02<br>Built Form &amp; Analog Mediums</p>
+        </div>
+        <div class="print-photo-sheet-layout">
+          <div class="print-photo-text-col">
+            <div>
+              <p class="print-narrative-lead">"Examining structural rhythm, monolithic massing, spatial voids, and 35mm analog film observations of the built environment."</p>
+              <p class="print-narrative-text">Documenting urban massing and repetitive architectural envelopes through analog and digital mediums. These compositions study the tectonic relationship between primary structural framing, glass mullion rhythms, and sky voids across diverse built typologies.</p>
+            </div>
+            <div class="print-highlights-box">
+              <h4>Series Focus Areas</h4>
+              <ul>
+                <li>Monolithic vertical massing and elevation framing</li>
+                <li>35mm analog emulsion studies and natural tone depth</li>
+                <li>Facade rhythmic structural repetition</li>
+              </ul>
+            </div>
+          </div>
+          <div class="print-photo-5mosaic">
+            <img class="mosaic-lead" src="assets/photography/arch/IMG_6268 2.jpeg" alt="Vertical Architectural Massing Monolith">
+            <img src="assets/photography/arch/IMG_6335.jpeg" alt="Structural Facade Alignment">
+            <img src="assets/photography/arch/kotara004502-R1-026-11A.jpg" alt="35mm Film Study 11A">
+            <img src="assets/photography/arch/kotara004502-R1-052-24A.jpg" alt="35mm Film Study 24A">
+            <img src="assets/photography/arch/073330D1-6DA4-4260-8F37-C975744056BB_1_105_c.jpeg" alt="Spatial Perspective Monochromes">
+          </div>
+        </div>
+        <div class="print-sheet-footer">
+          <span>Julian Kotara · Architecture Studies</span>
+          <span>Page 07</span>
+        </div>
+      </div>
+
 
     `;
   }

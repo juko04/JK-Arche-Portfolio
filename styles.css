@@ -545,19 +545,20 @@ em {
 }
 
 .work-list-item {
-  color: var(--ink);
-  text-decoration: none;
   display: grid;
-  grid-template-columns: 70px 1.5fr 1fr 40px;
+  grid-template-columns: 50px 96px 1.5fr 1fr 40px;
   align-items: center;
-  padding: 24px 0;
+  gap: 20px;
+  padding: 18px 0;
   border-bottom: 1px solid var(--line);
   transition: background-color 0.2s ease, padding-left 0.2s ease;
+  text-decoration: none;
+  color: var(--ink);
 }
 
 .work-list-item:hover {
-  padding-left: 12px;
-  background: rgba(31, 35, 27, 0.025);
+  padding-left: 10px;
+  background: rgba(31, 35, 27, 0.035);
 }
 
 .work-list-item .item-num {
@@ -566,10 +567,30 @@ em {
   color: var(--muted);
 }
 
+.work-list-thumb {
+  width: 96px;
+  height: 64px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #20241b;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.work-list-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.work-list-item:hover .work-list-thumb img {
+  transform: scale(1.08);
+}
+
 .work-list-item strong {
-  font-size: clamp(20px, 2.8vw, 42px);
-  line-height: 1.05;
-  letter-spacing: -0.05em;
+  font-size: clamp(18px, 2.4vw, 36px);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
 }
 
 .work-list-item .item-type {
@@ -589,6 +610,21 @@ em {
 .work-list-item:hover .item-arrow {
   transform: translate(4px, -4px);
 }
+
+@media (max-width: 768px) {
+  .work-list-item {
+    grid-template-columns: 35px 70px 1fr 30px;
+    gap: 12px;
+  }
+  .work-list-thumb {
+    width: 70px;
+    height: 48px;
+  }
+  .work-list-item .item-type {
+    display: none;
+  }
+}
+
 
 /* ==========================================================================
    Architectural & Lighting Project Detail Template (FMSP / HOK Style)
@@ -1228,19 +1264,20 @@ em {
   transform: scale(1.04);
 }
 
-/* Bottom-Left Hover Caption (Invisible by default, reveals on hover) */
+/* Bottom-Left Hover Caption (Instant hover response, zero delay) */
 .collage-caption {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 45%, rgba(8, 10, 6, 0.92) 100%);
+  background: linear-gradient(180deg, transparent 40%, rgba(8, 10, 6, 0.94) 100%);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 20px 18px;
+  padding: 18px 16px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.08s ease;
   box-sizing: border-box;
+  will-change: opacity;
 }
 
 .collage-item:hover .collage-caption,
@@ -1249,14 +1286,10 @@ em {
 }
 
 .collage-caption-inner {
-  transform: translateY(8px);
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: none;
   text-align: left;
 }
 
-.collage-item:hover .collage-caption-inner {
-  transform: translateY(0);
-}
 
 .collage-tag {
   font-family: var(--mono);
@@ -2355,7 +2388,44 @@ body.is-editing .active-selected {
     letter-spacing: 0.1em;
   }
 
-  /* Photo Sheet Grid */
+  /* 5-Image Dedicated Photo Sheet Layout (One Sheet Per Photo Category) */
+  .print-photo-sheet-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.75fr;
+    gap: 2.5vw;
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+  }
+
+  .print-photo-text-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-right: 0.5vw;
+  }
+
+  .print-photo-5mosaic {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0.8vw;
+    height: 100%;
+    max-height: 60vh;
+  }
+
+  .print-photo-5mosaic .mosaic-lead {
+    grid-row: span 2;
+  }
+
+  .print-photo-5mosaic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 3px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  }
+
   .print-photo-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -2373,6 +2443,7 @@ body.is-editing .active-selected {
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
   }
 }
+
 
 
 

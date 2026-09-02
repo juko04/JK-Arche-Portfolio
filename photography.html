@@ -34,16 +34,16 @@
       </p>
     </div>
 
-    <!-- Filter & Shuffle Bar -->
+    <!-- Filter Bar -->
     <div class="photo-filter-bar">
       <div class="photo-filter-group" id="filter-group">
         <button class="photo-filter-btn active" data-filter="all">All Studies (13)</button>
         <button class="photo-filter-btn" data-filter="light">01 / Light Studies (7)</button>
         <button class="photo-filter-btn" data-filter="arch">02 / Architecture Studies (6)</button>
-        <button class="photo-filter-btn" id="shuffle-btn" title="Shuffle collage order">🎲 Shuffle</button>
       </div>
       <span class="photo-counter-badge" id="photo-count">Showing 13 photographs</span>
     </div>
+
 
     <!-- Full-Page Collage Grid (No text until hover) -->
     <div class="photo-collage-grid" id="collage-grid">
@@ -286,14 +286,9 @@
         });
       });
 
-      // Shuffle button handler
-      shuffleBtn.addEventListener('click', () => {
-        const visibleItems = items.filter(item => !item.classList.contains('is-hidden'));
-        shuffleArray(visibleItems).forEach(el => grid.appendChild(el));
-      });
-
       // Initial state: Interleave/shuffle all items
       interleaveItems();
+
 
       // Lightbox functionality
       const lightbox = document.getElementById('lightbox');

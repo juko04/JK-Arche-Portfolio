@@ -1814,16 +1814,34 @@ body.is-editing .active-selected {
 }
 
 /* ==========================================================================
-   Print & PDF Compilation Stylesheet
+   Dedicated Landscape Architectural PDF Portfolio Booklet
    ========================================================================== */
+.print-portfolio-booklet {
+  display: none !important;
+}
+
 @media print {
-  body {
-    background: #ffffff !important;
-    color: #111111 !important;
-    font-size: 11pt;
-    line-height: 1.5;
+  @page {
+    size: landscape;
+    margin: 0;
   }
 
+  *, *:before, *:after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    width: 100vw !important;
+    height: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* Completely hide standard web elements */
   .glass-nav,
   .editor-toolbar,
   .element-inspector,
@@ -1832,40 +1850,43 @@ body.is-editing .active-selected {
   .snap-guide-y,
   .project-pagination,
   .explore,
-  .shape-dropdown-menu {
+  .shape-dropdown-menu,
+  main,
+  #top {
     display: none !important;
   }
 
-  .intro {
-    min-height: auto !important;
-    padding: 24pt 15pt !important;
-    page-break-after: always;
+  /* Display the dedicated landscape architectural print booklet */
+  .print-portfolio-booklet {
+    display: block !important;
+    width: 100vw !important;
+    background: #ffffff !important;
   }
 
-  .work-section,
-  .project-detail,
-  .photo-container,
-  .about-page-wrap {
-    padding: 15pt !important;
-    background: transparent !important;
+  .print-sheet {
+    width: 100vw !important;
+    height: 100vh !important;
+    page-break-after: always !important;
+    page-break-inside: avoid !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--field) !important;
   }
 
-  .project-hero-media img,
-  .photo-card img,
-  .figure-item img {
-    max-height: 380pt !important;
-    page-break-inside: avoid;
-  }
-
-  .project-card {
-    page-break-inside: avoid;
-  }
-
-  @page {
-    margin: 1.2cm;
-    size: auto;
+  .print-sheet img.sheet-full-img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    object-fit: contain !important;
+    display: block !important;
   }
 }
+
 
 
 

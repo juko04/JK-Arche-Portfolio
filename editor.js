@@ -1,11 +1,11 @@
 /**
  * Julian Kotara — Portfolio Interactive Visual Customizer & Pro Editor
  * Fully Scoped per Page, Zero-Jitter Alignment Snapping, Shape Engine,
- * Dedicated Shape/Text Inspectors, Universal Element Dragging, & PDF Export.
+ * Dedicated Shape/Text Inspectors, Universal Element Dragging, & Landscape PDF Export.
  */
 
 (function () {
-  const STORAGE_KEY = 'jk_portfolio_customizer_v2';
+  const STORAGE_KEY = 'jk_portfolio_customizer_v3';
 
   // Preset Color Palettes (Preserves exact lightness & contrast)
   const COLOR_PRESETS = [
@@ -17,10 +17,17 @@
     { name: 'Slate Greige', hue: 75, sat: '4%', color: '#a6a7a3' },
   ];
 
+  // Robust Page Key Normalization (Handles file://, localhost, gh-pages, trailing slashes)
   function getPageKey() {
-    let p = window.location.pathname.split('/').pop() || 'index.html';
-    if (p === '' || p === '/') p = 'index.html';
-    return p;
+    const path = (window.location.pathname || '').toLowerCase();
+    if (path.includes('work')) return 'work.html';
+    if (path.includes('photo')) return 'photography.html';
+    if (path.includes('about')) return 'about.html';
+    if (path.includes('mountain')) return 'project-mountain.html';
+    if (path.includes('museum')) return 'project-museum.html';
+    if (path.includes('lobby')) return 'project-lobby.html';
+    if (path.includes('bench')) return 'project-bench.html';
+    return 'index.html';
   }
 
   let state = {
@@ -49,12 +56,28 @@
     return state.pages[key];
   }
 
-  // Load from localStorage
+  // Load from localStorage (with backwards compatibility)
   function loadState() {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('jk_portfolio_customizer_v2') || localStorage.getItem('jk_portfolio_customizer_state');
       if (saved) {
-        state = { ...state, ...JSON.parse(saved) };
+        const parsed = JSON.parse(saved);
+        // Handle migration if needed
+        if (parsed.pages) {
+          state = { ...state, ...parsed };
+        } else if (parsed.positions || parsed.shapes || parsed.texts) {
+          state.pages['index.html'] = {
+            positions: parsed.positions || {},
+            shapes: parsed.shapes || [],
+            texts: parsed.texts || {},
+            styles: parsed.styles || {},
+            deleted: parsed.deletedElements || [],
+            added: parsed.addedElements || [],
+          };
+          if (parsed.themeHue !== undefined) {
+            state.globalTheme = { hue: parsed.themeHue, sat: parsed.themeSat || '26%' };
+          }
+        }
       }
     } catch (e) {
       console.warn('Could not load customizer state:', e);
@@ -89,7 +112,7 @@
 
   function getElementKey(el) {
     if (!el) return '';
-    return el.dataset.customId || el.id || el.dataset.editKey || `${el.tagName.toLowerCase()}-${(el.className || '').replace(/\s+/g, '-')}`;
+    return el.id || el.dataset.customId || el.dataset.editKey || `${el.tagName.toLowerCase()}-${(el.className || '').replace(/\s+/g, '-')}`;
   }
 
   // --------------------------------------------------------------------------
@@ -105,13 +128,13 @@
 
     // 2. Remove Deleted Elements
     (page.deleted || []).forEach((key) => {
-      const el = document.querySelector(`[data-custom-id="${key}"]`) || document.getElementById(key) || document.querySelector(`[data-edit-key="${key}"]`);
+      const el = document.getElementById(key) || document.querySelector(`[data-custom-id="${key}"]`) || document.querySelector(`[data-edit-key="${key}"]`);
       if (el) el.remove();
     });
 
     // 3. Restore Text Content
     Object.keys(page.texts || {}).forEach((key) => {
-      const el = document.querySelector(`[data-custom-id="${key}"]`) || document.getElementById(key) || document.querySelector(`[data-edit-key="${key}"]`) || document.querySelector(key);
+      const el = document.getElementById(key) || document.querySelector(`[data-custom-id="${key}"]`) || document.querySelector(`[data-edit-key="${key}"]`) || document.querySelector(key);
       if (el) el.innerHTML = page.texts[key];
     });
 
@@ -139,7 +162,7 @@
 
     // 6. Restore Styles (Font, Size, Color)
     Object.keys(page.styles || {}).forEach((key) => {
-      const el = document.querySelector(`[data-custom-id="${key}"]`) || document.getElementById(key) || document.querySelector(`[data-edit-key="${key}"]`) || document.querySelector(key);
+      const el = document.getElementById(key) || document.querySelector(`[data-custom-id="${key}"]`) || document.querySelector(`[data-edit-key="${key}"]`) || document.querySelector(key);
       if (el && page.styles[key]) {
         Object.assign(el.style, page.styles[key]);
       }
@@ -147,7 +170,7 @@
 
     // 7. Restore Positions
     Object.keys(page.positions || {}).forEach((id) => {
-      const el = document.querySelector(`[data-custom-id="${id}"]`) || document.getElementById(id) || document.querySelector(id);
+      const el = document.getElementById(id) || document.querySelector(`[data-custom-id="${id}"]`) || document.querySelector(id);
       if (el && page.positions[id]) {
         const { x, y } = page.positions[id];
         el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
@@ -158,7 +181,7 @@
   }
 
   // --------------------------------------------------------------------------
-  // Smart Snapping Guides (Butter-Smooth, No Jitter)
+  // Smart Snapping Guides (Butter-Smooth, Zero Jitter)
   // --------------------------------------------------------------------------
   function createSnapGuides() {
     if (!snapGuideX) {
@@ -201,7 +224,7 @@
 
       selectElement(element);
 
-      // If user is selecting text in contenteditable without Alt key, let them highlight text
+      // If user is editing text without holding Alt, let them select text
       if (e.target.isContentEditable && !e.altKey && e.target !== element) {
         return;
       }
@@ -214,7 +237,7 @@
 
       initialRect = element.getBoundingClientRect();
 
-      // Pre-cache static bounding boxes of all other elements at dragstart (prevents jitter)
+      // Pre-cache static bounding boxes of all other elements at dragstart
       cachedTargets = [];
       const candidateElements = document.querySelectorAll(
         '.draggable-item, .geo-circle, .custom-shape, h1, h2, h3, p, .kicker, .role, .project-card, .work-list-item, .about-content'
@@ -473,7 +496,6 @@
 
     // Hook Inspector Events
     if (isShape) {
-      // Width
       inspectorEl.querySelector('#insp-w-up')?.addEventListener('click', () => {
         const w = parseFloat(window.getComputedStyle(el).width) || 100;
         applyElementStyle(el, 'width', `${Math.round(w * 1.15)}px`);
@@ -485,7 +507,6 @@
         positionInspector();
       });
 
-      // Height
       inspectorEl.querySelector('#insp-h-up')?.addEventListener('click', () => {
         const h = parseFloat(window.getComputedStyle(el).height) || 100;
         applyElementStyle(el, 'height', `${Math.round(h * 1.15)}px`);
@@ -497,7 +518,6 @@
         positionInspector();
       });
 
-      // Color
       inspectorEl.querySelector('#insp-shape-color')?.addEventListener('input', (e) => {
         if (el.classList.contains('shape-line')) {
           applyElementStyle(el, 'backgroundColor', e.target.value);
@@ -509,12 +529,10 @@
     }
 
     if (isText) {
-      // Font Family
       inspectorEl.querySelector('#insp-font-family')?.addEventListener('change', (e) => {
         applyElementStyle(el, 'fontFamily', e.target.value);
       });
 
-      // Font Size
       inspectorEl.querySelector('#insp-size-up')?.addEventListener('click', () => {
         const curr = parseFloat(window.getComputedStyle(el).fontSize) || 16;
         applyElementStyle(el, 'fontSize', `${curr + 2}px`);
@@ -524,21 +542,18 @@
         applyElementStyle(el, 'fontSize', `${Math.max(10, curr - 2)}px`);
       });
 
-      // Bold
       inspectorEl.querySelector('#insp-bold')?.addEventListener('click', (e) => {
         const isBold = el.style.fontWeight === 'bold' || window.getComputedStyle(el).fontWeight >= 600;
         applyElementStyle(el, 'fontWeight', isBold ? '400' : '700');
         e.currentTarget.classList.toggle('active', !isBold);
       });
 
-      // Italic
       inspectorEl.querySelector('#insp-italic')?.addEventListener('click', (e) => {
         const isItalic = el.style.fontStyle === 'italic';
         applyElementStyle(el, 'fontStyle', isItalic ? 'normal' : 'italic');
         e.currentTarget.classList.toggle('active', !isItalic);
       });
 
-      // Color
       inspectorEl.querySelector('#insp-color')?.addEventListener('input', (e) => {
         applyElementStyle(el, 'color', e.target.value);
       });
@@ -745,8 +760,8 @@
           </div>
         </div>
 
-        <!-- PDF Export Button -->
-        <button class="editor-btn" id="editor-export-pdf" type="button" title="Print / Save clean PDF Portfolio">📄 PDF</button>
+        <!-- Landscape PDF Booklet Export Button -->
+        <button class="editor-btn" id="editor-export-pdf" type="button" title="Print Landscape Architectural Portfolio PDF">📄 PDF</button>
 
         <button class="editor-btn" id="editor-reset" type="button" title="Reset all custom edits to default">↺ Reset</button>
         
@@ -774,6 +789,8 @@
       if (!on) {
         selectElement(null);
         hideSnapGuides();
+        // Re-apply restoreDOM to guarantee 100% position parity in normal mode
+        restoreDOM();
       }
     }
 
@@ -825,8 +842,9 @@
       if (shapeMenu) shapeMenu.style.display = 'none';
     });
 
-    // PDF Export
+    // Landscape PDF Export
     toolbar.querySelector('#editor-export-pdf').addEventListener('click', () => {
+      ensurePrintBookletInDOM();
       window.print();
     });
 
@@ -834,6 +852,8 @@
     toolbar.querySelector('#editor-reset').addEventListener('click', () => {
       if (confirm('Reset all custom text, added shapes, positions, and color edits back to defaults?')) {
         localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem('jk_portfolio_customizer_v2');
+        localStorage.removeItem('jk_portfolio_customizer_state');
         location.reload();
       }
     });
@@ -855,6 +875,27 @@
     });
   }
 
+  // Ensure Print Booklet exists dynamically on any page when printing
+  function ensurePrintBookletInDOM() {
+    if (document.querySelector('#print-portfolio-booklet')) return;
+
+    const booklet = document.createElement('div');
+    booklet.className = 'print-portfolio-booklet';
+    booklet.id = 'print-portfolio-booklet';
+    booklet.setAttribute('aria-hidden', 'true');
+
+    booklet.innerHTML = `
+      <div class="print-sheet"><img class="sheet-full-img" src="assets/page-2.jpg" alt="Design Portfolio - Julian Kotara Cover"></div>
+      <div class="print-sheet"><img class="sheet-full-img" src="assets/page-3.jpg" alt="Children's Museum Architectural Design Sheet"></div>
+      <div class="print-sheet"><img class="sheet-full-img" src="assets/page-4.jpg" alt="University Central Lobby Architectural Lighting Sheet"></div>
+      <div class="print-sheet"><img class="sheet-full-img" src="assets/page-5.jpg" alt="Exterior Bench Lighting Study Sheet"></div>
+      <div class="print-sheet"><img class="sheet-full-img" src="assets/page-6.jpg" alt="Mountain Residential Home Design Sheet"></div>
+      <div class="print-sheet"><img class="sheet-full-img" src="assets/page-7.jpg" alt="Photography & Visual Light Studies Sheet"></div>
+    `;
+
+    document.body.appendChild(booklet);
+  }
+
   // --------------------------------------------------------------------------
   // Setup Editable Text & Images
   // --------------------------------------------------------------------------
@@ -864,7 +905,7 @@
     );
 
     editableTargets.forEach((el, index) => {
-      if (el.closest('.editor-toolbar') || el.closest('.glass-nav')) return;
+      if (el.closest('.editor-toolbar') || el.closest('.glass-nav') || el.closest('.print-portfolio-booklet')) return;
 
       el.classList.add('editable');
       const key = el.id ? el.id : `edit-${index}-${el.tagName.toLowerCase()}`;
@@ -881,6 +922,7 @@
     // Image replacement
     const images = document.querySelectorAll('main img, .project-hero-media img, .carousel-slide img');
     images.forEach((img, idx) => {
+      if (img.closest('.print-portfolio-booklet')) return;
       const imgKey = img.id ? img.id : `img-${idx}`;
       img.dataset.imgKey = imgKey;
 
@@ -916,10 +958,9 @@
   function init() {
     loadState();
     createSnapGuides();
-    restoreDOM();
-    setupEditableElements();
+    ensurePrintBookletInDOM();
 
-    // Universal Draggable Selectors (Whole page: Hero, Rail, Work, About, Details)
+    // Universal Draggable Selectors (Setup IDs FIRST so restoreDOM finds them reliably!)
     const draggableSelectors = [
       '.geo-circle-1',
       '.geo-circle-2',
@@ -953,6 +994,9 @@
       });
     });
 
+    // Restore saved transforms, styles, texts, and shapes
+    restoreDOM();
+    setupEditableElements();
     createEditorToolbar();
   }
 

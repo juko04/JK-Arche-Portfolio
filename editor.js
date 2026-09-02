@@ -910,9 +910,10 @@
           <p class="print-meta">Visual Studies · Ongoing<br>Natural &amp; Artificial Illumination</p>
         </div>
         <div class="print-photo-grid">
-          <img src="assets/photography/photo-1.jpg" alt="Angular Daylight &amp; Shadow Study">
-          <img src="assets/projects/photography.jpg" alt="Architectural Perspective Study">
+          <img src="assets/photography/light/IMG_6082.JPG" alt="Atmospheric Night Light &amp; Horizon Study">
+          <img src="assets/photography/arch/IMG_6268 2.jpeg" alt="Vertical Architectural Massing Study">
         </div>
+
         <div class="print-sheet-footer">
           <span>Julian Kotara · Visual &amp; Lighting Studies</span>
           <span>Page 06</span>

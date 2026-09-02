@@ -1086,78 +1086,148 @@ em {
   color: #000000;
 }
 
-/* Curated Photo Stream / Grid */
-.photo-stream-header {
+/* Photo Series Section Grouping & Category Navigation */
+.photo-nav-filter {
+  display: flex;
+  gap: 10px;
+  margin: 30px 0 45px;
+  flex-wrap: wrap;
+}
+
+.photo-filter-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  padding: 8px 18px;
+  border-radius: 30px;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.photo-filter-btn:hover,
+.photo-filter-btn.active {
+  background: var(--field);
+  color: #1a1d17;
+  border-color: var(--field);
+  font-weight: 600;
+}
+
+.photo-series-section {
   border-top: 1px solid rgba(255, 255, 255, 0.12);
-  padding-top: 50px;
-  margin-top: 60px;
+  padding-top: 60px;
+  margin-top: 70px;
+}
+
+.photo-series-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  margin-bottom: 36px;
 }
 
-.photo-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
-  margin: 40px 0 80px;
-}
-
-.photo-card {
-  position: relative;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  background: #20241b;
-  display: flex;
-  flex-direction: column;
-}
-
-.photo-card img {
-  width: 100%;
-  aspect-ratio: 3 / 2;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.photo-card:hover img {
-  transform: scale(1.04);
-}
-
-.photo-card-info {
-  padding: 16px;
-  background: #141611;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.photo-card-info h4 {
-  font-size: 14px;
-  font-weight: 600;
-  margin: 0;
+.photo-series-header h2 {
+  font-size: clamp(28px, 3.5vw, 46px);
+  letter-spacing: -0.04em;
+  margin: 6px 0 0;
   color: #ffffff;
 }
 
-.photo-card-info span {
-  font-family: var(--mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  color: var(--field);
+.photo-series-header p.series-desc {
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.65);
+  max-width: 480px;
+  margin: 0;
 }
 
-.photo-placeholder-card {
-  border: 1.5px dashed rgba(255, 255, 255, 0.2);
-  border-radius: var(--radius-sm);
-  aspect-ratio: 3 / 2;
+/* Light Studies Layout: Luminous Grid */
+.light-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+/* Architecture Studies Layout: Asymmetric Exhibition Layout */
+.arch-exhibition-layout {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.02);
-  transition: all 0.2s ease;
+  gap: 28px;
 }
+
+.arch-feature-split {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.arch-portrait-card {
+  position: relative;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #141712;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.arch-portrait-card img {
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  max-height: 700px;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.arch-portrait-card:hover img {
+  transform: scale(1.03);
+}
+
+.arch-film-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.arch-film-card {
+  position: relative;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #141712;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.arch-film-card img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.arch-film-card:hover img {
+  transform: scale(1.03);
+}
+
+.arch-duo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .arch-feature-split,
+  .arch-duo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 .photo-placeholder-card:hover {
   background: rgba(255, 255, 255, 0.05);

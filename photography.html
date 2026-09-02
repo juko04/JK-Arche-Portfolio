@@ -30,98 +30,225 @@
       <p class="kicker">Visual Studies / Ongoing</p>
       <h1>Light, Shadow<br>&amp; <em>Space.</em></h1>
       <p class="photo-intro">
-        Light transforms composition, reveals material texture, and sculpts depth. Photography is both a creative study and a visual laboratory that constantly informs how I design lighting for the built environment.
+        Light transforms composition, reveals material texture, and sculpts depth. Photography is both a creative study and a visual laboratory that constantly informs how I design architectural form and illumination for the built environment.
       </p>
+
+      <!-- Category Filter Navigation -->
+      <div class="photo-nav-filter">
+        <a href="#all" class="photo-filter-btn active" data-filter="all">All Visual Studies</a>
+        <a href="#light-studies" class="photo-filter-btn" data-filter="light">01 / Light Studies (7)</a>
+        <a href="#arch-studies" class="photo-filter-btn" data-filter="arch">02 / Architecture Studies (6)</a>
+      </div>
     </div>
 
-    <!-- Interactive Carousel Showcase -->
-    <section class="photo-carousel-wrapper" aria-label="Featured Photography Carousel">
-      <div class="carousel-viewport" id="photo-carousel">
-        <!-- Slide 1 (Active Photography) -->
-          <img src="assets/photography/photo-1.jpg" alt="Architectural Light Study">
-          <div class="carousel-caption-overlay">
-              <h3 class="slide-title">Angular Daylight &amp; High-Contrast Shadow</h3>
-              <p class="slide-meta">Natural Light Study · Architectural Geometry</p>
+    <!-- =====================================================================
+         SECTION 1: LIGHT & ATMOSPHERE STUDIES
+         ===================================================================== -->
+    <section class="photo-series-section" id="light-studies">
+      <div class="photo-series-header">
+        <div>
+          <p class="kicker">Series 01</p>
+          <h2>Light &amp; Atmosphere</h2>
+        </div>
+        <p class="series-desc">
+          Exploring the gradients between direct luminaire output, surface reflectivity, and nighttime ambient presence.
+        </p>
+      </div>
+
+      <!-- Featured Light Studies Carousel -->
+      <section class="photo-carousel-wrapper" aria-label="Featured Light Studies Carousel">
+        <div class="carousel-viewport" id="photo-carousel">
+          <!-- Slide 1 -->
+          <div class="carousel-slide active" data-index="0">
+            <img src="assets/photography/light/IMG_6082.JPG" alt="Atmospheric Night Light & Horizon Study">
+            <div class="carousel-caption-overlay">
+              <div>
+                <h3 class="slide-title">Luminous Horizon &amp; Night Sky Gradient</h3>
+                <p class="slide-meta">Ambient Light Study · Exposure &amp; Gradient Dynamics</p>
+              </div>
+              <span class="carousel-counter" style="color: #fff;">01 / 04</span>
             </div>
-            <span class="carousel-counter" style="color: #fff;">01 / 04</span>
+          </div>
+
+          <!-- Slide 2 -->
+          <div class="carousel-slide" data-index="1">
+            <img src="assets/photography/light/IMG_1770.JPG" alt="Vertical Luminaire & High-Contrast Shadow">
+            <div class="carousel-caption-overlay">
+              <div>
+                <h3 class="slide-title">Vertical Luminaire Grazing &amp; Shadow Depth</h3>
+                <p class="slide-meta">Artificial Illumination · Optical Grazing Angle</p>
+              </div>
+              <span class="carousel-counter" style="color: #fff;">02 / 04</span>
+            </div>
+          </div>
+
+          <!-- Slide 3 -->
+          <div class="carousel-slide" data-index="2">
+            <img src="assets/photography/light/IMG_2694 2.JPG" alt="Reflected Light & Specular Texture">
+            <div class="carousel-caption-overlay">
+              <div>
+                <h3 class="slide-title">Reflective Glazing &amp; Material Highlights</h3>
+                <p class="slide-meta">Surface Photometrics · Specular Reflectance</p>
+              </div>
+              <span class="carousel-counter" style="color: #fff;">03 / 04</span>
+            </div>
+          </div>
+
+          <!-- Slide 4 -->
+          <div class="carousel-slide" data-index="3">
+            <img src="assets/photography/light/IMG_0251.JPG" alt="Spatial Daylight & Interior Atmosphere">
+            <div class="carousel-caption-overlay">
+              <div>
+                <h3 class="slide-title">Interior Daylight &amp; Spatial Contrast</h3>
+                <p class="slide-meta">Natural Light Study · Geometric Shadows</p>
+              </div>
+              <span class="carousel-counter" style="color: #fff;">04 / 04</span>
+            </div>
           </div>
         </div>
 
-        <!-- Slide 2 (Dedicated Photography Slot) -->
-        <div class="carousel-slide placeholder-slide" data-index="1">
-          <div class="placeholder-inner">
-            <span class="placeholder-tag">+ Add Photo 02</span>
-            <h3 class="placeholder-title">Night Light &amp; Artificial Illumination</h3>
+        <!-- Carousel Bar -->
+        <div class="carousel-bar">
+          <span class="carousel-counter" id="carousel-indicator">01 / 04</span>
+          <div class="carousel-nav-buttons">
+            <button class="carousel-btn" id="carousel-prev" aria-label="Previous photograph">←</button>
+            <button class="carousel-btn" id="carousel-next" aria-label="Next photograph">→</button>
+          </div>
+        </div>
+      </section>
 
-        <!-- Slide 3 (Dedicated Photography Slot) -->
-        <div class="carousel-slide placeholder-slide" data-index="2">
-          <div class="placeholder-inner">
-            <span class="placeholder-tag">+ Add Photo 03</span>
-            <h3 class="placeholder-title">Spatial Perspective &amp; Monochromes</h3>
-            <p class="placeholder-desc">Save image to <code>assets/photography/photo-3.jpg</code></p>
+      <!-- Light Studies Curated Grid -->
+      <div class="light-photo-grid">
+        <div class="photo-card">
+          <img src="assets/photography/light/IMG_0251.JPG" alt="Interior Daylight Atmosphere" loading="lazy">
+          <div class="photo-card-info">
+            <h4>Interior Daylight Atmosphere</h4>
+            <span>01 / Daylight</span>
           </div>
         </div>
 
-        <!-- Slide 4 (Dedicated Photography Slot) -->
-        <div class="carousel-slide placeholder-slide" data-index="3">
-          <div class="carousel-caption-overlay">
-            <div>
-              <h3 class="slide-title">Material Interaction with Daylight</h3>
-              <p class="slide-meta">Texture &amp; Shadow Detail</p>
-      <div class="carousel-bar">
-        <span class="carousel-counter" id="carousel-indicator">01 / 04</span>
-        <div class="carousel-nav-buttons">
-          <button class="carousel-btn" id="carousel-prev" aria-label="Previous photograph">←</button>
-          <button class="carousel-btn" id="carousel-next" aria-label="Next photograph">→</button>
+        <div class="photo-card">
+          <img src="assets/photography/light/IMG_1770.JPG" alt="Vertical Optical Luminescence" loading="lazy">
+          <div class="photo-card-info">
+            <h4>Vertical Luminaire Grazing</h4>
+            <span>02 / Optics</span>
+          </div>
+        </div>
+
+        <div class="photo-card">
+          <img src="assets/photography/light/IMG_2556.JPG" alt="Warm Ambient Tone Study" loading="lazy">
+          <div class="photo-card-info">
+            <h4>Ambient Warmth &amp; Illumination</h4>
+            <span>03 / Atmosphere</span>
+          </div>
+        </div>
+
+        <div class="photo-card">
+          <img src="assets/photography/light/IMG_2694 2.JPG" alt="Reflected Glazing Highlights" loading="lazy">
+          <div class="photo-card-info">
+            <h4>Reflected Light &amp; Surface</h4>
+            <span>04 / Reflectance</span>
+          </div>
+        </div>
+
+        <div class="photo-card">
+          <img src="assets/photography/light/IMG_3223.JPG" alt="Specular Beam Highlight Study" loading="lazy">
+          <div class="photo-card-info">
+            <h4>Specular Highlights &amp; Shadows</h4>
+            <span>05 / Shadow</span>
+          </div>
+        </div>
+
+        <div class="photo-card">
+          <img src="assets/photography/light/IMG_6082.JPG" alt="Atmospheric Horizon Night Study" loading="lazy">
+          <div class="photo-card-info">
+            <h4>Atmospheric Horizon Gradient</h4>
+            <span>06 / Horizon</span>
+          </div>
+        </div>
+
+        <div class="photo-card">
+          <img src="assets/photography/light/FF88A2C2-5958-4D14-BE92-8A539F8DD89C_1_105_c.jpeg" alt="Diffused Architectural Light" loading="lazy">
+          <div class="photo-card-info">
+            <h4>Diffused Light &amp; Geometry</h4>
+            <span>07 / Diffuse</span>
+          </div>
         </div>
       </div>
     </section>
+
+    <!-- =====================================================================
+         SECTION 2: ARCHITECTURE & SPATIAL GEOMETRY STUDIES
+         ===================================================================== -->
+    <section class="photo-series-section" id="arch-studies">
+      <div class="photo-series-header">
+        <div>
+          <p class="kicker">Series 02</p>
+          <h2>Architecture &amp; Form</h2>
         </div>
+        <p class="series-desc">
+          Examining structural rhythm, monolithic massing, spatial voids, and 35mm analog film observations of the built environment.
+        </p>
       </div>
 
-      <div class="photo-grid">
-        <!-- Photo Card 1 (Active Photography) -->
-        <div class="photo-card">
-          <img src="assets/photography/photo-1.jpg" alt="Light Study" loading="lazy">
-          <div class="photo-card-info">
-            <h4>Light Play &amp; Architecture</h4>
-            <span>01 / Perspective</span>
+      <!-- Architectural Asymmetric Exhibition Layout -->
+      <div class="arch-exhibition-layout">
+        <!-- Feature Split: Tall Vertical Massing + 35mm Film Trilogy -->
+        <div class="arch-feature-split">
+          <!-- Tall Vertical Feature -->
+          <div class="arch-portrait-card">
+            <img src="assets/photography/arch/IMG_6268 2.jpeg" alt="Vertical Monolith & Urban Massing" loading="lazy">
+            <div class="photo-card-info">
+              <h4>Vertical Massing &amp; Elevation Study</h4>
+              <span>01 / Monolith</span>
+            </div>
+          </div>
+
+          <!-- 35mm Analog Film Trilogy Column -->
+          <div class="arch-film-column">
+            <div class="arch-film-card">
+              <img src="assets/photography/arch/kotara004502-R1-026-11A.jpg" alt="35mm Analog Study 11A" loading="lazy">
+              <div class="photo-card-info">
+                <h4>35mm Film Architectural Study · Exp 11A</h4>
+                <span>02 / Analog</span>
+              </div>
+            </div>
+
+            <div class="arch-film-card">
+              <img src="assets/photography/arch/kotara004502-R1-052-24A.jpg" alt="35mm Analog Study 24A" loading="lazy">
+              <div class="photo-card-info">
+                <h4>35mm Film Architectural Study · Exp 24A</h4>
+                <span>03 / Analog</span>
+              </div>
+            </div>
+
+            <div class="arch-film-card">
+              <img src="assets/photography/arch/kotara004502-R1-060-28A.jpg" alt="35mm Analog Study 28A" loading="lazy">
+              <div class="photo-card-info">
+                <h4>35mm Film Architectural Study · Exp 28A</h4>
+                <span>04 / Analog</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Photo Upload Placeholder 2 -->
-        <div class="photo-placeholder-card">
-          <span class="placeholder-tag">+ Add Photo 02</span>
-          <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Night &amp; Artificial Light</h4>
-          <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Drop image in assets/photography/</p>
-        </div>
+        <!-- Wide-Angle Structural Diptych -->
+        <div class="arch-duo-grid">
+          <div class="photo-card">
+            <img src="assets/photography/arch/IMG_6335.jpeg" alt="Structural Rhythm & Facade Alignment" loading="lazy">
+            <div class="photo-card-info">
+              <h4>Structural Rhythm &amp; Facade Alignment</h4>
+              <span>05 / Facade</span>
+            </div>
+          </div>
 
-        <!-- Photo Upload Placeholder 3 -->
-        <div class="photo-placeholder-card">
-          <span class="placeholder-tag">+ Add Photo 03</span>
-          <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Geometry &amp; Monochromes</h4>
-          <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Drop image in assets/photography/</p>
-        </div>
-
-        <!-- Photo Upload Placeholder 4 -->
-        <div class="photo-placeholder-card">
-          <span class="placeholder-tag">+ Add Photo 04</span>
-          <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Daylight &amp; Materiality</h4>
-          <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Drop image in assets/photography/</p>
-        </div>
-
-        <!-- Photo Upload Placeholder 5 -->
-        <div class="photo-placeholder-card">
-          <span class="placeholder-tag">+ Add Photo 05</span>
-          <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Urban &amp; Civic Atmosphere</h4>
-          <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Drop image in assets/photography/</p>
-        </div>
-
-        <!-- Photo Upload Placeholder 6 -->
-        <div class="photo-placeholder-card">
-          <span class="placeholder-tag">+ Add Photo 06</span>
-          <h4 style="font-size: 14px; margin: 4px 0 2px; color: #fff;">Shadow Studies</h4>
-          <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin: 0;">Drop image in assets/photography/</p>
+          <div class="photo-card">
+            <img src="assets/photography/arch/073330D1-6DA4-4260-8F37-C975744056BB_1_105_c.jpeg" alt="Spatial Perspective & Tonal Depth" loading="lazy">
+            <div class="photo-card-info">
+              <h4>Spatial Perspective &amp; Tonal Depth</h4>
+              <span>06 / Perspective</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -164,23 +291,14 @@
         }
       });
 
-      // Touch swipe support
-      let touchStartX = 0;
-      const carouselViewport = document.querySelector('#photo-carousel');
-      if (carouselViewport) {
-        carouselViewport.addEventListener('touchstart', (e) => {
-          touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
-
-        carouselViewport.addEventListener('touchend', (e) => {
-          const touchEndX = e.changedTouches[0].screenX;
-          if (touchStartX - touchEndX > 50) {
-            updateSlide(currentIndex + 1);
-          } else if (touchEndX - touchStartX > 50) {
-            updateSlide(currentIndex - 1);
-          }
-        }, { passive: true });
-      }
+      // Filter smooth scroll & active state
+      const filterBtns = document.querySelectorAll('.photo-filter-btn');
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+      });
     });
   </script>
   <script src="editor.js"></script>

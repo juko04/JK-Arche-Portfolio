@@ -1,19 +1,13 @@
 /**
  * Julian Kotara — Portfolio Interactive Visual Customizer & Pro Editor
- * Features:
- * - Smart Snapping with visual alignment guides (Horizontal & Vertical)
- * - Move, drag, & reposition elements & linework
- * - Delete shapes, text boxes, and elements (with persistence)
- * - Add basic shapes (Circle, Square/Rect, Line, Pill)
- * - Change font family (Sans / Serif / Mono), font size, bold, italic, and color
- * - Change shape dimensions, fill, and border styles
- * - Smart HSL color theme engine
- * - Full localStorage persistence across reloads
+ * Fully Scoped per Page, Zero-Jitter Alignment Snapping, Shape Engine,
+ * Dedicated Shape/Text Inspectors, Universal Element Dragging, & PDF Export.
  */
 
 (function () {
-  const STORAGE_KEY = 'jk_portfolio_customizer_state';
+  const STORAGE_KEY = 'jk_portfolio_customizer_v2';
 
+  // Preset Color Palettes (Preserves exact lightness & contrast)
   const COLOR_PRESETS = [
     { name: 'Sage Green', hue: 75, sat: '26%', color: '#b7bd91' },
     { name: 'Terracotta Red', hue: 15, sat: '26%', color: '#bd9591' },
@@ -23,23 +17,37 @@
     { name: 'Slate Greige', hue: 75, sat: '4%', color: '#a6a7a3' },
   ];
 
+  function getPageKey() {
+    let p = window.location.pathname.split('/').pop() || 'index.html';
+    if (p === '' || p === '/') p = 'index.html';
+    return p;
+  }
+
   let state = {
-    isEditing: false,
-    themeHue: 75,
-    themeSat: '26%',
-    texts: {},
-    images: {},
-    positions: {},
-    styles: {},
-    shapes: [],
-    addedElements: [],
-    deletedElements: [],
+    globalTheme: { hue: 75, sat: '26%' },
+    pages: {} // Scoped per page: { positions: {}, shapes: [], texts: {}, styles: {}, deleted: [], added: [] }
   };
 
+  let isEditing = false;
   let activeElement = null;
   let inspectorEl = null;
   let snapGuideX = null;
   let snapGuideY = null;
+
+  function getPageData() {
+    const key = getPageKey();
+    if (!state.pages[key]) {
+      state.pages[key] = {
+        positions: {},
+        shapes: [],
+        texts: {},
+        styles: {},
+        deleted: [],
+        added: [],
+      };
+    }
+    return state.pages[key];
+  }
 
   // Load from localStorage
   function loadState() {
@@ -68,69 +76,55 @@
     if (toast) {
       toast.classList.add('show');
       clearTimeout(toast._timer);
-      toast._timer = setTimeout(() => toast.classList.remove('show'), 1400);
+      toast._timer = setTimeout(() => toast.classList.remove('show'), 1200);
     }
   }
 
-  // Theme application
+  // Global Theme Application
   function applyTheme(hue, sat = '26%') {
-    state.themeHue = hue;
-    state.themeSat = sat;
+    state.globalTheme = { hue, sat };
     document.documentElement.style.setProperty('--theme-hue', hue);
     document.documentElement.style.setProperty('--theme-sat', sat);
   }
 
-  // Generate unique element key
   function getElementKey(el) {
     if (!el) return '';
-    return el.dataset.customId || el.id || el.dataset.editKey || `${el.tagName.toLowerCase()}-${el.className.replace(/\s+/g, '-')}`;
+    return el.dataset.customId || el.id || el.dataset.editKey || `${el.tagName.toLowerCase()}-${(el.className || '').replace(/\s+/g, '-')}`;
   }
 
   // --------------------------------------------------------------------------
-  // Restore State to DOM
+  // Restore State to DOM (Scoped to current page)
   // --------------------------------------------------------------------------
   function restoreDOM() {
-    // 1. Theme Color
-    if (state.themeHue !== undefined) {
-      applyTheme(state.themeHue, state.themeSat || '26%');
+    // 1. Theme
+    if (state.globalTheme?.hue !== undefined) {
+      applyTheme(state.globalTheme.hue, state.globalTheme.sat || '26%');
     }
 
+    const page = getPageData();
+
     // 2. Remove Deleted Elements
-    (state.deletedElements || []).forEach((key) => {
+    (page.deleted || []).forEach((key) => {
       const el = document.querySelector(`[data-custom-id="${key}"]`) || document.getElementById(key) || document.querySelector(`[data-edit-key="${key}"]`);
       if (el) el.remove();
     });
 
-    // 3. Restore Text Overrides
-    Object.keys(state.texts || {}).forEach((key) => {
+    // 3. Restore Text Content
+    Object.keys(page.texts || {}).forEach((key) => {
       const el = document.querySelector(`[data-custom-id="${key}"]`) || document.getElementById(key) || document.querySelector(`[data-edit-key="${key}"]`) || document.querySelector(key);
-      if (el) el.innerHTML = state.texts[key];
+      if (el) el.innerHTML = page.texts[key];
     });
 
-    // 4. Restore Images
-    Object.keys(state.images || {}).forEach((key) => {
-      const img = document.querySelector(`[data-img-key="${key}"]`) || document.getElementById(key) || document.querySelector(key);
-      if (img) img.src = state.images[key];
-    });
-
-    // 5. Restore Style Overrides (Fonts, Sizes, Colors)
-    Object.keys(state.styles || {}).forEach((key) => {
-      const el = document.querySelector(`[data-custom-id="${key}"]`) || document.getElementById(key) || document.querySelector(`[data-edit-key="${key}"]`) || document.querySelector(key);
-      if (el && state.styles[key]) {
-        Object.assign(el.style, state.styles[key]);
-      }
-    });
-
-    // 6. Restore Custom Shapes
-    (state.shapes || []).forEach((shapeData) => {
+    // 4. Restore Custom Shapes for this page
+    (page.shapes || []).forEach((shapeData) => {
       if (!document.getElementById(shapeData.id)) {
-        createShapeElement(shapeData);
+        createShapeDOM(shapeData);
       }
     });
 
-    // 7. Restore Added Text Paragraphs
-    (state.addedElements || []).forEach((item) => {
-      const parent = document.querySelector(item.parentSelector) || document.querySelector('main');
+    // 5. Restore Added Paragraphs
+    (page.added || []).forEach((item) => {
+      const parent = document.querySelector(item.parentSelector) || document.querySelector('main') || document.body;
       if (parent && !document.getElementById(item.id)) {
         const p = document.createElement('p');
         p.id = item.id;
@@ -143,11 +137,19 @@
       }
     });
 
-    // 8. Restore Positions
-    Object.keys(state.positions || {}).forEach((id) => {
+    // 6. Restore Styles (Font, Size, Color)
+    Object.keys(page.styles || {}).forEach((key) => {
+      const el = document.querySelector(`[data-custom-id="${key}"]`) || document.getElementById(key) || document.querySelector(`[data-edit-key="${key}"]`) || document.querySelector(key);
+      if (el && page.styles[key]) {
+        Object.assign(el.style, page.styles[key]);
+      }
+    });
+
+    // 7. Restore Positions
+    Object.keys(page.positions || {}).forEach((id) => {
       const el = document.querySelector(`[data-custom-id="${id}"]`) || document.getElementById(id) || document.querySelector(id);
-      if (el && state.positions[id]) {
-        const { x, y } = state.positions[id];
+      if (el && page.positions[id]) {
+        const { x, y } = page.positions[id];
         el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
         el.dataset.dragX = x;
         el.dataset.dragY = y;
@@ -156,7 +158,7 @@
   }
 
   // --------------------------------------------------------------------------
-  // Smart Alignment Snapping Engine
+  // Smart Snapping Guides (Butter-Smooth, No Jitter)
   // --------------------------------------------------------------------------
   function createSnapGuides() {
     if (!snapGuideX) {
@@ -178,90 +180,8 @@
     if (snapGuideY) snapGuideY.style.display = 'none';
   }
 
-  function calculateSnap(draggedEl, currentLeft, currentTop) {
-    const SNAP_THRESHOLD = 7; // pixels
-    const draggedRect = draggedEl.getBoundingClientRect();
-    const width = draggedRect.width;
-    const height = draggedRect.height;
-
-    const draggedEdges = {
-      left: currentLeft,
-      centerX: currentLeft + width / 2,
-      right: currentLeft + width,
-      top: currentTop,
-      centerY: currentTop + height / 2,
-      bottom: currentTop + height,
-    };
-
-    let snappedX = currentLeft;
-    let snappedY = currentTop;
-    let matchedGuideX = null;
-    let matchedGuideY = null;
-
-    // Collect all candidate target elements
-    const targets = document.querySelectorAll('.draggable-item, .geo-circle, .custom-shape, h1, h2, h3, p, .project-card, .project-facts-bar');
-    targets.forEach((target) => {
-      if (target === draggedEl || target.contains(draggedEl) || draggedEl.contains(target)) return;
-
-      const r = target.getBoundingClientRect();
-      const targetEdges = {
-        left: r.left,
-        centerX: r.left + r.width / 2,
-        right: r.right,
-        top: r.top,
-        centerY: r.top + r.height / 2,
-        bottom: r.bottom,
-      };
-
-      // X-Axis Snapping
-      if (matchedGuideY === null) {
-        ['left', 'centerX', 'right'].forEach((dKey) => {
-          ['left', 'centerX', 'right'].forEach((tKey) => {
-            const diff = Math.abs(draggedEdges[dKey] - targetEdges[tKey]);
-            if (diff < SNAP_THRESHOLD) {
-              const offset = targetEdges[tKey] - draggedEdges[dKey];
-              snappedX = currentLeft + offset;
-              matchedGuideY = targetEdges[tKey];
-            }
-          });
-        });
-      }
-
-      // Y-Axis Snapping
-      if (matchedGuideX === null) {
-        ['top', 'centerY', 'bottom'].forEach((dKey) => {
-          ['top', 'centerY', 'bottom'].forEach((tKey) => {
-            const diff = Math.abs(draggedEdges[dKey] - targetEdges[tKey]);
-            if (diff < SNAP_THRESHOLD) {
-              const offset = targetEdges[tKey] - draggedEdges[dKey];
-              snappedY = currentTop + offset;
-              matchedGuideX = targetEdges[tKey];
-            }
-          });
-        });
-      }
-    });
-
-    // Render snap guide lines
-    if (matchedGuideX !== null && snapGuideX) {
-      snapGuideX.style.top = `${matchedGuideX}px`;
-      snapGuideX.style.display = 'block';
-    } else if (snapGuideX) {
-      snapGuideX.style.display = 'none';
-    }
-
-    if (matchedGuideY !== null && snapGuideY) {
-      snapGuideY.style.left = `${matchedGuideY}px`;
-      snapGuideY.style.display = 'block';
-    } else if (snapGuideY) {
-      snapGuideY.style.display = 'none';
-    }
-
-    return { x: snappedX, y: snappedY };
-  }
-
   // --------------------------------------------------------------------------
-  // Drag & Selection Controller
+  // Universal Drag & Selection Controller
   // --------------------------------------------------------------------------
   function initDragAndSelect(element, customId) {
     if (!element) return;
@@ -271,15 +191,17 @@
 
     let startMouseX = 0, startMouseY = 0;
     let initialTranslateX = 0, initialTranslateY = 0;
+    let initialRect = null;
+    let cachedTargets = [];
     let isDragging = false;
 
     function onMouseDown(e) {
-      if (!document.body.classList.contains('is-editing')) return;
+      if (!isEditing) return;
       if (e.target.closest('.element-inspector') || e.target.closest('.editor-toolbar')) return;
 
       selectElement(element);
 
-      // If user is editing text without holding Alt, don't drag so text can be highlighted
+      // If user is selecting text in contenteditable without Alt key, let them highlight text
       if (e.target.isContentEditable && !e.altKey && e.target !== element) {
         return;
       }
@@ -290,6 +212,29 @@
       initialTranslateX = parseFloat(element.dataset.dragX) || 0;
       initialTranslateY = parseFloat(element.dataset.dragY) || 0;
 
+      initialRect = element.getBoundingClientRect();
+
+      // Pre-cache static bounding boxes of all other elements at dragstart (prevents jitter)
+      cachedTargets = [];
+      const candidateElements = document.querySelectorAll(
+        '.draggable-item, .geo-circle, .custom-shape, h1, h2, h3, p, .kicker, .role, .project-card, .work-list-item, .about-content'
+      );
+
+      candidateElements.forEach((target) => {
+        if (target === element || element.contains(target) || target.contains(element)) return;
+        const r = target.getBoundingClientRect();
+        if (r.width > 0 && r.height > 0) {
+          cachedTargets.push({
+            left: r.left,
+            centerX: r.left + r.width / 2,
+            right: r.right,
+            top: r.top,
+            centerY: r.top + r.height / 2,
+            bottom: r.bottom,
+          });
+        }
+      });
+
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
       document.addEventListener('touchmove', onMouseMove, { passive: false });
@@ -297,7 +242,7 @@
     }
 
     function onMouseMove(e) {
-      if (!isDragging || !document.body.classList.contains('is-editing')) return;
+      if (!isDragging || !isEditing) return;
 
       const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
       const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
@@ -305,18 +250,82 @@
       const rawDeltaX = clientX - startMouseX;
       const rawDeltaY = clientY - startMouseY;
 
-      const candidateX = initialTranslateX + rawDeltaX;
-      const candidateY = initialTranslateY + rawDeltaY;
+      let candidateX = initialTranslateX + rawDeltaX;
+      let candidateY = initialTranslateY + rawDeltaY;
 
-      // Smart alignment calculation
-      const initialRect = element.getBoundingClientRect();
-      const snapped = calculateSnap(element, initialRect.left + rawDeltaX, initialRect.top + rawDeltaY);
-      const finalDeltaX = candidateX + (snapped.x - (initialRect.left + rawDeltaX));
-      const finalDeltaY = candidateY + (snapped.y - (initialRect.top + rawDeltaY));
+      const currentBoxLeft = initialRect.left + (candidateX - initialTranslateX);
+      const currentBoxTop = initialRect.top + (candidateY - initialTranslateY);
+      const width = initialRect.width;
+      const height = initialRect.height;
 
-      element.style.transform = `translate3d(${finalDeltaX}px, ${finalDeltaY}px, 0)`;
-      element.dataset.tempX = finalDeltaX;
-      element.dataset.tempY = finalDeltaY;
+      const currentEdges = {
+        left: currentBoxLeft,
+        centerX: currentBoxLeft + width / 2,
+        right: currentBoxLeft + width,
+        top: currentBoxTop,
+        centerY: currentBoxTop + height / 2,
+        bottom: currentBoxTop + height,
+      };
+
+      const SNAP_THRESHOLD = 8;
+      let snapOffsetX = 0;
+      let snapOffsetY = 0;
+      let snapLineX = null;
+      let snapLineY = null;
+
+      // Check X-axis snapping
+      for (const t of cachedTargets) {
+        for (const dKey of ['left', 'centerX', 'right']) {
+          for (const tKey of ['left', 'centerX', 'right']) {
+            const diff = Math.abs(currentEdges[dKey] - t[tKey]);
+            if (diff <= SNAP_THRESHOLD) {
+              snapOffsetX = t[tKey] - currentEdges[dKey];
+              snapLineY = t[tKey];
+              break;
+            }
+          }
+          if (snapLineY !== null) break;
+        }
+        if (snapLineY !== null) break;
+      }
+
+      // Check Y-axis snapping
+      for (const t of cachedTargets) {
+        for (const dKey of ['top', 'centerY', 'bottom']) {
+          for (const tKey of ['top', 'centerY', 'bottom']) {
+            const diff = Math.abs(currentEdges[dKey] - t[tKey]);
+            if (diff <= SNAP_THRESHOLD) {
+              snapOffsetY = t[tKey] - currentEdges[dKey];
+              snapLineX = t[tKey];
+              break;
+            }
+          }
+          if (snapLineX !== null) break;
+        }
+        if (snapLineX !== null) break;
+      }
+
+      const finalTranslateX = candidateX + snapOffsetX;
+      const finalTranslateY = candidateY + snapOffsetY;
+
+      element.style.transform = `translate3d(${finalTranslateX}px, ${finalTranslateY}px, 0)`;
+      element.dataset.tempX = finalTranslateX;
+      element.dataset.tempY = finalTranslateY;
+
+      // Render Snap Visual Guides
+      if (snapLineX !== null && snapGuideX) {
+        snapGuideX.style.top = `${snapLineX}px`;
+        snapGuideX.style.display = 'block';
+      } else if (snapGuideX) {
+        snapGuideX.style.display = 'none';
+      }
+
+      if (snapLineY !== null && snapGuideY) {
+        snapGuideY.style.left = `${snapLineY}px`;
+        snapGuideY.style.display = 'block';
+      } else if (snapGuideY) {
+        snapGuideY.style.display = 'none';
+      }
 
       positionInspector();
       if (e.type === 'touchmove') e.preventDefault();
@@ -338,8 +347,8 @@
       element.dataset.dragX = finalX;
       element.dataset.dragY = finalY;
 
-      if (!state.positions) state.positions = {};
-      state.positions[id] = { x: finalX, y: finalY };
+      const page = getPageData();
+      page.positions[id] = { x: finalX, y: finalY };
       saveState();
       positionInspector();
     }
@@ -349,14 +358,14 @@
   }
 
   // --------------------------------------------------------------------------
-  // Selection & Contextual Inspector Toolbar
+  // Selection & Contextual Property Inspector Bar
   // --------------------------------------------------------------------------
   function selectElement(el) {
     if (activeElement === el) return;
     if (activeElement) activeElement.classList.remove('active-selected');
 
     activeElement = el;
-    if (activeElement) {
+    if (activeElement && isEditing) {
       activeElement.classList.add('active-selected');
       renderInspector(activeElement);
     } else {
@@ -374,8 +383,8 @@
   function positionInspector() {
     if (!inspectorEl || !activeElement) return;
     const rect = activeElement.getBoundingClientRect();
-    const topPos = Math.max(12, rect.top - 46);
-    const leftPos = Math.min(Math.max(120, rect.left + rect.width / 2), window.innerWidth - 120);
+    const topPos = Math.max(12, rect.top - 48);
+    const leftPos = Math.min(Math.max(140, rect.left + rect.width / 2), window.innerWidth - 140);
 
     inspectorEl.style.top = `${topPos}px`;
     inspectorEl.style.left = `${leftPos}px`;
@@ -383,22 +392,50 @@
 
   function renderInspector(el) {
     hideInspector();
-    if (!document.body.classList.contains('is-editing')) return;
+    if (!isEditing || !el) return;
 
     inspectorEl = document.createElement('div');
     inspectorEl.className = 'element-inspector';
 
-    const isText = el.isContentEditable || ['H1', 'H2', 'H3', 'H4', 'P', 'SPAN', 'FIGCAPTION', 'DIV'].includes(el.tagName);
     const isShape = el.classList.contains('custom-shape') || el.classList.contains('geo-circle');
+    const isText = !isShape && (
+      el.isContentEditable ||
+      ['H1', 'H2', 'H3', 'H4', 'P', 'SPAN', 'FIGCAPTION', 'A', 'LI', 'SMALL', 'STRONG'].includes(el.tagName) ||
+      el.classList.contains('editable') ||
+      el.classList.contains('role') ||
+      el.classList.contains('intro-copy') ||
+      el.classList.contains('kicker')
+    );
 
     const key = getElementKey(el);
-    const currentStyle = state.styles[key] || {};
+    const page = getPageData();
+    const currentStyle = (page.styles && page.styles[key]) || {};
 
     let html = '';
 
-    if (isText) {
+    if (isShape) {
+      // SHAPES ONLY: Size, Colors, Delete
       html += `
-        <!-- Font Family -->
+        <div class="inspector-group">
+          <span style="font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,0.7);">Width</span>
+          <button class="inspector-btn" id="insp-w-down" title="Decrease Width">-</button>
+          <button class="inspector-btn" id="insp-w-up" title="Increase Width">+</button>
+        </div>
+
+        <div class="inspector-group">
+          <span style="font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,0.7);">Height</span>
+          <button class="inspector-btn" id="insp-h-down" title="Decrease Height">-</button>
+          <button class="inspector-btn" id="insp-h-up" title="Increase Height">+</button>
+        </div>
+
+        <div class="inspector-group">
+          <label style="font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,0.7);">Color</label>
+          <input type="color" class="inspector-color-input" id="insp-shape-color" title="Shape Color" value="${rgbToHex(window.getComputedStyle(el).backgroundColor) || '#b7bd91'}">
+        </div>
+      `;
+    } else if (isText) {
+      // TEXT ONLY: Font Family, Size, Bold, Italic, Color, Delete
+      html += `
         <div class="inspector-group">
           <select class="inspector-select" id="insp-font-family" title="Font Family">
             <option value="var(--sans)" ${currentStyle.fontFamily?.includes('sans') ? 'selected' : ''}>Sans</option>
@@ -407,45 +444,26 @@
           </select>
         </div>
 
-        <!-- Font Size -->
         <div class="inspector-group">
-          <button class="inspector-btn" id="insp-size-down" title="Decrease Size">A-</button>
-          <button class="inspector-btn" id="insp-size-up" title="Increase Size">A+</button>
+          <button class="inspector-btn" id="insp-size-down" title="Decrease Font Size">A-</button>
+          <button class="inspector-btn" id="insp-size-up" title="Increase Font Size">A+</button>
         </div>
 
-        <!-- Font Styles -->
         <div class="inspector-group">
-          <button class="inspector-btn ${currentStyle.fontWeight === 'bold' || currentStyle.fontWeight === '700' ? 'active' : ''}" id="insp-bold" title="Bold"><strong>B</strong></button>
-          <button class="inspector-btn ${currentStyle.fontStyle === 'italic' ? 'active' : ''}" id="insp-italic" title="Italic"><em>I</em></button>
+          <button class="inspector-btn ${currentStyle.fontWeight === 'bold' || currentStyle.fontWeight === '700' ? 'active' : ''}" id="insp-bold" title="Toggle Bold"><strong>B</strong></button>
+          <button class="inspector-btn ${currentStyle.fontStyle === 'italic' ? 'active' : ''}" id="insp-italic" title="Toggle Italic"><em>I</em></button>
         </div>
 
-        <!-- Text Color -->
         <div class="inspector-group">
           <input type="color" class="inspector-color-input" id="insp-color" title="Text Color" value="${rgbToHex(window.getComputedStyle(el).color) || '#1f231b'}">
         </div>
       `;
     }
 
-    if (isShape) {
-      html += `
-        <!-- Shape Size -->
-        <div class="inspector-group">
-          <span style="font-family: var(--mono); font-size: 10px;">Size</span>
-          <button class="inspector-btn" id="insp-shape-down" title="Smaller">-</button>
-          <button class="inspector-btn" id="insp-shape-up" title="Larger">+</button>
-        </div>
-
-        <!-- Shape Fill / Stroke Color -->
-        <div class="inspector-group">
-          <input type="color" class="inspector-color-input" id="insp-shape-color" title="Shape Color" value="${rgbToHex(window.getComputedStyle(el).backgroundColor) || '#b7bd91'}">
-        </div>
-      `;
-    }
-
-    // Delete Button
+    // Universal Delete
     html += `
       <div class="inspector-group">
-        <button class="inspector-btn danger" id="insp-delete" title="Delete Element">🗑️ Delete</button>
+        <button class="inspector-btn danger" id="insp-delete" title="Delete this element">🗑️ Delete</button>
       </div>
     `;
 
@@ -454,74 +472,79 @@
     positionInspector();
 
     // Hook Inspector Events
+    if (isShape) {
+      // Width
+      inspectorEl.querySelector('#insp-w-up')?.addEventListener('click', () => {
+        const w = parseFloat(window.getComputedStyle(el).width) || 100;
+        applyElementStyle(el, 'width', `${Math.round(w * 1.15)}px`);
+        positionInspector();
+      });
+      inspectorEl.querySelector('#insp-w-down')?.addEventListener('click', () => {
+        const w = parseFloat(window.getComputedStyle(el).width) || 100;
+        applyElementStyle(el, 'width', `${Math.max(10, Math.round(w * 0.85))}px`);
+        positionInspector();
+      });
+
+      // Height
+      inspectorEl.querySelector('#insp-h-up')?.addEventListener('click', () => {
+        const h = parseFloat(window.getComputedStyle(el).height) || 100;
+        applyElementStyle(el, 'height', `${Math.round(h * 1.15)}px`);
+        positionInspector();
+      });
+      inspectorEl.querySelector('#insp-h-down')?.addEventListener('click', () => {
+        const h = parseFloat(window.getComputedStyle(el).height) || 100;
+        applyElementStyle(el, 'height', `${Math.max(2, Math.round(h * 0.85))}px`);
+        positionInspector();
+      });
+
+      // Color
+      inspectorEl.querySelector('#insp-shape-color')?.addEventListener('input', (e) => {
+        if (el.classList.contains('shape-line')) {
+          applyElementStyle(el, 'backgroundColor', e.target.value);
+        } else {
+          applyElementStyle(el, 'backgroundColor', e.target.value);
+          applyElementStyle(el, 'borderColor', e.target.value);
+        }
+      });
+    }
+
     if (isText) {
       // Font Family
       inspectorEl.querySelector('#insp-font-family')?.addEventListener('change', (e) => {
         applyElementStyle(el, 'fontFamily', e.target.value);
       });
 
-      // Font Size Up / Down
+      // Font Size
       inspectorEl.querySelector('#insp-size-up')?.addEventListener('click', () => {
-        const currSize = parseFloat(window.getComputedStyle(el).fontSize) || 16;
-        applyElementStyle(el, 'fontSize', `${currSize + 2}px`);
+        const curr = parseFloat(window.getComputedStyle(el).fontSize) || 16;
+        applyElementStyle(el, 'fontSize', `${curr + 2}px`);
       });
-
       inspectorEl.querySelector('#insp-size-down')?.addEventListener('click', () => {
-        const currSize = parseFloat(window.getComputedStyle(el).fontSize) || 16;
-        applyElementStyle(el, 'fontSize', `${Math.max(10, currSize - 2)}px`);
+        const curr = parseFloat(window.getComputedStyle(el).fontSize) || 16;
+        applyElementStyle(el, 'fontSize', `${Math.max(10, curr - 2)}px`);
       });
 
-      // Bold Toggle
+      // Bold
       inspectorEl.querySelector('#insp-bold')?.addEventListener('click', (e) => {
         const isBold = el.style.fontWeight === 'bold' || window.getComputedStyle(el).fontWeight >= 600;
         applyElementStyle(el, 'fontWeight', isBold ? '400' : '700');
         e.currentTarget.classList.toggle('active', !isBold);
       });
 
-      // Italic Toggle
+      // Italic
       inspectorEl.querySelector('#insp-italic')?.addEventListener('click', (e) => {
         const isItalic = el.style.fontStyle === 'italic';
         applyElementStyle(el, 'fontStyle', isItalic ? 'normal' : 'italic');
         e.currentTarget.classList.toggle('active', !isItalic);
       });
 
-      // Text Color
+      // Color
       inspectorEl.querySelector('#insp-color')?.addEventListener('input', (e) => {
         applyElementStyle(el, 'color', e.target.value);
       });
     }
 
-    if (isShape) {
-      // Shape Size
-      inspectorEl.querySelector('#insp-shape-up')?.addEventListener('click', () => {
-        const w = parseFloat(window.getComputedStyle(el).width) || 100;
-        const h = parseFloat(window.getComputedStyle(el).height) || 100;
-        applyElementStyle(el, 'width', `${w * 1.15}px`);
-        applyElementStyle(el, 'height', `${h * 1.15}px`);
-        positionInspector();
-      });
-
-      inspectorEl.querySelector('#insp-shape-down')?.addEventListener('click', () => {
-        const w = parseFloat(window.getComputedStyle(el).width) || 100;
-        const h = parseFloat(window.getComputedStyle(el).height) || 100;
-        applyElementStyle(el, 'width', `${Math.max(20, w * 0.85)}px`);
-        applyElementStyle(el, 'height', `${Math.max(2, h * 0.85)}px`);
-        positionInspector();
-      });
-
-      // Shape Color
-      inspectorEl.querySelector('#insp-shape-color')?.addEventListener('input', (e) => {
-        if (el.classList.contains('shape-line')) {
-          applyElementStyle(el, 'backgroundColor', e.target.value);
-        } else if (el.style.backgroundColor && el.style.backgroundColor !== 'transparent') {
-          applyElementStyle(el, 'backgroundColor', e.target.value);
-        } else {
-          applyElementStyle(el, 'borderColor', e.target.value);
-        }
-      });
-    }
-
-    // Delete Button
+    // Delete
     inspectorEl.querySelector('#insp-delete')?.addEventListener('click', () => {
       deleteElement(el);
     });
@@ -530,23 +553,24 @@
   function applyElementStyle(el, prop, val) {
     el.style[prop] = val;
     const key = getElementKey(el);
-    if (!state.styles) state.styles = {};
-    if (!state.styles[key]) state.styles[key] = {};
-    state.styles[key][prop] = val;
+    const page = getPageData();
+    if (!page.styles) page.styles = {};
+    if (!page.styles[key]) page.styles[key] = {};
+    page.styles[key][prop] = val;
     saveState();
   }
 
   function deleteElement(el) {
     if (!el) return;
     const key = getElementKey(el);
-    if (!state.deletedElements) state.deletedElements = [];
-    if (!state.deletedElements.includes(key)) {
-      state.deletedElements.push(key);
+    const page = getPageData();
+    if (!page.deleted) page.deleted = [];
+    if (!page.deleted.includes(key)) {
+      page.deleted.push(key);
     }
 
-    // If it's a custom shape, remove from shapes list
-    if (state.shapes) {
-      state.shapes = state.shapes.filter(s => s.id !== el.id);
+    if (page.shapes) {
+      page.shapes = page.shapes.filter(s => s.id !== el.id && s.id !== key);
     }
 
     el.remove();
@@ -563,10 +587,10 @@
   }
 
   // --------------------------------------------------------------------------
-  // Basic Shapes Creation
+  // Basic Shapes Creation (Scoped to Current Page & Centered in Viewport)
   // --------------------------------------------------------------------------
-  function createShapeElement(shapeData) {
-    const parent = document.querySelector('.intro') || document.querySelector('main') || document.body;
+  function createShapeDOM(shapeData) {
+    const parent = document.querySelector('.intro') || document.querySelector('.project-detail') || document.querySelector('.sub-hero') || document.querySelector('main') || document.body;
     if (!parent) return;
 
     const shape = document.createElement('div');
@@ -578,6 +602,12 @@
     shape.style.height = shapeData.height || '140px';
     shape.style.left = shapeData.left || '40vw';
     shape.style.top = shapeData.top || '30vh';
+    shape.style.position = 'absolute';
+    shape.style.zIndex = '10';
+
+    if (shapeData.style) {
+      Object.assign(shape.style, shapeData.style);
+    }
 
     parent.appendChild(shape);
     initDragAndSelect(shape, shapeData.id);
@@ -586,26 +616,42 @@
 
   function addNewShape(type) {
     const id = `custom-shape-${type}-${Date.now()}`;
+    const parent = document.querySelector('.intro') || document.querySelector('.project-detail') || document.querySelector('.sub-hero') || document.querySelector('main') || document.body;
+    const parentRect = parent ? parent.getBoundingClientRect() : { left: 0, top: 0 };
+
+    // Calculate position directly in the center of the user's current scroll viewport
+    const viewportCenterX = window.innerWidth / 2;
+    const viewportCenterY = window.innerHeight * 0.4;
+    const spawnLeft = Math.max(20, viewportCenterX - parentRect.left - 70);
+    const spawnTop = Math.max(20, viewportCenterY - parentRect.top - 70);
+
     const shapeData = {
       id,
       type,
-      width: type === 'line' ? '220px' : type === 'pill' ? '150px' : '130px',
-      height: type === 'line' ? '2px' : type === 'pill' ? '46px' : '130px',
+      width: type === 'line' ? '220px' : type === 'pill' ? '140px' : '130px',
+      height: type === 'line' ? '2px' : type === 'pill' ? '44px' : '130px',
       filled: type === 'circle' || type === 'pill',
-      left: '35vw',
-      top: '25vh',
+      left: `${spawnLeft}px`,
+      top: `${spawnTop}px`,
+      style: {
+        backgroundColor: type === 'line' ? 'var(--line-strong)' : 'rgba(255, 255, 255, 0.35)',
+        borderColor: 'var(--line-strong)'
+      }
     };
 
-    if (!state.shapes) state.shapes = [];
-    state.shapes.push(shapeData);
+    const page = getPageData();
+    if (!page.shapes) page.shapes = [];
+    page.shapes.push(shapeData);
     saveState();
 
-    const shapeEl = createShapeElement(shapeData);
-    if (shapeEl) selectElement(shapeEl);
+    const shapeEl = createShapeDOM(shapeData);
+    if (shapeEl) {
+      selectElement(shapeEl);
+    }
   }
 
   // --------------------------------------------------------------------------
-  // Add Paragraph Helper
+  // Add Paragraph Helper (Scoped to Current Page)
   // --------------------------------------------------------------------------
   function addNewParagraph() {
     const activeContainer = document.querySelector('.intro-body') || document.querySelector('.story-paragraphs') || document.querySelector('.about-narrative') || document.querySelector('main');
@@ -623,15 +669,16 @@
     activeContainer.appendChild(p);
     initDragAndSelect(p, newId);
 
-    if (!state.addedElements) state.addedElements = [];
-    state.addedElements.push({
+    const page = getPageData();
+    if (!page.added) page.added = [];
+    page.added.push({
       id: newId,
       parentSelector: activeContainer.className ? `.${activeContainer.className.split(' ')[0]}` : 'main',
       html: p.innerHTML,
     });
 
     p.addEventListener('input', () => {
-      const item = state.addedElements.find(x => x.id === newId);
+      const item = page.added.find(x => x.id === newId);
       if (item) item.html = p.innerHTML;
       saveState();
     });
@@ -651,8 +698,10 @@
     toolbar.className = 'editor-toolbar';
     toolbar.id = 'editor-toolbar';
 
+    const currentHue = state.globalTheme?.hue || 75;
+
     const swatchesHTML = COLOR_PRESETS.map(p => `
-      <button class="color-swatch-btn ${p.hue === state.themeHue ? 'active' : ''}" 
+      <button class="color-swatch-btn ${p.hue === currentHue ? 'active' : ''}" 
               data-hue="${p.hue}" 
               data-sat="${p.sat}" 
               title="${p.name}" 
@@ -677,7 +726,7 @@
         <!-- Hue Slider -->
         <div class="hue-slider-wrap">
           <label for="hue-range">Hue</label>
-          <input type="range" class="hue-slider" id="hue-range" min="0" max="360" value="${state.themeHue || 75}" title="Fine-tune theme hue">
+          <input type="range" class="hue-slider" id="hue-range" min="0" max="360" value="${currentHue}" title="Fine-tune theme hue">
         </div>
 
         <div class="editor-divider"></div>
@@ -696,9 +745,12 @@
           </div>
         </div>
 
+        <!-- PDF Export Button -->
+        <button class="editor-btn" id="editor-export-pdf" type="button" title="Print / Save clean PDF Portfolio">📄 PDF</button>
+
         <button class="editor-btn" id="editor-reset" type="button" title="Reset all custom edits to default">↺ Reset</button>
         
-        <!-- Saved Badge -->
+        <!-- Saved Toast -->
         <span class="saved-toast" id="saved-toast">✓ Saved</span>
       </div>
     `;
@@ -710,7 +762,7 @@
     const label = toolbar.querySelector('#editor-toggle-label');
 
     function setEditMode(on) {
-      state.isEditing = on;
+      isEditing = on;
       document.body.classList.toggle('is-editing', on);
       toggleBtn.classList.toggle('active', on);
       label.textContent = on ? 'Done Editing' : 'Edit Mode';
@@ -725,7 +777,7 @@
       }
     }
 
-    toggleBtn.addEventListener('click', () => setEditMode(!state.isEditing));
+    toggleBtn.addEventListener('click', () => setEditMode(!isEditing));
 
     // Color Swatches
     toolbar.querySelectorAll('.color-swatch-btn').forEach((btn) => {
@@ -773,6 +825,11 @@
       if (shapeMenu) shapeMenu.style.display = 'none';
     });
 
+    // PDF Export
+    toolbar.querySelector('#editor-export-pdf').addEventListener('click', () => {
+      window.print();
+    });
+
     // Reset All
     toolbar.querySelector('#editor-reset').addEventListener('click', () => {
       if (confirm('Reset all custom text, added shapes, positions, and color edits back to defaults?')) {
@@ -781,18 +838,18 @@
       }
     });
 
-    // Global Key Handlers: Delete key & E toggle
+    // Global Keyboard: Delete key & 'e' toggle
     document.addEventListener('keydown', (e) => {
       if (e.key.toLowerCase() === 'e' && !e.target.isContentEditable && e.target.tagName !== 'INPUT') {
-        setEditMode(!state.isEditing);
+        setEditMode(!isEditing);
       } else if ((e.key === 'Delete' || e.key === 'Backspace') && activeElement && !e.target.isContentEditable && e.target.tagName !== 'INPUT') {
         deleteElement(activeElement);
       }
     });
 
-    // Deselect when clicking empty background
+    // Deselect on backdrop click
     document.addEventListener('mousedown', (e) => {
-      if (!document.body.classList.contains('is-editing')) return;
+      if (!isEditing) return;
       if (e.target.closest('.editor-toolbar') || e.target.closest('.element-inspector') || e.target.closest('.draggable-item')) return;
       selectElement(null);
     });
@@ -803,7 +860,7 @@
   // --------------------------------------------------------------------------
   function setupEditableElements() {
     const editableTargets = document.querySelectorAll(
-      'h1, h2, h3, h4, p, .kicker, .role, .intro-copy, .story-lead, .fact-value, figcaption, .slide-title, .slide-meta'
+      'h1, h2, h3, h4, p, .kicker, .role, .intro-copy, .story-lead, .fact-value, figcaption, .slide-title, .slide-meta, .work-list-item strong, .about-statement, .about-narrative p, .contact-link'
     );
 
     editableTargets.forEach((el, index) => {
@@ -814,8 +871,9 @@
       el.dataset.editKey = key;
 
       el.addEventListener('input', () => {
-        if (!state.texts) state.texts = {};
-        state.texts[key] = el.innerHTML;
+        const page = getPageData();
+        if (!page.texts) page.texts = {};
+        page.texts[key] = el.innerHTML;
         saveState();
       });
     });
@@ -827,7 +885,7 @@
       img.dataset.imgKey = imgKey;
 
       img.addEventListener('click', (e) => {
-        if (!document.body.classList.contains('is-editing')) return;
+        if (!isEditing) return;
         e.preventDefault();
         e.stopPropagation();
 
@@ -840,8 +898,9 @@
           const reader = new FileReader();
           reader.onload = (evt) => {
             img.src = evt.target.result;
-            if (!state.images) state.images = {};
-            state.images[imgKey] = evt.target.result;
+            const page = getPageData();
+            if (!page.images) page.images = {};
+            page.images[imgKey] = evt.target.result;
             saveState();
           };
           reader.readAsDataURL(file);
@@ -860,23 +919,38 @@
     restoreDOM();
     setupEditableElements();
 
-    // Make core elements draggable & selectable with snapping
+    // Universal Draggable Selectors (Whole page: Hero, Rail, Work, About, Details)
     const draggableSelectors = [
       '.geo-circle-1',
       '.geo-circle-2',
+      '#hero-kicker',
+      '#hero-title',
+      '#hero-role',
+      '#hero-copy',
       '.role',
       '.intro-copy',
       '.intro h1',
-      '.intro-top',
       '.work-head-text',
+      '.project-card',
+      '.about h2',
+      '.about-content',
       '.about-sticky',
+      '.about-statement',
+      '.about-narrative',
+      '.work-group-title',
+      '.work-list-item',
       '.story-lead',
+      '.story-sidebar',
+      '.figure-item',
       '.custom-shape'
     ];
 
     draggableSelectors.forEach((sel) => {
       const els = document.querySelectorAll(sel);
-      els.forEach((el, i) => initDragAndSelect(el, `${sel.replace(/[^a-zA-Z0-9]/g, '_')}-${i}`));
+      els.forEach((el, i) => {
+        const id = el.id || el.dataset.customId || `${sel.replace(/[^a-zA-Z0-9]/g, '_')}-${i}`;
+        initDragAndSelect(el, id);
+      });
     });
 
     createEditorToolbar();

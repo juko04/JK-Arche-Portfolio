@@ -1349,30 +1349,28 @@ em {
    In-Browser Interactive Visual Customizer / Editor Mode
    ========================================================================== */
 
-/* State when Editing is Active */
+/* State when Editing is Active (Zero layout shift) */
 body.is-editing [contenteditable="true"] {
-  outline: 1.5px dashed rgba(154, 74, 60, 0.5);
-  outline-offset: 4px;
+  box-shadow: 0 0 0 1.5px rgba(154, 74, 60, 0.45);
   border-radius: 2px;
-  transition: all 0.2s ease;
   min-height: 1.2em;
+  transition: box-shadow 0.15s ease;
 }
 
 body.is-editing [contenteditable="true"]:hover {
-  outline-color: var(--terracotta);
-  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 2px var(--terracotta);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 body.is-editing [contenteditable="true"]:focus {
-  outline: 2px solid var(--terracotta);
-  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 0 2.5px var(--terracotta);
+  background: rgba(255, 255, 255, 0.22);
 }
 
 body.is-editing .geo-circle {
   pointer-events: auto !important;
   cursor: grab;
-  outline: 2px dashed rgba(154, 74, 60, 0.65);
-  outline-offset: 3px;
+  box-shadow: 0 0 0 2px rgba(154, 74, 60, 0.65);
   z-index: 15;
 }
 
@@ -1383,12 +1381,11 @@ body.is-editing .geo-circle:active {
 body.is-editing .draggable-item {
   cursor: grab;
   position: relative;
-  transition: box-shadow 0.2s ease;
+  user-select: text;
 }
 
 body.is-editing .draggable-item:hover {
-  outline: 1.5px dashed rgba(31, 35, 27, 0.4);
-  outline-offset: 5px;
+  box-shadow: 0 0 0 1.5px rgba(31, 35, 27, 0.35);
 }
 
 body.is-editing .draggable-item:active {
@@ -1397,13 +1394,14 @@ body.is-editing .draggable-item:active {
 
 body.is-editing img {
   cursor: pointer;
-  transition: filter 0.2s ease, outline 0.2s ease;
+  transition: filter 0.2s ease, box-shadow 0.2s ease;
 }
 
 body.is-editing img:hover {
-  filter: brightness(0.8);
-  outline: 3px solid var(--terracotta);
+  filter: brightness(0.85);
+  box-shadow: 0 0 0 3px var(--terracotta);
 }
+
 
 /* Floating Customizer Toolbar */
 .editor-toolbar {
@@ -1814,6 +1812,61 @@ body.is-editing .active-selected {
 .shape-option-btn:hover {
   background: rgba(255, 255, 255, 0.15);
 }
+
+/* ==========================================================================
+   Print & PDF Compilation Stylesheet
+   ========================================================================== */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #111111 !important;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+
+  .glass-nav,
+  .editor-toolbar,
+  .element-inspector,
+  .rail-controls,
+  .snap-guide-x,
+  .snap-guide-y,
+  .project-pagination,
+  .explore,
+  .shape-dropdown-menu {
+    display: none !important;
+  }
+
+  .intro {
+    min-height: auto !important;
+    padding: 24pt 15pt !important;
+    page-break-after: always;
+  }
+
+  .work-section,
+  .project-detail,
+  .photo-container,
+  .about-page-wrap {
+    padding: 15pt !important;
+    background: transparent !important;
+  }
+
+  .project-hero-media img,
+  .photo-card img,
+  .figure-item img {
+    max-height: 380pt !important;
+    page-break-inside: avoid;
+  }
+
+  .project-card {
+    page-break-inside: avoid;
+  }
+
+  @page {
+    margin: 1.2cm;
+    size: auto;
+  }
+}
+
 
 
 

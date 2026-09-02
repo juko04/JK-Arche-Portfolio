@@ -769,7 +769,7 @@
         <div class="print-project-header">
           <div>
             <h2>Children’s Museum</h2>
-            <p style="font-family: var(--serif); font-style: italic; font-size: 1.2vw; margin: 0.3vw 0 0; opacity: 0.9;">Cultural & Community Architecture</p>
+            <p style="font-size: 1.1vw; font-weight: 500; margin: 0.3vw 0 0; color: var(--ink); opacity: 0.85;">Cultural &amp; Community Architecture</p>
           </div>
           <p class="print-meta">Pearl Street Mall · Boulder, Colorado<br>Revit · Rhino · Enscape · Daylighting</p>
         </div>
@@ -783,7 +783,7 @@
               <p class="print-narrative-text">The Children’s Museum on Pearl Street Pedestrian Mall provides a third space for families to enjoy together, as well as supporting office spaces. Interlocking forms and large window facades deviate from the surrounding architecture to create a community hub in central Boulder.</p>
             </div>
             <div class="print-highlights-box">
-              <h4>Design & Daylighting Highlights</h4>
+              <h4>Design &amp; Daylighting Highlights</h4>
               <ul>
                 <li>Pedestrian-activated ground floor porosity and civic connectivity</li>
                 <li>Generous north-facing clerestory daylighting for interactive exhibition halls</li>
@@ -793,7 +793,7 @@
           </div>
         </div>
         <div class="print-sheet-footer">
-          <span>Julian Kotara · Architectural & Lighting Portfolio</span>
+          <span>Julian Kotara · Architectural &amp; Lighting Portfolio</span>
           <span>Page 02</span>
         </div>
       </div>
@@ -803,7 +803,7 @@
         <div class="print-project-header">
           <div>
             <h2>University Central Lobby</h2>
-            <p style="font-family: var(--serif); font-style: italic; font-size: 1.2vw; margin: 0.3vw 0 0; opacity: 0.9;">Architectural Lighting Design</p>
+            <p style="font-size: 1.1vw; font-weight: 500; margin: 0.3vw 0 0; color: var(--ink); opacity: 0.85;">Architectural Lighting Design</p>
           </div>
           <p class="print-meta">Higher Education Campus<br>AGi32 · Revit · Photometric Analysis</p>
         </div>
@@ -827,7 +827,7 @@
           </div>
         </div>
         <div class="print-sheet-footer">
-          <span>Julian Kotara · Architectural & Lighting Portfolio</span>
+          <span>Julian Kotara · Architectural &amp; Lighting Portfolio</span>
           <span>Page 03</span>
         </div>
       </div>
@@ -837,13 +837,13 @@
         <div class="print-project-header">
           <div>
             <h2>Exterior Bench Lighting Study</h2>
-            <p style="font-family: var(--serif); font-style: italic; font-size: 1.2vw; margin: 0.3vw 0 0; opacity: 0.9;">Research & Optical Mockups</p>
+            <p style="font-size: 1.1vw; font-weight: 500; margin: 0.3vw 0 0; color: var(--ink); opacity: 0.85;">Research &amp; Optical Mockups</p>
           </div>
           <p class="print-meta">Pedestrian Luminaire Design<br>Optics · CNC Fabrication · Testing</p>
         </div>
         <div class="print-project-grid">
           <div class="print-media-col">
-            <img src="assets/projects/bench-study.jpg" alt="Exterior Bench Mockup & Grazing Light">
+            <img src="assets/projects/bench-study.jpg" alt="Exterior Bench Mockup &amp; Grazing Light">
           </div>
           <div class="print-narrative-col">
             <div>
@@ -861,7 +861,7 @@
           </div>
         </div>
         <div class="print-sheet-footer">
-          <span>Julian Kotara · Architectural & Lighting Portfolio</span>
+          <span>Julian Kotara · Architectural &amp; Lighting Portfolio</span>
           <span>Page 04</span>
         </div>
       </div>
@@ -871,7 +871,7 @@
         <div class="print-project-header">
           <div>
             <h2>Luxury Mountain Home</h2>
-            <p style="font-family: var(--serif); font-style: italic; font-size: 1.2vw; margin: 0.3vw 0 0; opacity: 0.9;">Custom Residential Architecture</p>
+            <p style="font-size: 1.1vw; font-weight: 500; margin: 0.3vw 0 0; color: var(--ink); opacity: 0.85;">Custom Residential Architecture</p>
           </div>
           <p class="print-meta">Western North Carolina<br>Rhino · V-Ray · Solar Massing Analysis</p>
         </div>
@@ -895,7 +895,7 @@
           </div>
         </div>
         <div class="print-sheet-footer">
-          <span>Julian Kotara · Architectural & Lighting Portfolio</span>
+          <span>Julian Kotara · Architectural &amp; Lighting Portfolio</span>
           <span>Page 05</span>
         </div>
       </div>
@@ -904,20 +904,21 @@
       <div class="print-sheet">
         <div class="print-project-header">
           <div>
-            <h2>Photography & Visual Studies</h2>
-            <p style="font-family: var(--serif); font-style: italic; font-size: 1.2vw; margin: 0.3vw 0 0; opacity: 0.9;">Light, Shadow & Architectural Space</p>
+            <h2>Photography &amp; Visual Studies</h2>
+            <p style="font-size: 1.1vw; font-weight: 500; margin: 0.3vw 0 0; color: var(--ink); opacity: 0.85;">Light, Shadow &amp; Architectural Space</p>
           </div>
-          <p class="print-meta">Visual Studies · Ongoing<br>Natural & Artificial Illumination</p>
+          <p class="print-meta">Visual Studies · Ongoing<br>Natural &amp; Artificial Illumination</p>
         </div>
         <div class="print-photo-grid">
-          <img src="assets/photography/photo-1.jpg" alt="Angular Daylight & Shadow Study">
+          <img src="assets/photography/photo-1.jpg" alt="Angular Daylight &amp; Shadow Study">
           <img src="assets/projects/photography.jpg" alt="Architectural Perspective Study">
         </div>
         <div class="print-sheet-footer">
-          <span>Julian Kotara · Visual & Lighting Studies</span>
+          <span>Julian Kotara · Visual &amp; Lighting Studies</span>
           <span>Page 06</span>
         </div>
       </div>
+
     `;
   }
 

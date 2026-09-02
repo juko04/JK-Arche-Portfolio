@@ -1814,7 +1814,7 @@ body.is-editing .active-selected {
 }
 
 /* ==========================================================================
-   Dedicated Landscape Architectural PDF Portfolio Booklet
+   Dedicated Dynamic Landscape Architectural PDF Portfolio Booklet
    ========================================================================== */
 .print-portfolio-booklet {
   display: none !important;
@@ -1835,13 +1835,15 @@ body.is-editing .active-selected {
   html, body {
     margin: 0 !important;
     padding: 0 !important;
-    background: #ffffff !important;
+    background: var(--field) !important;
     width: 100vw !important;
     height: 100% !important;
     overflow: visible !important;
+    font-family: var(--sans) !important;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* Completely hide standard web elements */
+  /* Completely hide standard web chrome */
   .glass-nav,
   .editor-toolbar,
   .element-inspector,
@@ -1860,32 +1862,266 @@ body.is-editing .active-selected {
   .print-portfolio-booklet {
     display: block !important;
     width: 100vw !important;
-    background: #ffffff !important;
+    background: var(--field) !important;
   }
 
   .print-sheet {
     width: 100vw !important;
     height: 100vh !important;
+    max-height: 100vh !important;
     page-break-after: always !important;
     page-break-inside: avoid !important;
     position: relative !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
     display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    background: var(--field) !important;
+    color: var(--ink) !important;
+    padding: 3.5vw 4.5vw 2.5vw !important;
+  }
+
+  /* Cover Sheet Styling */
+  .print-cover-sheet {
+    position: relative;
     background: var(--field) !important;
   }
 
-  .print-sheet img.sheet-full-img {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: 100vw !important;
-    max-height: 100vh !important;
-    object-fit: contain !important;
-    display: block !important;
+  .print-cover-stripes {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      -35deg,
+      transparent,
+      transparent 18vw,
+      rgba(244, 243, 237, 0.45) 18vw,
+      rgba(244, 243, 237, 0.45) 23vw
+    );
+    z-index: 1;
+  }
+
+  .print-cover-top {
+    position: relative;
+    z-index: 2;
+  }
+
+  .print-cover-top .print-kicker {
+    font-family: var(--mono);
+    font-size: 1.1vw;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink);
+    margin: 0 0 1vw;
+  }
+
+  .print-cover-top h1 {
+    font-size: 5.5vw;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 0.95;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  .print-cover-top h2 {
+    font-family: var(--serif);
+    font-size: 4vw;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    margin: 0.8vw 0 0;
+    color: var(--ink);
+  }
+
+  .print-cover-middle {
+    position: relative;
+    z-index: 2;
+    max-width: 48vw;
+  }
+
+  .print-cover-middle p {
+    font-size: 1.6vw;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .print-cover-bottom {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: flex-end;
+    text-align: right;
+    border-top: 1.5px solid var(--line-strong);
+    padding-top: 1.2vw;
+  }
+
+  .print-cover-bottom h3 {
+    font-size: 1.5vw;
+    font-weight: 600;
+    margin: 0 0 0.3vw;
+    letter-spacing: -0.02em;
+  }
+
+  .print-cover-bottom p {
+    font-family: var(--mono);
+    font-size: 1vw;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0;
+    opacity: 0.8;
+  }
+
+  /* Project Presentation Sheets */
+  .print-project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 1.5px solid var(--line-strong);
+    padding-bottom: 1.2vw;
+    margin-bottom: 2vw;
+  }
+
+  .print-project-header h2 {
+    font-size: 3.2vw;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .print-project-header .print-meta {
+    font-family: var(--mono);
+    font-size: 0.95vw;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: right;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .print-project-grid {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 3vw;
+    flex: 1;
+    align-items: stretch;
+    min-height: 0;
+  }
+
+  .print-media-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5vw;
+    justify-content: center;
+    height: 100%;
+  }
+
+  .print-media-col img {
+    width: 100%;
+    height: 100%;
+    max-height: 60vh;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+  }
+
+  .print-narrative-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .print-narrative-lead {
+    font-family: var(--serif);
+    font-size: 1.45vw;
+    font-style: italic;
+    line-height: 1.35;
+    margin: 0 0 1.2vw;
+    color: var(--ink);
+  }
+
+  .print-narrative-text {
+    font-size: 1.05vw;
+    line-height: 1.5;
+    margin: 0 0 1.5vw;
+    color: var(--ink);
+    opacity: 0.92;
+  }
+
+  .print-highlights-box {
+    background: rgba(255, 255, 255, 0.35);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 1.2vw 1.5vw;
+    margin-top: auto;
+  }
+
+  .print-highlights-box h4 {
+    font-family: var(--mono);
+    font-size: 0.85vw;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0 0 0.6vw;
+  }
+
+  .print-highlights-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .print-highlights-box li {
+    font-size: 0.95vw;
+    line-height: 1.4;
+    position: relative;
+    padding-left: 1.2vw;
+    margin-bottom: 0.4vw;
+  }
+
+  .print-highlights-box li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--terracotta);
+  }
+
+  /* Print Footer */
+  .print-sheet-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1.5px solid var(--line-strong);
+    padding-top: 1vw;
+    margin-top: 1.5vw;
+    font-family: var(--mono);
+    font-size: 0.9vw;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* Photo Sheet Grid */
+  .print-photo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5vw;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .print-photo-grid img {
+    width: 100%;
+    height: 100%;
+    max-height: 60vh;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
   }
 }
+
 
 
 

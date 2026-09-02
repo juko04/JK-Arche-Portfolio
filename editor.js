@@ -1,11 +1,11 @@
 /**
  * Julian Kotara — Portfolio Interactive Visual Customizer & Pro Editor
- * Fully Scoped per Page, Zero-Jitter Alignment Snapping, Shape Engine,
- * Dedicated Shape/Text Inspectors, Universal Element Dragging, & Landscape PDF Export.
+ * Fully Scoped per Page, Layer Ordering (Z-Index), Dynamic Landscape PDF Booklet,
+ * Zero-Jitter Alignment Snapping, Shape Engine, Dedicated Inspectors, & Universal Dragging.
  */
 
 (function () {
-  const STORAGE_KEY = 'jk_portfolio_customizer_v3';
+  const STORAGE_KEY = 'jk_portfolio_customizer_v4';
 
   // Preset Color Palettes (Preserves exact lightness & contrast)
   const COLOR_PRESETS = [
@@ -17,7 +17,7 @@
     { name: 'Slate Greige', hue: 75, sat: '4%', color: '#a6a7a3' },
   ];
 
-  // Robust Page Key Normalization (Handles file://, localhost, gh-pages, trailing slashes)
+  // Normalized Page Key
   function getPageKey() {
     const path = (window.location.pathname || '').toLowerCase();
     if (path.includes('work')) return 'work.html';
@@ -56,13 +56,12 @@
     return state.pages[key];
   }
 
-  // Load from localStorage (with backwards compatibility)
+  // Load from localStorage (with backward compatibility)
   function loadState() {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('jk_portfolio_customizer_v2') || localStorage.getItem('jk_portfolio_customizer_state');
+      const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('jk_portfolio_customizer_v3') || localStorage.getItem('jk_portfolio_customizer_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
-        // Handle migration if needed
         if (parsed.pages) {
           state = { ...state, ...parsed };
         } else if (parsed.positions || parsed.shapes || parsed.texts) {
@@ -103,7 +102,7 @@
     }
   }
 
-  // Global Theme Application
+  // Theme Application
   function applyTheme(hue, sat = '26%') {
     state.globalTheme = { hue, sat };
     document.documentElement.style.setProperty('--theme-hue', hue);
@@ -160,7 +159,7 @@
       }
     });
 
-    // 6. Restore Styles (Font, Size, Color)
+    // 6. Restore Styles (Font, Size, Color, Layer Z-Index)
     Object.keys(page.styles || {}).forEach((key) => {
       const el = document.getElementById(key) || document.querySelector(`[data-custom-id="${key}"]`) || document.querySelector(`[data-edit-key="${key}"]`) || document.querySelector(key);
       if (el && page.styles[key]) {
@@ -237,7 +236,7 @@
 
       initialRect = element.getBoundingClientRect();
 
-      // Pre-cache static bounding boxes of all other elements at dragstart
+      // Pre-cache static bounding boxes of other elements at dragstart (prevents delta feedback jitter)
       cachedTargets = [];
       const candidateElements = document.querySelectorAll(
         '.draggable-item, .geo-circle, .custom-shape, h1, h2, h3, p, .kicker, .role, .project-card, .work-list-item, .about-content'
@@ -296,7 +295,7 @@
       let snapLineX = null;
       let snapLineY = null;
 
-      // Check X-axis snapping
+      // X-axis snapping
       for (const t of cachedTargets) {
         for (const dKey of ['left', 'centerX', 'right']) {
           for (const tKey of ['left', 'centerX', 'right']) {
@@ -312,7 +311,7 @@
         if (snapLineY !== null) break;
       }
 
-      // Check Y-axis snapping
+      // Y-axis snapping
       for (const t of cachedTargets) {
         for (const dKey of ['top', 'centerY', 'bottom']) {
           for (const tKey of ['top', 'centerY', 'bottom']) {
@@ -381,7 +380,7 @@
   }
 
   // --------------------------------------------------------------------------
-  // Selection & Contextual Property Inspector Bar
+  // Selection & Contextual Property Inspector Bar (With Layer Ordering)
   // --------------------------------------------------------------------------
   function selectElement(el) {
     if (activeElement === el) return;
@@ -407,7 +406,7 @@
     if (!inspectorEl || !activeElement) return;
     const rect = activeElement.getBoundingClientRect();
     const topPos = Math.max(12, rect.top - 48);
-    const leftPos = Math.min(Math.max(140, rect.left + rect.width / 2), window.innerWidth - 140);
+    const leftPos = Math.min(Math.max(160, rect.left + rect.width / 2), window.innerWidth - 160);
 
     inspectorEl.style.top = `${topPos}px`;
     inspectorEl.style.left = `${leftPos}px`;
@@ -437,7 +436,7 @@
     let html = '';
 
     if (isShape) {
-      // SHAPES ONLY: Size, Colors, Delete
+      // SHAPES ONLY: Size, Colors, Layer, Delete
       html += `
         <div class="inspector-group">
           <span style="font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,0.7);">Width</span>
@@ -457,7 +456,7 @@
         </div>
       `;
     } else if (isText) {
-      // TEXT ONLY: Font Family, Size, Bold, Italic, Color, Delete
+      // TEXT ONLY: Font Family, Size, Bold, Italic, Color, Layer, Delete
       html += `
         <div class="inspector-group">
           <select class="inspector-select" id="insp-font-family" title="Font Family">
@@ -483,8 +482,15 @@
       `;
     }
 
-    // Universal Delete
+    // LAYER ORDERING CONTROLS (Z-Index)
     html += `
+      <div class="inspector-group" title="Layer Stacking Order">
+        <span style="font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,0.7);">Layer</span>
+        <button class="inspector-btn" id="insp-layer-down" title="Send Backward (Behind other elements)">▼</button>
+        <button class="inspector-btn" id="insp-layer-up" title="Bring Forward (In front of other elements)">▲</button>
+      </div>
+
+      <!-- Universal Delete -->
       <div class="inspector-group">
         <button class="inspector-btn danger" id="insp-delete" title="Delete this element">🗑️ Delete</button>
       </div>
@@ -493,6 +499,21 @@
     inspectorEl.innerHTML = html;
     document.body.appendChild(inspectorEl);
     positionInspector();
+
+    // Hook Layer Ordering Events
+    inspectorEl.querySelector('#insp-layer-up')?.addEventListener('click', () => {
+      const currentZ = parseInt(window.getComputedStyle(el).zIndex, 10) || (el.classList.contains('geo-circle') ? 1 : 2);
+      const newZ = Math.min(100, currentZ + 2);
+      applyElementStyle(el, 'zIndex', newZ.toString());
+      showToast();
+    });
+
+    inspectorEl.querySelector('#insp-layer-down')?.addEventListener('click', () => {
+      const currentZ = parseInt(window.getComputedStyle(el).zIndex, 10) || (el.classList.contains('geo-circle') ? 1 : 2);
+      const newZ = Math.max(0, currentZ - 2);
+      applyElementStyle(el, 'zIndex', newZ.toString());
+      showToast();
+    });
 
     // Hook Inspector Events
     if (isShape) {
@@ -634,7 +655,6 @@
     const parent = document.querySelector('.intro') || document.querySelector('.project-detail') || document.querySelector('.sub-hero') || document.querySelector('main') || document.body;
     const parentRect = parent ? parent.getBoundingClientRect() : { left: 0, top: 0 };
 
-    // Calculate position directly in the center of the user's current scroll viewport
     const viewportCenterX = window.innerWidth / 2;
     const viewportCenterY = window.innerHeight * 0.4;
     const spawnLeft = Math.max(20, viewportCenterX - parentRect.left - 70);
@@ -666,7 +686,7 @@
   }
 
   // --------------------------------------------------------------------------
-  // Add Paragraph Helper (Scoped to Current Page)
+  // Add Paragraph Helper
   // --------------------------------------------------------------------------
   function addNewParagraph() {
     const activeContainer = document.querySelector('.intro-body') || document.querySelector('.story-paragraphs') || document.querySelector('.about-narrative') || document.querySelector('main');
@@ -701,6 +721,204 @@
     saveState();
     selectElement(p);
     p.focus();
+  }
+
+  // --------------------------------------------------------------------------
+  // Dynamic Live Landscape Architectural PDF Booklet Engine
+  // --------------------------------------------------------------------------
+  function buildDynamicLandscapeBooklet() {
+    let booklet = document.querySelector('#print-portfolio-booklet');
+    if (!booklet) {
+      booklet = document.createElement('div');
+      booklet.className = 'print-portfolio-booklet';
+      booklet.id = 'print-portfolio-booklet';
+      booklet.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(booklet);
+    }
+
+    // Pull live customized content from DOM / localStorage
+    const heroTitle = document.querySelector('#hero-title')?.innerHTML.replace(/<br>/gi, ' ') || 'Julian Kotara';
+    const heroKicker = document.querySelector('#hero-kicker')?.innerText || 'Architectural Engineering · Lighting Design';
+    const heroRole = document.querySelector('#hero-role')?.innerText || 'Designing for the dialogue between light, form, and spatial atmosphere.';
+    const heroCopy = document.querySelector('#hero-copy')?.innerText || 'From daylighting studies and photometric concepts to architectural massing and material texture, I explore how light shapes human experience in the built environment.';
+
+    // Dynamic Live Landscape Sheets
+    booklet.innerHTML = `
+      <!-- Sheet 1: Cover Sheet -->
+      <div class="print-sheet print-cover-sheet">
+        <div class="print-cover-stripes"></div>
+        <div class="print-cover-top">
+          <p class="print-kicker">${heroKicker}</p>
+          <h1>Design Portfolio</h1>
+          <h2>${heroTitle}</h2>
+        </div>
+        <div class="print-cover-middle">
+          <p>${heroRole}</p>
+          <p style="font-size: 1.15vw; margin-top: 1vw; opacity: 0.88; font-weight: 400;">${heroCopy}</p>
+        </div>
+        <div class="print-cover-bottom">
+          <div>
+            <h3>Architectural Engineering</h3>
+            <p>University of Colorado Boulder · 2026</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sheet 2: Children's Museum -->
+      <div class="print-sheet">
+        <div class="print-project-header">
+          <div>
+            <h2>Children’s Museum</h2>
+            <p style="font-family: var(--serif); font-style: italic; font-size: 1.2vw; margin: 0.3vw 0 0; opacity: 0.9;">Cultural & Community Architecture</p>
+          </div>
+          <p class="print-meta">Pearl Street Mall · Boulder, Colorado<br>Revit · Rhino · Enscape · Daylighting</p>
+        </div>
+        <div class="print-project-grid">
+          <div class="print-media-col">
+            <img src="assets/projects/childrens-museum.jpg" alt="Children's Museum Exterior Perspective">
+          </div>
+          <div class="print-narrative-col">
+            <div>
+              <p class="print-narrative-lead">"A dynamic cultural anchor on Boulder’s historic Pearl Street Mall, designed with interlocking geometric volumes that invite curiosity and civic engagement."</p>
+              <p class="print-narrative-text">The Children’s Museum on Pearl Street Pedestrian Mall provides a third space for families to enjoy together, as well as supporting office spaces. Interlocking forms and large window facades deviate from the surrounding architecture to create a community hub in central Boulder.</p>
+            </div>
+            <div class="print-highlights-box">
+              <h4>Design & Daylighting Highlights</h4>
+              <ul>
+                <li>Pedestrian-activated ground floor porosity and civic connectivity</li>
+                <li>Generous north-facing clerestory daylighting for interactive exhibition halls</li>
+                <li>Interlocking massing creating indoor-outdoor third spaces</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="print-sheet-footer">
+          <span>Julian Kotara · Architectural & Lighting Portfolio</span>
+          <span>Page 02</span>
+        </div>
+      </div>
+
+      <!-- Sheet 3: University Central Lobby -->
+      <div class="print-sheet">
+        <div class="print-project-header">
+          <div>
+            <h2>University Central Lobby</h2>
+            <p style="font-family: var(--serif); font-style: italic; font-size: 1.2vw; margin: 0.3vw 0 0; opacity: 0.9;">Architectural Lighting Design</p>
+          </div>
+          <p class="print-meta">Higher Education Campus<br>AGi32 · Revit · Photometric Analysis</p>
+        </div>
+        <div class="print-project-grid">
+          <div class="print-media-col">
+            <img src="assets/projects/central-lobby.jpg" alt="University Central Lobby Lighting Render">
+          </div>
+          <div class="print-narrative-col">
+            <div>
+              <p class="print-narrative-lead">"An illuminated five-story vertical commons unifying multi-disciplinary students, designed to serve as both an interior beacon and an urban lantern."</p>
+              <p class="print-narrative-text">Serving as the primary circulation spine across five academic floors, the lighting scheme focuses on dual perception: a vibrant, human-scale daytime gathering space, transitioning into a luminous evening beacon visible from the campus quad.</p>
+            </div>
+            <div class="print-highlights-box">
+              <h4>Lighting Strategy</h4>
+              <ul>
+                <li>Layered vertical illuminance to emphasize five-story volume</li>
+                <li>Integrated linear facade grazers for nighttime campus presence</li>
+                <li>Circadian-aware color temperature tuning (3000K–4000K)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="print-sheet-footer">
+          <span>Julian Kotara · Architectural & Lighting Portfolio</span>
+          <span>Page 03</span>
+        </div>
+      </div>
+
+      <!-- Sheet 4: Exterior Bench Lighting Study -->
+      <div class="print-sheet">
+        <div class="print-project-header">
+          <div>
+            <h2>Exterior Bench Lighting Study</h2>
+            <p style="font-family: var(--serif); font-style: italic; font-size: 1.2vw; margin: 0.3vw 0 0; opacity: 0.9;">Research & Optical Mockups</p>
+          </div>
+          <p class="print-meta">Pedestrian Luminaire Design<br>Optics · CNC Fabrication · Testing</p>
+        </div>
+        <div class="print-project-grid">
+          <div class="print-media-col">
+            <img src="assets/projects/bench-study.jpg" alt="Exterior Bench Mockup & Grazing Light">
+          </div>
+          <div class="print-narrative-col">
+            <div>
+              <p class="print-narrative-lead">"Investigating low-glare grazing optics and material reflectance to redefine human-scale nighttime seating in civic landscapes."</p>
+              <p class="print-narrative-text">Through physical 1:1 scale mockups and custom photometric testing, this study analyzed how grazing light interactively accentuates wooden slats and concrete plinths without creating direct visual glare for seated pedestrians.</p>
+            </div>
+            <div class="print-highlights-box">
+              <h4>Research Highlights</h4>
+              <ul>
+                <li>Concealed linear asymmetric optical distribution</li>
+                <li>Elimination of direct line-of-sight glare at seated eye level</li>
+                <li>Durable thermal and weatherproofing detail integration</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="print-sheet-footer">
+          <span>Julian Kotara · Architectural & Lighting Portfolio</span>
+          <span>Page 04</span>
+        </div>
+      </div>
+
+      <!-- Sheet 5: Luxury Mountain Home -->
+      <div class="print-sheet">
+        <div class="print-project-header">
+          <div>
+            <h2>Luxury Mountain Home</h2>
+            <p style="font-family: var(--serif); font-style: italic; font-size: 1.2vw; margin: 0.3vw 0 0; opacity: 0.9;">Custom Residential Architecture</p>
+          </div>
+          <p class="print-meta">Western North Carolina<br>Rhino · V-Ray · Solar Massing Analysis</p>
+        </div>
+        <div class="print-project-grid">
+          <div class="print-media-col">
+            <img src="assets/projects/mountain-home.jpg" alt="Mountain Home Exterior Perspective">
+          </div>
+          <div class="print-narrative-col">
+            <div>
+              <p class="print-narrative-lead">"Sculpted to echo the rolling contours of the Blue Ridge Mountains, integrating stepped outdoor terraces and calculated daylight apertures."</p>
+              <p class="print-narrative-text">Nestled into a sloping ridgeline, custom angular glazing mirrors the mountain silhouette, pulling natural southern daylight deep into the main living volumes while framing expansive panoramic views.</p>
+            </div>
+            <div class="print-highlights-box">
+              <h4>Design Highlights</h4>
+              <ul>
+                <li>Daylight-optimized solar orientation and deep overhangs</li>
+                <li>Stepped massing following natural mountain topography</li>
+                <li>Curated sightlines connecting interior to ridge vista</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="print-sheet-footer">
+          <span>Julian Kotara · Architectural & Lighting Portfolio</span>
+          <span>Page 05</span>
+        </div>
+      </div>
+
+      <!-- Sheet 6: Photography & Visual Studies -->
+      <div class="print-sheet">
+        <div class="print-project-header">
+          <div>
+            <h2>Photography & Visual Studies</h2>
+            <p style="font-family: var(--serif); font-style: italic; font-size: 1.2vw; margin: 0.3vw 0 0; opacity: 0.9;">Light, Shadow & Architectural Space</p>
+          </div>
+          <p class="print-meta">Visual Studies · Ongoing<br>Natural & Artificial Illumination</p>
+        </div>
+        <div class="print-photo-grid">
+          <img src="assets/photography/photo-1.jpg" alt="Angular Daylight & Shadow Study">
+          <img src="assets/projects/photography.jpg" alt="Architectural Perspective Study">
+        </div>
+        <div class="print-sheet-footer">
+          <span>Julian Kotara · Visual & Lighting Studies</span>
+          <span>Page 06</span>
+        </div>
+      </div>
+    `;
   }
 
   // --------------------------------------------------------------------------
@@ -760,8 +978,8 @@
           </div>
         </div>
 
-        <!-- Landscape PDF Booklet Export Button -->
-        <button class="editor-btn" id="editor-export-pdf" type="button" title="Print Landscape Architectural Portfolio PDF">📄 PDF</button>
+        <!-- Dynamic Landscape PDF Booklet Export Button -->
+        <button class="editor-btn" id="editor-export-pdf" type="button" title="Generate & Print Landscape Portfolio PDF">📄 PDF</button>
 
         <button class="editor-btn" id="editor-reset" type="button" title="Reset all custom edits to default">↺ Reset</button>
         
@@ -789,7 +1007,6 @@
       if (!on) {
         selectElement(null);
         hideSnapGuides();
-        // Re-apply restoreDOM to guarantee 100% position parity in normal mode
         restoreDOM();
       }
     }
@@ -842,9 +1059,9 @@
       if (shapeMenu) shapeMenu.style.display = 'none';
     });
 
-    // Landscape PDF Export
+    // Dynamic Landscape PDF Export
     toolbar.querySelector('#editor-export-pdf').addEventListener('click', () => {
-      ensurePrintBookletInDOM();
+      buildDynamicLandscapeBooklet();
       window.print();
     });
 
@@ -852,6 +1069,7 @@
     toolbar.querySelector('#editor-reset').addEventListener('click', () => {
       if (confirm('Reset all custom text, added shapes, positions, and color edits back to defaults?')) {
         localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem('jk_portfolio_customizer_v3');
         localStorage.removeItem('jk_portfolio_customizer_v2');
         localStorage.removeItem('jk_portfolio_customizer_state');
         location.reload();
@@ -873,27 +1091,6 @@
       if (e.target.closest('.editor-toolbar') || e.target.closest('.element-inspector') || e.target.closest('.draggable-item')) return;
       selectElement(null);
     });
-  }
-
-  // Ensure Print Booklet exists dynamically on any page when printing
-  function ensurePrintBookletInDOM() {
-    if (document.querySelector('#print-portfolio-booklet')) return;
-
-    const booklet = document.createElement('div');
-    booklet.className = 'print-portfolio-booklet';
-    booklet.id = 'print-portfolio-booklet';
-    booklet.setAttribute('aria-hidden', 'true');
-
-    booklet.innerHTML = `
-      <div class="print-sheet"><img class="sheet-full-img" src="assets/page-2.jpg" alt="Design Portfolio - Julian Kotara Cover"></div>
-      <div class="print-sheet"><img class="sheet-full-img" src="assets/page-3.jpg" alt="Children's Museum Architectural Design Sheet"></div>
-      <div class="print-sheet"><img class="sheet-full-img" src="assets/page-4.jpg" alt="University Central Lobby Architectural Lighting Sheet"></div>
-      <div class="print-sheet"><img class="sheet-full-img" src="assets/page-5.jpg" alt="Exterior Bench Lighting Study Sheet"></div>
-      <div class="print-sheet"><img class="sheet-full-img" src="assets/page-6.jpg" alt="Mountain Residential Home Design Sheet"></div>
-      <div class="print-sheet"><img class="sheet-full-img" src="assets/page-7.jpg" alt="Photography & Visual Light Studies Sheet"></div>
-    `;
-
-    document.body.appendChild(booklet);
   }
 
   // --------------------------------------------------------------------------
@@ -958,7 +1155,6 @@
   function init() {
     loadState();
     createSnapGuides();
-    ensurePrintBookletInDOM();
 
     // Universal Draggable Selectors (Setup IDs FIRST so restoreDOM finds them reliably!)
     const draggableSelectors = [
@@ -994,7 +1190,6 @@
       });
     });
 
-    // Restore saved transforms, styles, texts, and shapes
     restoreDOM();
     setupEditableElements();
     createEditorToolbar();

@@ -190,21 +190,30 @@ em {
 }
 
 .geo-circle-1 {
-  width: min(55vw, 650px);
-  height: min(55vw, 650px);
-  border: 1px solid var(--line-strong);
+  width: clamp(140px, 16vw, 250px);
+  height: clamp(140px, 16vw, 250px);
   border-radius: 50%;
-  right: -12vw;
-  bottom: -15vw;
+  background: var(--field-light);
+  left: clamp(380px, 44vw, 620px);
+  top: clamp(160px, 28vh, 320px);
 }
 
 .geo-circle-2 {
-  width: min(22vw, 240px);
-  height: min(22vw, 240px);
+  width: clamp(240px, 28vw, 440px);
+  height: clamp(240px, 28vw, 440px);
   border-radius: 50%;
-  background: var(--field-light);
-  right: 20vw;
-  top: 14vh;
+  background: rgba(244, 243, 237, 0.42);
+  left: clamp(480px, 52vw, 760px);
+  top: clamp(100px, 16vh, 200px);
+}
+
+.geo-circle-3 {
+  width: clamp(90px, 10vw, 160px);
+  height: clamp(90px, 10vw, 160px);
+  border-radius: 50%;
+  background: #3d3434;
+  left: clamp(490px, 52vw, 740px);
+  top: clamp(360px, 60vh, 580px);
 }
 
 
@@ -1675,19 +1684,28 @@ em {
   }
 
   .geo-circle-1 {
-    width: 170px;
-    height: 170px;
-    right: -40px;
-    bottom: 30px;
+    width: 85px;
+    height: 85px;
+    right: 70px;
+    top: 125px;
     left: auto;
-    top: auto;
+    bottom: auto;
   }
 
   .geo-circle-2 {
-    width: 120px;
-    height: 120px;
+    width: 150px;
+    height: 150px;
     right: -25px;
-    top: 85px;
+    top: 75px;
+    left: auto;
+    bottom: auto;
+  }
+
+  .geo-circle-3 {
+    width: 55px;
+    height: 55px;
+    right: 55px;
+    top: 215px;
     left: auto;
     bottom: auto;
   }

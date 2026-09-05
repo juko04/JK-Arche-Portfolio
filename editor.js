@@ -5,7 +5,7 @@
  */
 
 (function () {
-  const STORAGE_KEY = 'jk_portfolio_customizer_v4';
+  const STORAGE_KEY = 'jk_portfolio_customizer_v5';
 
   // Preset Color Palettes (Preserves exact lightness & contrast)
   const COLOR_PRESETS = [
@@ -61,7 +61,7 @@
   // Load from localStorage (with backward compatibility)
   function loadState() {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('jk_portfolio_customizer_v3') || localStorage.getItem('jk_portfolio_customizer_v2');
+      const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.pages) {
@@ -1475,6 +1475,7 @@
     const draggableSelectors = [
       '.geo-circle-1',
       '.geo-circle-2',
+      '.geo-circle-3',
       '#hero-kicker',
       '#hero-title',
       '#hero-role',

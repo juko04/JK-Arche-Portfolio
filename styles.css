@@ -1675,17 +1675,21 @@ em {
   }
 
   .geo-circle-1 {
-    width: 130px;
-    height: 130px;
-    right: -25px;
-    top: 90px;
+    width: 170px;
+    height: 170px;
+    right: -40px;
+    bottom: 30px;
+    left: auto;
+    top: auto;
   }
 
   .geo-circle-2 {
-    width: 200px;
-    height: 200px;
-    left: -40px;
-    bottom: 30px;
+    width: 120px;
+    height: 120px;
+    right: -25px;
+    top: 85px;
+    left: auto;
+    bottom: auto;
   }
 
   /* Homepage Selected Work Rail */
@@ -2114,70 +2118,6 @@ em {
     font-size: 13px;
     line-height: 1.65;
   }
-
-  /* Customizer & Editor Toolbar on Phones */
-  .editor-toolbar {
-    bottom: max(10px, env(safe-area-inset-bottom, 10px));
-    left: 8px;
-    right: 8px;
-    transform: none;
-    max-width: calc(100% - 16px);
-    padding: 8px 12px;
-    gap: 8px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .editor-toolbar::-webkit-scrollbar {
-    display: none;
-  }
-
-  .editor-toggle-btn {
-    padding: 6px 12px;
-    font-size: 10px;
-    flex-shrink: 0;
-  }
-
-  .color-swatches {
-    flex-shrink: 0;
-    gap: 4px;
-  }
-
-  .color-swatch-btn {
-    width: 18px;
-    height: 18px;
-  }
-
-  .hue-slider-wrap {
-    flex-shrink: 0;
-  }
-
-  .editor-btn {
-    flex-shrink: 0;
-    padding: 5px 9px;
-    font-size: 9px;
-  }
-
-  .element-inspector {
-    max-width: 92vw;
-    overflow-x: auto;
-    padding: 6px 10px;
-    gap: 6px;
-    border-radius: 20px;
-  }
-
-  .transform-handle {
-    width: 14px;
-    height: 14px;
-    touch-action: none;
-  }
-
-  .handle-rot {
-    width: 16px;
-    height: 16px;
-    touch-action: none;
-  }
 }
 
 
@@ -2207,11 +2147,28 @@ body.is-editing .geo-circle {
   pointer-events: auto !important;
   cursor: grab;
   box-shadow: 0 0 0 2px rgba(154, 74, 60, 0.65);
-  z-index: 15;
+  z-index: 5;
 }
 
 body.is-editing .geo-circle:active {
   cursor: grabbing;
+}
+
+/* Hero typography stays above background circles */
+.hero-kicker,
+.hero-title,
+.intro-body,
+.intro-bottom {
+  position: relative;
+  z-index: 2;
+}
+
+body.is-editing .hero-kicker,
+body.is-editing .hero-title,
+body.is-editing .intro-body,
+body.is-editing .intro-bottom {
+  position: relative;
+  z-index: 20;
 }
 
 body.is-editing .draggable-item {
@@ -2407,16 +2364,6 @@ body.is-editing img:hover {
 
 .saved-toast.show {
   opacity: 1;
-}
-
-@media (max-width: 800px) {
-  .editor-toolbar {
-    flex-wrap: wrap;
-    border-radius: var(--radius-md);
-    bottom: 10px;
-    padding: 10px 14px;
-    gap: 10px;
-  }
 }
 
 /* ==========================================================================
@@ -2724,6 +2671,130 @@ body.is-editing .active-selected {
 
 .shape-option-btn:hover {
   background: rgba(255, 255, 255, 0.15);
+}
+
+/* ==========================================================================
+   Mobile Responsive Customizer & Contextual Inspector (Phones & Small Screens)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .editor-toolbar {
+    position: fixed !important;
+    bottom: max(10px, env(safe-area-inset-bottom, 10px)) !important;
+    left: 10px !important;
+    right: 10px !important;
+    transform: none !important;
+    width: auto !important;
+    max-width: calc(100% - 20px) !important;
+    height: 48px !important;
+    padding: 5px 12px !important;
+    border-radius: 26px !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 8px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+    z-index: 9999 !important;
+  }
+
+  .editor-toolbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .editor-toolbar.collapsed {
+    width: auto !important;
+    padding: 5px 12px !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .editor-controls-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .editor-toggle-btn {
+    padding: 6px 12px;
+    font-size: 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .editor-divider {
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .color-swatches {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .color-swatch-btn {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .hue-slider-wrap {
+    flex-shrink: 0;
+    gap: 4px;
+  }
+
+  .hue-slider-wrap label {
+    font-size: 9px;
+  }
+
+  .hue-slider {
+    width: 60px;
+    height: 5px;
+  }
+
+  .editor-btn {
+    padding: 5px 9px;
+    font-size: 9px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .element-inspector {
+    position: fixed !important;
+    top: auto !important;
+    bottom: calc(62px + env(safe-area-inset-bottom, 10px)) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    max-width: calc(100vw - 20px) !important;
+    width: max-content;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    padding: 6px 12px;
+    gap: 8px;
+    border-radius: 24px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+    z-index: 10001;
+  }
+
+  .element-inspector::-webkit-scrollbar {
+    display: none;
+  }
+
+  .transform-handle {
+    width: 14px;
+    height: 14px;
+    touch-action: none;
+  }
+
+  .handle-rot {
+    width: 16px;
+    height: 16px;
+    touch-action: none;
+  }
 }
 
 /* ==========================================================================

@@ -38,6 +38,8 @@
   let isEditing = false;
   let activeElement = null;
   let inspectorEl = null;
+  let transformBox = null;
+  let isTransforming = false;
   let snapGuideX = null;
   let snapGuideY = null;
 
@@ -234,13 +236,19 @@
 
       // 7. Restore Positions, Dimensions & Rotations
       if (page.positions && typeof page.positions === 'object') {
+        const isMobile = window.innerWidth <= 768;
         Object.keys(page.positions).forEach((id) => {
           try {
             const el = findTargetElement(id);
             if (el && page.positions[id]) {
+              // On mobile viewports, do NOT apply desktop translate3d coordinates to background geometric circles
+              // or structural hero text because desktop pixel offsets break mobile responsive layout.
+              if (isMobile && (id.startsWith('geo-circle') || el.classList.contains('geo-circle') || el.classList.contains('hero-title') || el.classList.contains('hero-kicker') || el.classList.contains('intro-body'))) {
+                return;
+              }
               const { x, y, width, height, rotate } = page.positions[id];
-              if (width) el.style.width = width;
-              if (height) el.style.height = height;
+              if (width && !isMobile) el.style.width = width;
+              if (height && !isMobile) el.style.height = height;
               const rot = rotate || 0;
               el.style.transform = `translate3d(${x || 0}px, ${y || 0}px, 0) rotate(${rot}deg)`;
               el.dataset.dragX = x || 0;
@@ -282,6 +290,152 @@
   }
 
   // --------------------------------------------------------------------------
+  // Transform Handles & Rotation (Photoshop / InDesign Grips)
+  // --------------------------------------------------------------------------
+  function createTransformBox() {
+    if (transformBox) return;
+    transformBox = document.createElement('div');
+    transformBox.className = 'transform-bounding-box';
+    transformBox.id = 'transform-bounding-box';
+    transformBox.style.display = 'none';
+
+    transformBox.innerHTML = `
+      <div class="handle-rot-stem"></div>
+      <div class="handle-rot" data-handle="rot" title="Drag to Rotate (Hold Shift for 15° snap)"></div>
+      <div class="transform-handle handle-nw" data-handle="nw" title="Resize Top-Left"></div>
+      <div class="transform-handle handle-n" data-handle="n" title="Resize Top"></div>
+      <div class="transform-handle handle-ne" data-handle="ne" title="Resize Top-Right"></div>
+      <div class="transform-handle handle-e" data-handle="e" title="Resize Right"></div>
+      <div class="transform-handle handle-se" data-handle="se" title="Resize Bottom-Right"></div>
+      <div class="transform-handle handle-s" data-handle="s" title="Resize Bottom"></div>
+      <div class="transform-handle handle-sw" data-handle="sw" title="Resize Bottom-Left"></div>
+      <div class="transform-handle handle-w" data-handle="w" title="Resize Left"></div>
+    `;
+
+    document.body.appendChild(transformBox);
+
+    // Handle Pointer Down
+    transformBox.querySelectorAll('[data-handle]').forEach((h) => {
+      h.addEventListener('mousedown', onHandleMouseDown);
+      h.addEventListener('touchstart', onHandleMouseDown, { passive: false });
+    });
+  }
+
+  function updateTransformBox() {
+    if (!transformBox) createTransformBox();
+    if (!activeElement || !isEditing) {
+      if (transformBox) transformBox.style.display = 'none';
+      return;
+    }
+
+    const rect = activeElement.getBoundingClientRect();
+    transformBox.style.display = 'block';
+    transformBox.style.width = `${rect.width}px`;
+    transformBox.style.height = `${rect.height}px`;
+    transformBox.style.left = `${rect.left}px`;
+    transformBox.style.top = `${rect.top}px`;
+    const rot = parseFloat(activeElement.dataset.rotate) || 0;
+    transformBox.style.transform = `rotate(${rot}deg)`;
+  }
+
+  function onHandleMouseDown(e) {
+    if (!activeElement || !isEditing) return;
+    e.stopPropagation();
+    e.preventDefault();
+
+    isTransforming = true;
+    const handleType = e.currentTarget.dataset.handle;
+    const isTouch = e.type === 'touchstart';
+    const startX = isTouch ? e.touches[0].clientX : e.clientX;
+    const startY = isTouch ? e.touches[0].clientY : e.clientY;
+
+    const initialWidth = activeElement.offsetWidth;
+    const initialHeight = activeElement.offsetHeight;
+    const initialDragX = parseFloat(activeElement.dataset.dragX) || 0;
+    const initialDragY = parseFloat(activeElement.dataset.dragY) || 0;
+    const initialRotate = parseFloat(activeElement.dataset.rotate) || 0;
+
+    const rect = activeElement.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    function onMove(evt) {
+      if (!isTransforming) return;
+      const clientX = evt.type === 'touchmove' ? evt.touches[0].clientX : evt.clientX;
+      const clientY = evt.type === 'touchmove' ? evt.touches[0].clientY : evt.clientY;
+
+      if (handleType === 'rot') {
+        const rad = Math.atan2(clientY - centerY, clientX - centerX);
+        let deg = Math.round((rad * (180 / Math.PI)) + 90);
+        if (evt.shiftKey) {
+          deg = Math.round(deg / 15) * 15;
+        }
+        deg = (deg % 360 + 360) % 360;
+
+        activeElement.dataset.rotate = deg;
+        activeElement.style.transform = `translate3d(${initialDragX}px, ${initialDragY}px, 0) rotate(${deg}deg)`;
+      } else {
+        let deltaX = clientX - startX;
+        let deltaY = clientY - startY;
+
+        if (initialRotate !== 0) {
+          const rad = -initialRotate * (Math.PI / 180);
+          const cos = Math.cos(rad);
+          const sin = Math.sin(rad);
+          const rotDeltaX = deltaX * cos - deltaY * sin;
+          const rotDeltaY = deltaX * sin + deltaY * cos;
+          deltaX = rotDeltaX;
+          deltaY = rotDeltaY;
+        }
+
+        let newW = initialWidth;
+        let newH = initialHeight;
+
+        if (handleType.includes('e')) newW = Math.max(15, initialWidth + deltaX);
+        if (handleType.includes('w')) newW = Math.max(15, initialWidth - deltaX);
+        if (handleType.includes('s')) newH = Math.max(10, initialHeight + deltaY);
+        if (handleType.includes('n')) newH = Math.max(10, initialHeight - deltaY);
+
+        activeElement.style.width = `${Math.round(newW)}px`;
+        activeElement.style.height = `${Math.round(newH)}px`;
+      }
+
+      updateTransformBox();
+      positionInspector();
+      if (evt.type === 'touchmove') evt.preventDefault();
+    }
+
+    function onUp() {
+      if (!isTransforming) return;
+      isTransforming = false;
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('touchend', onUp);
+
+      const id = getElementKey(activeElement);
+      const page = getPageData();
+      if (!page.positions) page.positions = {};
+      const rot = parseFloat(activeElement.dataset.rotate) || 0;
+      page.positions[id] = {
+        x: parseFloat(activeElement.dataset.dragX) || 0,
+        y: parseFloat(activeElement.dataset.dragY) || 0,
+        width: activeElement.style.width || `${activeElement.offsetWidth}px`,
+        height: activeElement.style.height || `${activeElement.offsetHeight}px`,
+        rotate: rot
+      };
+      saveState();
+      updateTransformBox();
+      positionInspector();
+    }
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend', onUp);
+  }
+
+  // --------------------------------------------------------------------------
   // Universal Drag & Selection Controller
   // --------------------------------------------------------------------------
   function initDragAndSelect(element, customId) {
@@ -298,7 +452,7 @@
 
     function onMouseDown(e) {
       if (!isEditing) return;
-      if (e.target.closest('.element-inspector') || e.target.closest('.editor-toolbar')) return;
+      if (e.target.closest('.element-inspector') || e.target.closest('.editor-toolbar') || e.target.closest('.transform-bounding-box')) return;
 
       selectElement(element);
 
@@ -345,8 +499,11 @@
     function onMouseMove(e) {
       if (!isDragging || !isEditing) return;
 
-      const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
-      const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+      const clientX = e.type === 'touchmove' ? evtClientX(e) : e.clientX;
+      const clientY = e.type === 'touchmove' ? evtClientY(e) : e.clientY;
+
+      function evtClientX(evt) { return evt.touches && evt.touches[0] ? evt.touches[0].clientX : evt.clientX; }
+      function evtClientY(evt) { return evt.touches && evt.touches[0] ? evt.touches[0].clientY : evt.clientY; }
 
       const rawDeltaX = clientX - startMouseX;
       const rawDeltaY = clientY - startMouseY;
@@ -408,8 +565,9 @@
 
       const finalTranslateX = candidateX + snapOffsetX;
       const finalTranslateY = candidateY + snapOffsetY;
+      const rot = parseFloat(element.dataset.rotate) || 0;
 
-      element.style.transform = `translate3d(${finalTranslateX}px, ${finalTranslateY}px, 0)`;
+      element.style.transform = `translate3d(${finalTranslateX}px, ${finalTranslateY}px, 0) rotate(${rot}deg)`;
       element.dataset.tempX = finalTranslateX;
       element.dataset.tempY = finalTranslateY;
 
@@ -428,6 +586,7 @@
         snapGuideY.style.display = 'none';
       }
 
+      updateTransformBox();
       positionInspector();
       if (e.type === 'touchmove') e.preventDefault();
     }
@@ -449,8 +608,16 @@
       element.dataset.dragY = finalY;
 
       const page = getPageData();
-      page.positions[id] = { x: finalX, y: finalY };
+      const rot = parseFloat(element.dataset.rotate) || 0;
+      page.positions[id] = {
+        x: finalX,
+        y: finalY,
+        width: element.style.width || `${element.offsetWidth}px`,
+        height: element.style.height || `${element.offsetHeight}px`,
+        rotate: rot
+      };
       saveState();
+      updateTransformBox();
       positionInspector();
     }
 
@@ -469,8 +636,10 @@
     if (activeElement && isEditing) {
       activeElement.classList.add('active-selected');
       renderInspector(activeElement);
+      updateTransformBox();
     } else {
       hideInspector();
+      if (transformBox) transformBox.style.display = 'none';
     }
   }
 
@@ -483,12 +652,21 @@
 
   function positionInspector() {
     if (!inspectorEl || !activeElement) return;
+    if (window.innerWidth <= 768) {
+      inspectorEl.style.top = 'auto';
+      inspectorEl.style.bottom = '68px';
+      inspectorEl.style.left = '50%';
+      inspectorEl.style.transform = 'translateX(-50%)';
+      return;
+    }
     const rect = activeElement.getBoundingClientRect();
     const topPos = Math.max(12, rect.top - 48);
     const leftPos = Math.min(Math.max(160, rect.left + rect.width / 2), window.innerWidth - 160);
 
     inspectorEl.style.top = `${topPos}px`;
     inspectorEl.style.left = `${leftPos}px`;
+    inspectorEl.style.bottom = 'auto';
+    inspectorEl.style.transform = 'translateX(-50%)';
   }
 
   function renderInspector(el) {
@@ -515,20 +693,8 @@
     let html = '';
 
     if (isShape) {
-      // SHAPES ONLY: Size, Colors, Layer, Delete
+      // SHAPES ONLY: Color Picker (Size & rotation handled via visual corner/edge handles)
       html += `
-        <div class="inspector-group">
-          <span style="font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,0.7);">Width</span>
-          <button class="inspector-btn" id="insp-w-down" title="Decrease Width">-</button>
-          <button class="inspector-btn" id="insp-w-up" title="Increase Width">+</button>
-        </div>
-
-        <div class="inspector-group">
-          <span style="font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,0.7);">Height</span>
-          <button class="inspector-btn" id="insp-h-down" title="Decrease Height">-</button>
-          <button class="inspector-btn" id="insp-h-up" title="Increase Height">+</button>
-        </div>
-
         <div class="inspector-group">
           <label style="font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,0.7);">Color</label>
           <input type="color" class="inspector-color-input" id="insp-shape-color" title="Shape Color" value="${rgbToHex(window.getComputedStyle(el).backgroundColor) || '#b7bd91'}">
@@ -596,28 +762,6 @@
 
     // Hook Inspector Events
     if (isShape) {
-      inspectorEl.querySelector('#insp-w-up')?.addEventListener('click', () => {
-        const w = parseFloat(window.getComputedStyle(el).width) || 100;
-        applyElementStyle(el, 'width', `${Math.round(w * 1.15)}px`);
-        positionInspector();
-      });
-      inspectorEl.querySelector('#insp-w-down')?.addEventListener('click', () => {
-        const w = parseFloat(window.getComputedStyle(el).width) || 100;
-        applyElementStyle(el, 'width', `${Math.max(10, Math.round(w * 0.85))}px`);
-        positionInspector();
-      });
-
-      inspectorEl.querySelector('#insp-h-up')?.addEventListener('click', () => {
-        const h = parseFloat(window.getComputedStyle(el).height) || 100;
-        applyElementStyle(el, 'height', `${Math.round(h * 1.15)}px`);
-        positionInspector();
-      });
-      inspectorEl.querySelector('#insp-h-down')?.addEventListener('click', () => {
-        const h = parseFloat(window.getComputedStyle(el).height) || 100;
-        applyElementStyle(el, 'height', `${Math.max(2, Math.round(h * 0.85))}px`);
-        positionInspector();
-      });
-
       inspectorEl.querySelector('#insp-shape-color')?.addEventListener('input', (e) => {
         if (el.classList.contains('shape-line')) {
           applyElementStyle(el, 'backgroundColor', e.target.value);
@@ -631,27 +775,32 @@
     if (isText) {
       inspectorEl.querySelector('#insp-font-family')?.addEventListener('change', (e) => {
         applyElementStyle(el, 'fontFamily', e.target.value);
+        updateTransformBox();
       });
 
       inspectorEl.querySelector('#insp-size-up')?.addEventListener('click', () => {
         const curr = parseFloat(window.getComputedStyle(el).fontSize) || 16;
         applyElementStyle(el, 'fontSize', `${curr + 2}px`);
+        updateTransformBox();
       });
       inspectorEl.querySelector('#insp-size-down')?.addEventListener('click', () => {
         const curr = parseFloat(window.getComputedStyle(el).fontSize) || 16;
         applyElementStyle(el, 'fontSize', `${Math.max(10, curr - 2)}px`);
+        updateTransformBox();
       });
 
       inspectorEl.querySelector('#insp-bold')?.addEventListener('click', (e) => {
         const isBold = el.style.fontWeight === 'bold' || window.getComputedStyle(el).fontWeight >= 600;
         applyElementStyle(el, 'fontWeight', isBold ? '400' : '700');
         e.currentTarget.classList.toggle('active', !isBold);
+        updateTransformBox();
       });
 
       inspectorEl.querySelector('#insp-italic')?.addEventListener('click', (e) => {
         const isItalic = el.style.fontStyle === 'italic';
         applyElementStyle(el, 'fontStyle', isItalic ? 'normal' : 'italic');
         e.currentTarget.classList.toggle('active', !isItalic);
+        updateTransformBox();
       });
 
       inspectorEl.querySelector('#insp-color')?.addEventListener('input', (e) => {
@@ -690,6 +839,7 @@
 
     el.remove();
     hideInspector();
+    if (transformBox) transformBox.style.display = 'none';
     activeElement = null;
     saveState();
   }
@@ -1145,6 +1295,7 @@
       if (!on) {
         selectElement(null);
         hideSnapGuides();
+        if (transformBox) transformBox.style.display = 'none';
         restoreDOM();
       }
     }
@@ -1188,19 +1339,22 @@
 
     shapeMenu.querySelectorAll('.shape-option-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
-        addNewShape(btn.dataset.shape);
+        const type = btn.dataset.shape;
+        createShapeDOM({
+          id: `custom-shape-${Date.now()}`,
+          type: type,
+          filled: type === 'circle' || type === 'rect',
+          width: type === 'line' ? '200px' : '140px',
+          height: type === 'line' ? '2px' : '140px',
+          top: '35vh',
+          left: '42vw'
+        });
         shapeMenu.style.display = 'none';
       });
     });
 
     document.addEventListener('click', () => {
       if (shapeMenu) shapeMenu.style.display = 'none';
-    });
-
-    // Dynamic Landscape PDF Export
-    toolbar.querySelector('#editor-export-pdf').addEventListener('click', () => {
-      buildDynamicLandscapeBooklet();
-      window.print();
     });
 
     // Reset All
@@ -1210,6 +1364,14 @@
           .forEach(k => localStorage.removeItem(k));
         location.reload();
       }
+    });
+
+    // Generate & Print Landscape PDF
+    toolbar.querySelector('#editor-export-pdf').addEventListener('click', () => {
+      buildDynamicLandscapeBooklet();
+      setTimeout(() => {
+        window.print();
+      }, 350);
     });
 
     // Global Keyboard: Delete key & 'e' toggle
@@ -1227,6 +1389,21 @@
       if (e.target.closest('.editor-toolbar') || e.target.closest('.element-inspector') || e.target.closest('.draggable-item') || e.target.closest('.transform-bounding-box')) return;
       selectElement(null);
     });
+
+    // Keep transform box synced with window scroll and resize
+    window.addEventListener('scroll', () => {
+      if (activeElement && isEditing) {
+        updateTransformBox();
+        positionInspector();
+      }
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      if (activeElement && isEditing) {
+        updateTransformBox();
+        positionInspector();
+      }
+    }, { passive: true });
   }
 
   // --------------------------------------------------------------------------
@@ -1292,6 +1469,7 @@
   function init() {
     loadState();
     createSnapGuides();
+    createTransformBox();
 
     // Universal Draggable Selectors (Setup IDs FIRST so restoreDOM finds them reliably!)
     const draggableSelectors = [

@@ -115,81 +115,148 @@
   }
 
   function findTargetElement(key) {
-    if (!key) return null;
-    return document.getElementById(key) ||
-      document.querySelector(`[data-custom-id="${key}"]`) ||
-      document.querySelector(`[data-edit-key="${key}"]`) ||
-      document.querySelector(key);
+    if (!key || typeof key !== 'string') return null;
+
+    // Fast path: direct ID lookup
+    const byId = document.getElementById(key);
+    if (byId) return byId;
+
+    // Safe escaped attribute lookups
+    try {
+      const escaped = (typeof CSS !== 'undefined' && CSS.escape)
+        ? CSS.escape(key)
+        : key.replace(/["\\]/g, '\\$&');
+
+      const byCustomId = document.querySelector(`[data-custom-id="${escaped}"]`);
+      if (byCustomId) return byCustomId;
+
+      const byEditKey = document.querySelector(`[data-edit-key="${escaped}"]`);
+      if (byEditKey) return byEditKey;
+    } catch (e) {
+      // Ignore invalid attribute escape errors
+    }
+
+    // Direct CSS selector lookup (safe try/catch prevents DOMException)
+    try {
+      return document.querySelector(key);
+    } catch (e) {
+      return null;
+    }
   }
 
   // --------------------------------------------------------------------------
   // Restore State to DOM (Scoped to current page)
   // --------------------------------------------------------------------------
   function restoreDOM() {
-    // 1. Theme
-    if (state.globalTheme?.hue !== undefined) {
-      applyTheme(state.globalTheme.hue, state.globalTheme.sat || '26%');
+    try {
+      // 1. Theme
+      if (state.globalTheme?.hue !== undefined) {
+        applyTheme(state.globalTheme.hue, state.globalTheme.sat || '26%');
+      }
+
+      const page = getPageData();
+      if (!page) return;
+
+      // 2. Remove Deleted Elements
+      if (Array.isArray(page.deleted)) {
+        page.deleted.forEach((key) => {
+          try {
+            const el = findTargetElement(key);
+            if (el) el.remove();
+          } catch (e) {
+            console.warn('Error removing deleted element:', key, e);
+          }
+        });
+      }
+
+      // 3. Restore Text Content
+      if (page.texts && typeof page.texts === 'object') {
+        Object.keys(page.texts).forEach((key) => {
+          try {
+            const el = findTargetElement(key);
+            if (el && typeof page.texts[key] === 'string') {
+              el.innerHTML = page.texts[key];
+            }
+          } catch (e) {
+            console.warn('Error restoring text:', key, e);
+          }
+        });
+      }
+
+      // 4. Restore Custom Shapes for this page
+      if (Array.isArray(page.shapes)) {
+        page.shapes.forEach((shapeData) => {
+          try {
+            if (shapeData && shapeData.id && !document.getElementById(shapeData.id)) {
+              createShapeDOM(shapeData);
+            }
+          } catch (e) {
+            console.warn('Error restoring shape:', shapeData, e);
+          }
+        });
+      }
+
+      // 5. Restore Added Paragraphs
+      if (Array.isArray(page.added)) {
+        page.added.forEach((item) => {
+          try {
+            if (!item || !item.id) return;
+            const parent = document.querySelector(item.parentSelector) || document.querySelector('main') || document.body;
+            if (parent && !document.getElementById(item.id)) {
+              const p = document.createElement('p');
+              p.id = item.id;
+              p.dataset.customId = item.id;
+              p.className = 'editable draggable-item custom-added-text';
+              p.innerHTML = item.html || '';
+              if (item.style) Object.assign(p.style, item.style);
+              parent.appendChild(p);
+              initDragAndSelect(p, item.id);
+            }
+          } catch (e) {
+            console.warn('Error restoring added paragraph:', item, e);
+          }
+        });
+      }
+
+      // 6. Restore Styles (Font, Size, Color, Layer Z-Index)
+      if (page.styles && typeof page.styles === 'object') {
+        Object.keys(page.styles).forEach((key) => {
+          try {
+            const el = findTargetElement(key);
+            if (el && page.styles[key] && typeof page.styles[key] === 'object') {
+              Object.assign(el.style, page.styles[key]);
+            }
+          } catch (e) {
+            console.warn('Error restoring styles:', key, e);
+          }
+        });
+      }
+
+      // 7. Restore Positions, Dimensions & Rotations
+      if (page.positions && typeof page.positions === 'object') {
+        Object.keys(page.positions).forEach((id) => {
+          try {
+            const el = findTargetElement(id);
+            if (el && page.positions[id]) {
+              const { x, y, width, height, rotate } = page.positions[id];
+              if (width) el.style.width = width;
+              if (height) el.style.height = height;
+              const rot = rotate || 0;
+              el.style.transform = `translate3d(${x || 0}px, ${y || 0}px, 0) rotate(${rot}deg)`;
+              el.dataset.dragX = x || 0;
+              el.dataset.dragY = y || 0;
+              el.dataset.rotate = rot;
+            }
+          } catch (e) {
+            console.warn('Error restoring positions:', id, e);
+          }
+        });
+      }
+    } catch (e) {
+      console.warn('Could not complete restoreDOM:', e);
     }
-
-    const page = getPageData();
-
-    // 2. Remove Deleted Elements
-    (page.deleted || []).forEach((key) => {
-      const el = findTargetElement(key);
-      if (el) el.remove();
-    });
-
-    // 3. Restore Text Content
-    Object.keys(page.texts || {}).forEach((key) => {
-      const el = findTargetElement(key);
-      if (el) el.innerHTML = page.texts[key];
-    });
-
-    // 4. Restore Custom Shapes for this page
-    (page.shapes || []).forEach((shapeData) => {
-      if (!document.getElementById(shapeData.id)) {
-        createShapeDOM(shapeData);
-      }
-    });
-
-    // 5. Restore Added Paragraphs
-    (page.added || []).forEach((item) => {
-      const parent = document.querySelector(item.parentSelector) || document.querySelector('main') || document.body;
-      if (parent && !document.getElementById(item.id)) {
-        const p = document.createElement('p');
-        p.id = item.id;
-        p.dataset.customId = item.id;
-        p.className = 'editable draggable-item custom-added-text';
-        p.innerHTML = item.html;
-        if (item.style) Object.assign(p.style, item.style);
-        parent.appendChild(p);
-        initDragAndSelect(p, item.id);
-      }
-    });
-
-    // 6. Restore Styles (Font, Size, Color, Layer Z-Index)
-    Object.keys(page.styles || {}).forEach((key) => {
-      const el = findTargetElement(key);
-      if (el && page.styles[key]) {
-        Object.assign(el.style, page.styles[key]);
-      }
-    });
-
-    // 7. Restore Positions, Dimensions & Rotations
-    Object.keys(page.positions || {}).forEach((id) => {
-      const el = findTargetElement(id);
-      if (el && page.positions[id]) {
-        const { x, y, width, height, rotate } = page.positions[id];
-        if (width) el.style.width = width;
-        if (height) el.style.height = height;
-        const rot = rotate || 0;
-        el.style.transform = `translate3d(${x || 0}px, ${y || 0}px, 0) rotate(${rot}deg)`;
-        el.dataset.dragX = x || 0;
-        el.dataset.dragY = y || 0;
-        el.dataset.rotate = rot;
-      }
-    });
   }
+
 
   // --------------------------------------------------------------------------
   // Smart Snapping Guides (Butter-Smooth, Zero Jitter)

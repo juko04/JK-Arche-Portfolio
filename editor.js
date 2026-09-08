@@ -5,7 +5,7 @@
  */
 
 (function () {
-  const STORAGE_KEY = 'jk_portfolio_customizer_v5';
+  const STORAGE_KEY = 'jk_portfolio_customizer_v6';
 
   // Preset Color Palettes (Preserves exact lightness & contrast)
   const COLOR_PRESETS = [
@@ -31,7 +31,7 @@
   }
 
   let state = {
-    globalTheme: { hue: 75, sat: '26%' },
+    globalTheme: { hue: 215, sat: '24%' },
     pages: {} // Scoped per page: { positions: {}, shapes: [], texts: {}, styles: {}, deleted: [], added: [] }
   };
 
@@ -1261,8 +1261,8 @@
     const bodyCS = window.getComputedStyle(document.body);
     const bodyBgColor = formatCssColor(document.body.style.backgroundColor || bodyCS.backgroundColor);
     const bodyTextColor = formatCssColor(document.body.style.color || bodyCS.color);
-    const currentHue = state.globalTheme?.hue ?? 75;
-    const currentSat = state.globalTheme?.sat ?? '26%';
+    const currentHue = state.globalTheme?.hue ?? 215;
+    const currentSat = state.globalTheme?.sat ?? '24%';
 
     let cssSnippet = `/* ==========================================================================\n   JK Portfolio — Live Layout & Color Export\n   Page: ${pageKey} | Saved: ${new Date().toLocaleDateString()}\n   ========================================================================== */\n\n`;
 
@@ -1604,7 +1604,7 @@
     toolbar.className = 'editor-toolbar';
     toolbar.id = 'editor-toolbar';
 
-    const currentHue = state.globalTheme?.hue || 75;
+    const currentHue = state.globalTheme?.hue || 215;
 
     const swatchesHTML = COLOR_PRESETS.map(p => `
       <button class="color-swatch-btn ${p.hue === currentHue ? 'active' : ''}" 

@@ -5,8 +5,8 @@
 
 :root {
   /* Dynamic Theme Tokens */
-  --theme-hue: 75;       /* Default: 75 (Sage / Olive) */
-  --theme-sat: 26%;      /* Default: 26% */
+  --theme-hue: 215;      /* Default: 215 (Blueprint Blue) */
+  --theme-sat: 24%;      /* Default: 24% */
 
   /* Smart Color Palette preserving exact lightness */
   --field: hsl(var(--theme-hue), var(--theme-sat), 65%);
@@ -194,8 +194,8 @@ em {
   height: clamp(140px, 16vw, 250px);
   border-radius: 50%;
   background: var(--field-light);
-  left: clamp(380px, 44vw, 620px);
-  top: clamp(160px, 28vh, 320px);
+  left: clamp(570px, 57vw, 810px);
+  top: clamp(345px, 48vh, 505px);
 }
 
 .geo-circle-2 {
@@ -203,13 +203,13 @@ em {
   height: clamp(240px, 28vw, 440px);
   border-radius: 50%;
   background: rgba(244, 243, 237, 0.42);
-  left: clamp(480px, 52vw, 760px);
+  left: clamp(600px, 60vw, 880px);
   top: clamp(100px, 16vh, 200px);
 }
 
 .geo-circle-3 {
-  width: clamp(90px, 10vw, 160px);
-  height: clamp(90px, 10vw, 160px);
+  width: clamp(130px, 11vw, 160px);
+  height: clamp(130px, 11vw, 160px);
   border-radius: 50%;
   background: #3d3434;
   left: clamp(490px, 52vw, 740px);
@@ -219,10 +219,13 @@ em {
 
 .intro-top {
   position: relative;
-  z-index: 2;
+  z-index: 6;
 }
 
-.intro h1 {
+.intro h1,
+.hero-title {
+  position: relative;
+  z-index: 6;
   font-size: clamp(65px, 12vw, 175px);
   line-height: 0.82;
   letter-spacing: -0.07em;
@@ -1702,8 +1705,8 @@ em {
   }
 
   .geo-circle-3 {
-    width: 55px;
-    height: 55px;
+    width: 80px;
+    height: 80px;
     right: 55px;
     top: 215px;
     left: auto;

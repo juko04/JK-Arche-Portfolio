@@ -5,8 +5,8 @@
 
 :root {
   /* Dynamic Theme Tokens */
-  --theme-hue: 215;      /* Default: 215 (Blueprint Blue) */
-  --theme-sat: 24%;      /* Default: 24% */
+  --theme-hue: 75;       /* Default: 75 (Sage Light Green) */
+  --theme-sat: 26%;      /* Default: 26% */
 
   /* Smart Color Palette preserving exact lightness */
   --field: hsl(var(--theme-hue), var(--theme-sat), 65%);
@@ -181,40 +181,6 @@ em {
   justify-content: space-between;
 }
 
-/* Decorative architectural geometry (Movable in Edit Mode) */
-.geo-circle {
-  position: absolute;
-  pointer-events: none;
-  z-index: 1;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
-}
-
-.geo-circle-1 {
-  width: clamp(140px, 16vw, 250px);
-  height: clamp(140px, 16vw, 250px);
-  border-radius: 50%;
-  background: var(--field-light);
-  left: clamp(570px, 57vw, 810px);
-  top: clamp(345px, 48vh, 505px);
-}
-
-.geo-circle-2 {
-  width: clamp(240px, 28vw, 440px);
-  height: clamp(240px, 28vw, 440px);
-  border-radius: 50%;
-  background: rgba(244, 243, 237, 0.42);
-  left: clamp(600px, 60vw, 880px);
-  top: clamp(100px, 16vh, 200px);
-}
-
-.geo-circle-3 {
-  width: clamp(130px, 11vw, 160px);
-  height: clamp(130px, 11vw, 160px);
-  border-radius: 50%;
-  background: #3d3434;
-  left: clamp(490px, 52vw, 740px);
-  top: clamp(360px, 60vh, 580px);
-}
 
 
 .intro-top {
@@ -1686,32 +1652,6 @@ em {
     font-size: 10px;
   }
 
-  .geo-circle-1 {
-    width: 85px;
-    height: 85px;
-    right: 70px;
-    top: 125px;
-    left: auto;
-    bottom: auto;
-  }
-
-  .geo-circle-2 {
-    width: 150px;
-    height: 150px;
-    right: -25px;
-    top: 75px;
-    left: auto;
-    bottom: auto;
-  }
-
-  .geo-circle-3 {
-    width: 80px;
-    height: 80px;
-    right: 55px;
-    top: 215px;
-    left: auto;
-    bottom: auto;
-  }
 
   /* Homepage Selected Work Rail */
   .work-section {
@@ -2164,18 +2104,7 @@ body.is-editing [contenteditable="true"]:focus {
   background: rgba(255, 255, 255, 0.22);
 }
 
-body.is-editing .geo-circle {
-  pointer-events: auto !important;
-  cursor: grab;
-  box-shadow: 0 0 0 2px rgba(154, 74, 60, 0.65);
-  z-index: 5;
-}
-
-body.is-editing .geo-circle:active {
-  cursor: grabbing;
-}
-
-/* Hero typography stays above background circles */
+/* Hero typography stays above background */
 .hero-kicker,
 .hero-title,
 .intro-body,
@@ -2194,7 +2123,6 @@ body.is-editing .intro-bottom {
 
 body.is-editing .draggable-item {
   cursor: grab;
-  position: relative;
   user-select: text;
 }
 

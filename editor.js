@@ -5,7 +5,7 @@
  */
 
 (function () {
-  const STORAGE_KEY = 'jk_portfolio_customizer_v6';
+  const STORAGE_KEY = 'jk_portfolio_customizer_v7';
 
   // Preset Color Palettes (Preserves exact lightness & contrast)
   const COLOR_PRESETS = [
@@ -31,7 +31,7 @@
   }
 
   let state = {
-    globalTheme: { hue: 215, sat: '24%' },
+    globalTheme: { hue: 75, sat: '26%' },
     pages: {} // Scoped per page: { positions: {}, shapes: [], texts: {}, styles: {}, deleted: [], added: [] }
   };
 
@@ -241,16 +241,20 @@
           try {
             const el = findTargetElement(id);
             if (el && page.positions[id]) {
-              // On mobile viewports, do NOT apply desktop translate3d coordinates to background geometric circles
-              // or structural hero text because desktop pixel offsets break mobile responsive layout.
-              if (isMobile && (id.startsWith('geo-circle') || el.classList.contains('geo-circle') || el.classList.contains('hero-title') || el.classList.contains('hero-kicker') || el.classList.contains('intro-body'))) {
+              // On mobile viewports, do NOT apply desktop translate3d coordinates to structural hero text
+              if (isMobile && (el.classList.contains('hero-title') || el.classList.contains('hero-kicker') || el.classList.contains('intro-body'))) {
                 return;
               }
               const { x, y, width, height, rotate } = page.positions[id];
-              if (width && !isMobile) el.style.width = width;
-              if (height && !isMobile) el.style.height = height;
+              // Only apply custom width & height to custom shapes, preserving fluid typography
+              if (el.classList.contains('custom-shape')) {
+                if (width && !isMobile) el.style.width = width;
+                if (height && !isMobile) el.style.height = height;
+              }
               const rot = rotate || 0;
-              el.style.transform = `translate3d(${x || 0}px, ${y || 0}px, 0) rotate(${rot}deg)`;
+              if (x || y || rot) {
+                el.style.transform = `translate3d(${x || 0}px, ${y || 0}px, 0) rotate(${rot}deg)`;
+              }
               el.dataset.dragX = x || 0;
               el.dataset.dragY = y || 0;
               el.dataset.rotate = rot;
@@ -612,10 +616,12 @@
       page.positions[id] = {
         x: finalX,
         y: finalY,
-        width: element.style.width || `${element.offsetWidth}px`,
-        height: element.style.height || `${element.offsetHeight}px`,
         rotate: rot
       };
+      if (element.classList.contains('custom-shape')) {
+        page.positions[id].width = element.style.width || `${element.offsetWidth}px`;
+        page.positions[id].height = element.style.height || `${element.offsetHeight}px`;
+      }
       saveState();
       updateTransformBox();
       positionInspector();
@@ -1261,8 +1267,8 @@
     const bodyCS = window.getComputedStyle(document.body);
     const bodyBgColor = formatCssColor(document.body.style.backgroundColor || bodyCS.backgroundColor);
     const bodyTextColor = formatCssColor(document.body.style.color || bodyCS.color);
-    const currentHue = state.globalTheme?.hue ?? 215;
-    const currentSat = state.globalTheme?.sat ?? '24%';
+    const currentHue = state.globalTheme?.hue ?? 75;
+    const currentSat = state.globalTheme?.sat ?? '26%';
 
     let cssSnippet = `/* ==========================================================================\n   JK Portfolio — Live Layout & Color Export\n   Page: ${pageKey} | Saved: ${new Date().toLocaleDateString()}\n   ========================================================================== */\n\n`;
 
@@ -1281,68 +1287,72 @@
     const shapes = document.querySelectorAll('.geo-circle, .custom-shape');
     const shapesSnapshot = [];
 
-    shapes.forEach((el) => {
-      const id = el.id || el.dataset.customId;
-      const cs = window.getComputedStyle(el);
-      const w = el.style.width || cs.width;
-      const h = el.style.height || cs.height;
-      const bg = formatCssColor(el.style.backgroundColor || cs.backgroundColor);
-      const borderColor = formatCssColor(el.style.borderColor || cs.borderColor);
-      const borderWidth = el.style.borderWidth || cs.borderWidth;
-      const borderRadius = el.style.borderRadius || cs.borderRadius;
-      const opacity = el.style.opacity || cs.opacity;
-      const rot = el.dataset.rotate || 0;
-      const x = el.dataset.dragX || 0;
-      const y = el.dataset.dragY || 0;
-      const zIndex = el.style.zIndex || cs.zIndex;
+    if (shapes.length === 0) {
+      cssSnippet += `/* No background shapes active on this page (clean layout) */\n\n`;
+    } else {
+      shapes.forEach((el) => {
+        const id = el.id || el.dataset.customId;
+        const cs = window.getComputedStyle(el);
+        const w = el.style.width || cs.width;
+        const h = el.style.height || cs.height;
+        const bg = formatCssColor(el.style.backgroundColor || cs.backgroundColor);
+        const borderColor = formatCssColor(el.style.borderColor || cs.borderColor);
+        const borderWidth = el.style.borderWidth || cs.borderWidth;
+        const borderRadius = el.style.borderRadius || cs.borderRadius;
+        const opacity = el.style.opacity || cs.opacity;
+        const rot = el.dataset.rotate || 0;
+        const x = el.dataset.dragX || 0;
+        const y = el.dataset.dragY || 0;
+        const zIndex = el.style.zIndex || cs.zIndex;
 
-      let selector = '';
-      if (id && id.startsWith('geo-circle')) {
-        selector = `.${id}`;
-      } else if (id) {
-        selector = `#${id}.custom-shape`;
-      } else if (el.className) {
-        selector = `.${el.className.split(' ').filter(c => c.startsWith('geo-circle') || c.startsWith('custom-shape'))[0] || 'shape'}`;
-      } else {
-        return;
-      }
+        let selector = '';
+        if (id && id.startsWith('geo-circle')) {
+          selector = `.${id}`;
+        } else if (id) {
+          selector = `#${id}.custom-shape`;
+        } else if (el.className) {
+          selector = `.${el.className.split(' ').filter(c => c.startsWith('geo-circle') || c.startsWith('custom-shape'))[0] || 'shape'}`;
+        } else {
+          return;
+        }
 
-      cssSnippet += `${selector} {\n`;
-      cssSnippet += `  width: ${w};\n`;
-      cssSnippet += `  height: ${h};\n`;
-      if (bg && bg !== 'transparent') {
-        cssSnippet += `  background-color: ${bg};\n`;
-      }
-      if (borderColor && borderColor !== 'transparent' && borderWidth && borderWidth !== '0px') {
-        cssSnippet += `  border: ${borderWidth} solid ${borderColor};\n`;
-      }
-      if (borderRadius && borderRadius !== '0px') {
-        cssSnippet += `  border-radius: ${borderRadius};\n`;
-      }
-      if (opacity && parseFloat(opacity) < 1) {
-        cssSnippet += `  opacity: ${opacity};\n`;
-      }
-      if (x != 0 || y != 0 || rot != 0) {
-        cssSnippet += `  transform: translate3d(${x}px, ${y}px, 0) rotate(${rot}deg);\n`;
-      }
-      if (zIndex && zIndex !== 'auto') {
-        cssSnippet += `  z-index: ${zIndex};\n`;
-      }
-      cssSnippet += `}\n\n`;
+        cssSnippet += `${selector} {\n`;
+        cssSnippet += `  width: ${w};\n`;
+        cssSnippet += `  height: ${h};\n`;
+        if (bg && bg !== 'transparent') {
+          cssSnippet += `  background-color: ${bg};\n`;
+        }
+        if (borderColor && borderColor !== 'transparent' && borderWidth && borderWidth !== '0px') {
+          cssSnippet += `  border: ${borderWidth} solid ${borderColor};\n`;
+        }
+        if (borderRadius && borderRadius !== '0px') {
+          cssSnippet += `  border-radius: ${borderRadius};\n`;
+        }
+        if (opacity && parseFloat(opacity) < 1) {
+          cssSnippet += `  opacity: ${opacity};\n`;
+        }
+        if (x != 0 || y != 0 || rot != 0) {
+          cssSnippet += `  transform: translate3d(${x}px, ${y}px, 0) rotate(${rot}deg);\n`;
+        }
+        if (zIndex && zIndex !== 'auto') {
+          cssSnippet += `  z-index: ${zIndex};\n`;
+        }
+        cssSnippet += `}\n\n`;
 
-      shapesSnapshot.push({
-        id: id || selector,
-        backgroundColor: bg,
-        borderColor: borderColor,
-        borderWidth: borderWidth,
-        width: w,
-        height: h,
-        x,
-        y,
-        rotation: rot,
-        zIndex
+        shapesSnapshot.push({
+          id: id || selector,
+          backgroundColor: bg,
+          borderColor: borderColor,
+          borderWidth: borderWidth,
+          width: w,
+          height: h,
+          x,
+          y,
+          rotation: rot,
+          zIndex
+        });
       });
-    });
+    }
 
     // 3. Typography & Text Colors
     cssSnippet += `/* --------------------------------------------------------------------------\n   3. Typography & Text Colors\n   -------------------------------------------------------------------------- */\n`;
@@ -1604,7 +1614,7 @@
     toolbar.className = 'editor-toolbar';
     toolbar.id = 'editor-toolbar';
 
-    const currentHue = state.globalTheme?.hue || 215;
+    const currentHue = state.globalTheme?.hue || 75;
 
     const swatchesHTML = COLOR_PRESETS.map(p => `
       <button class="color-swatch-btn ${p.hue === currentHue ? 'active' : ''}" 
@@ -1684,9 +1694,21 @@
         selectElement(null);
         hideSnapGuides();
         if (transformBox) transformBox.style.display = 'none';
-        restoreDOM();
+        if (document.activeElement && document.activeElement.blur) {
+          document.activeElement.blur();
+        }
       }
     }
+
+    // Intercept and prevent accidental link navigation while in Edit Mode
+    document.addEventListener('click', (e) => {
+      if (!isEditing) return;
+      const link = e.target.closest('a');
+      if (link && !link.closest('.editor-toolbar') && !link.closest('.code-export-backdrop')) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
 
     toggleBtn.addEventListener('click', () => setEditMode(!isEditing));
 
@@ -1864,9 +1886,6 @@
 
     // Universal Draggable Selectors (Setup IDs FIRST so restoreDOM finds them reliably!)
     const draggableSelectors = [
-      '.geo-circle-1',
-      '.geo-circle-2',
-      '.geo-circle-3',
       '#hero-kicker',
       '#hero-title',
       '#hero-role',

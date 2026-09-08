@@ -111,9 +111,39 @@
     document.documentElement.style.setProperty('--theme-sat', sat);
   }
 
+  function generateSemanticEditKey(el, fallbackIndex) {
+    if (!el) return '';
+    if (el.id) return el.id;
+    if (el.dataset.customId) return el.dataset.customId;
+    if (el.dataset.editKey) return el.dataset.editKey;
+
+    const anchor = el.closest('[id], [data-project], [data-custom-id], section, header, footer');
+    let prefix = 'page';
+    if (anchor) {
+      if (anchor.id) prefix = anchor.id;
+      else if (anchor.dataset.project) prefix = `proj-${anchor.dataset.project}`;
+      else if (anchor.dataset.customId) prefix = anchor.dataset.customId;
+      else if (anchor.className) prefix = anchor.className.trim().split(/\s+/)[0];
+    }
+
+    const cleanClasses = Array.from(el.classList).filter(c => !['editable', 'draggable-item', 'active-selected', 'is-dragging'].includes(c));
+    const tagOrClass = cleanClasses.length > 0 ? cleanClasses[0] : el.tagName.toLowerCase();
+
+    let idx = '';
+    const sameTagInAnchor = anchor ? Array.from(anchor.querySelectorAll(el.tagName.toLowerCase())) : [];
+    if (sameTagInAnchor.length > 1) {
+      const pos = sameTagInAnchor.indexOf(el);
+      idx = `-${pos >= 0 ? pos : (fallbackIndex ?? 0)}`;
+    } else if (sameTagInAnchor.length === 0 && fallbackIndex !== undefined) {
+      idx = `-${fallbackIndex}`;
+    }
+
+    return `${prefix}-${tagOrClass}${idx}`.toLowerCase().replace(/[^a-z0-9-_]/g, '-').replace(/-+/g, '-');
+  }
+
   function getElementKey(el) {
     if (!el) return '';
-    return el.id || el.dataset.customId || el.dataset.editKey || `${el.tagName.toLowerCase()}-${(el.className || '').replace(/\s+/g, '-')}`;
+    return el.id || el.dataset.customId || el.dataset.editKey || generateSemanticEditKey(el);
   }
 
   function findTargetElement(key) {
@@ -208,8 +238,9 @@
               const p = document.createElement('p');
               p.id = item.id;
               p.dataset.customId = item.id;
+              p.dataset.editKey = item.id;
               p.className = 'editable draggable-item custom-added-text';
-              p.innerHTML = item.html || '';
+              p.innerHTML = (page.texts && page.texts[item.id]) ? page.texts[item.id] : (item.html || '');
               if (item.style) Object.assign(p.style, item.style);
               parent.appendChild(p);
               initDragAndSelect(p, item.id);
@@ -460,8 +491,8 @@
 
       selectElement(element);
 
-      // If user is editing text without holding Alt, let them select text
-      if (e.target.isContentEditable && !e.altKey && e.target !== element) {
+      // If user is editing text without holding Alt, let them select and edit text freely
+      if (e.target.isContentEditable && !e.altKey) {
         return;
       }
 
@@ -931,6 +962,7 @@
     const p = document.createElement('p');
     p.id = newId;
     p.dataset.customId = newId;
+    p.dataset.editKey = newId;
     p.className = 'editable draggable-item custom-added-text';
     p.contentEditable = 'true';
     p.innerHTML = 'Click to edit text. Drag to position anywhere with smart alignment.';
@@ -946,12 +978,20 @@
       parentSelector: activeContainer.className ? `.${activeContainer.className.split(' ')[0]}` : 'main',
       html: p.innerHTML,
     });
+    if (!page.texts) page.texts = {};
+    page.texts[newId] = p.innerHTML.trim();
 
-    p.addEventListener('input', () => {
+    const onAddedTextChange = () => {
       const item = page.added.find(x => x.id === newId);
       if (item) item.html = p.innerHTML;
+      if (!page.texts) page.texts = {};
+      page.texts[newId] = p.innerHTML.trim();
       saveState();
-    });
+    };
+
+    p.addEventListener('input', onAddedTextChange);
+    p.addEventListener('blur', onAddedTextChange);
+    p.addEventListener('keyup', onAddedTextChange);
 
     saveState();
     selectElement(p);
@@ -1260,6 +1300,7 @@
   }
 
   function openCodeExportModal() {
+    syncAllTexts();
     const page = getPageData();
     const pageKey = getPageKey();
 
@@ -1500,7 +1541,23 @@
       cssSnippet += `/* Standard typography colors active: var(--ink) */\n\n`;
     }
 
-    // 4. Added Markup (if any)
+    // 4. Updated Page Text Content (HTML Markup)
+    cssSnippet += `/* --------------------------------------------------------------------------\n   4. Updated Page Text Content (HTML Markup)\n   -------------------------------------------------------------------------- */\n`;
+    const textEntries = Object.entries(page.texts || {}).filter(([k, v]) => typeof v === 'string' && v.trim().length > 0);
+    if (textEntries.length === 0) {
+      cssSnippet += `/* No custom text modifications made on this page */\n\n`;
+    } else {
+      textEntries.forEach(([key, html]) => {
+        const el = findTargetElement(key);
+        const sel = el ? getCleanSelector(el) : key;
+        const tag = el ? el.tagName.toLowerCase() : 'element';
+        const parentTag = el && el.parentElement ? el.parentElement.tagName.toLowerCase() : '';
+        cssSnippet += `/* Target: ${sel} (${tag}${parentTag ? ' in <' + parentTag + '>' : ''}) */\n`;
+        cssSnippet += `${html}\n\n`;
+      });
+    }
+
+    // 5. Added Markup (if any)
     const addedItems = [];
     if (page.added && page.added.length > 0) {
       page.added.forEach(item => {
@@ -1513,10 +1570,10 @@
       });
     }
     if (addedItems.length > 0) {
-      cssSnippet += `/* --------------------------------------------------------------------------\n   4. Added HTML Markup Elements\n   --------------------------------------------------------------------------\n${addedItems.join('\n\n')}\n*/\n\n`;
+      cssSnippet += `/* --------------------------------------------------------------------------\n   5. Added HTML Markup Elements\n   --------------------------------------------------------------------------\n${addedItems.join('\n\n')}\n*/\n\n`;
     }
 
-    // 5. Full JSON State for Antigravity AI
+    // 6. Full JSON State for Antigravity AI
     const exportData = {
       page: pageKey,
       theme: {
@@ -1531,6 +1588,7 @@
       },
       shapes: shapesSnapshot,
       text: textSnapshot,
+      texts: page.texts || {},
       positions: page.positions || {},
       shapesState: page.shapes || [],
       styles: page.styles || {},
@@ -1560,7 +1618,7 @@
         <div class="code-export-body">
           <p>
             <strong style="color: #79d78e;">✓ Copied to clipboard!</strong>
-            Includes all current <strong>background</strong>, <strong>shape</strong>, and <strong>text</strong> colors, along with layout coordinates. To make your edits permanent across all devices, <strong>paste this into chat with Antigravity</strong> and I will bake it directly into GitHub.
+            Includes all current <strong>text edits</strong>, <strong>typography styles</strong>, <strong>background</strong>, and <strong>shapes</strong>, along with layout coordinates. To make your edits permanent across all devices, <strong>paste this into chat with Antigravity</strong> and I will bake it directly into GitHub.
           </p>
           <pre class="code-export-box" id="code-export-box">${fullExportText}</pre>
         </div>
@@ -1691,6 +1749,7 @@
       });
 
       if (!on) {
+        syncAllTexts();
         selectElement(null);
         hideSnapGuides();
         if (transformBox) transformBox.style.display = 'none';
@@ -1770,8 +1829,15 @@
     // Reset All
     toolbar.querySelector('#editor-reset').addEventListener('click', () => {
       if (confirm('Reset all custom text, added shapes, positions, sizes, rotations, and color edits back to defaults?')) {
-        ['jk_portfolio_customizer_v5', 'jk_portfolio_customizer_v4', 'jk_portfolio_customizer_v3', 'jk_portfolio_customizer_v2', 'jk_portfolio_customizer_state']
-          .forEach(k => localStorage.removeItem(k));
+        [
+          'jk_portfolio_customizer_v7',
+          'jk_portfolio_customizer_v6',
+          'jk_portfolio_customizer_v5',
+          'jk_portfolio_customizer_v4',
+          'jk_portfolio_customizer_v3',
+          'jk_portfolio_customizer_v2',
+          'jk_portfolio_customizer_state'
+        ].forEach(k => localStorage.removeItem(k));
         location.reload();
       }
     });
@@ -1828,19 +1894,26 @@
     );
 
     editableTargets.forEach((el, index) => {
-      if (el.closest('.editor-toolbar') || el.closest('.glass-nav') || el.closest('.print-portfolio-booklet') || el.closest('.transform-bounding-box')) return;
-
+      if (el.closest('.editor-toolbar') || el.closest('.glass-nav') || el.closest('.print-portfolio-booklet') || el.closest('.transform-bounding-box') || el.closest('.code-export-backdrop')) return;
 
       el.classList.add('editable');
-      const key = el.id ? el.id : `edit-${index}-${el.tagName.toLowerCase()}`;
+      const key = generateSemanticEditKey(el, index);
       el.dataset.editKey = key;
 
-      el.addEventListener('input', () => {
+      if (!el.dataset.initialHtml) {
+        el.dataset.initialHtml = el.innerHTML.trim();
+      }
+
+      const onContentChange = () => {
         const page = getPageData();
         if (!page.texts) page.texts = {};
-        page.texts[key] = el.innerHTML;
+        page.texts[key] = el.innerHTML.trim();
         saveState();
-      });
+      };
+
+      el.addEventListener('input', onContentChange);
+      el.addEventListener('blur', onContentChange);
+      el.addEventListener('keyup', onContentChange);
     });
 
     // Image replacement
@@ -1874,6 +1947,23 @@
         input.click();
       });
     });
+  }
+
+  function syncAllTexts() {
+    const page = getPageData();
+    if (!page.texts) page.texts = {};
+    const editableTargets = document.querySelectorAll('.editable');
+    editableTargets.forEach((el) => {
+      if (el.closest('.editor-toolbar') || el.closest('.glass-nav') || el.closest('.print-portfolio-booklet') || el.closest('.transform-bounding-box') || el.closest('.code-export-backdrop')) return;
+      const key = el.dataset.editKey || getElementKey(el);
+      if (key) {
+        const currentHtml = el.innerHTML.trim();
+        if (page.texts[key] !== undefined || (el.dataset.initialHtml && currentHtml !== el.dataset.initialHtml)) {
+          page.texts[key] = currentHtml;
+        }
+      }
+    });
+    saveState();
   }
 
   // --------------------------------------------------------------------------
@@ -1916,8 +2006,8 @@
       });
     });
 
-    restoreDOM();
     setupEditableElements();
+    restoreDOM();
     createEditorToolbar();
   }
 

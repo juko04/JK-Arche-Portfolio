@@ -1210,6 +1210,147 @@
   }
 
   // --------------------------------------------------------------------------
+  // Layout Code Exporter (Export HTML & CSS for Permanent GitHub Sync)
+  // --------------------------------------------------------------------------
+  function copyTextToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+      } catch (e) {}
+      document.body.removeChild(ta);
+      return Promise.resolve();
+    }
+  }
+
+  function openCodeExportModal() {
+    const page = getPageData();
+    const pageKey = getPageKey();
+
+    // 1. Collect CSS for background circles and custom shapes
+    let cssSnippet = `/* === Baked Layout for ${pageKey} === */\n`;
+
+    // Global Theme
+    if (state.globalTheme?.hue !== undefined) {
+      cssSnippet += `:root {\n  --theme-hue: ${state.globalTheme.hue};\n  --theme-sat: ${state.globalTheme.sat || '26%'};\n}\n\n`;
+    }
+
+    const shapes = document.querySelectorAll('.geo-circle, .custom-shape');
+    shapes.forEach((el) => {
+      const id = el.id || el.dataset.customId;
+      if (!id) return;
+      const cs = window.getComputedStyle(el);
+      const w = el.style.width || cs.width;
+      const h = el.style.height || cs.height;
+      const bg = el.style.backgroundColor || cs.backgroundColor;
+      const rot = el.dataset.rotate || 0;
+      const x = el.dataset.dragX || 0;
+      const y = el.dataset.dragY || 0;
+      const zIndex = el.style.zIndex || cs.zIndex;
+
+      cssSnippet += `.${id.startsWith('geo-circle') ? id : 'custom-shape#' + id} {\n`;
+      cssSnippet += `  width: ${w};\n`;
+      cssSnippet += `  height: ${h};\n`;
+      if (bg && bg !== 'rgba(0, 0, 0, 0)') {
+        cssSnippet += `  background: ${bg};\n`;
+      }
+      if (cs.borderColor && cs.borderColor !== 'rgba(0, 0, 0, 0)' && cs.borderWidth !== '0px') {
+        cssSnippet += `  border: ${cs.borderWidth} solid ${cs.borderColor};\n`;
+      }
+      if (x != 0 || y != 0 || rot != 0) {
+        cssSnippet += `  transform: translate3d(${x}px, ${y}px, 0) rotate(${rot}deg);\n`;
+      }
+      if (zIndex && zIndex !== 'auto') {
+        cssSnippet += `  z-index: ${zIndex};\n`;
+      }
+      cssSnippet += `}\n\n`;
+    });
+
+    // 2. Full JSON State for Antigravity AI
+    const exportData = {
+      page: pageKey,
+      theme: state.globalTheme,
+      positions: page.positions || {},
+      shapes: page.shapes || [],
+      styles: page.styles || {},
+      added: page.added || [],
+      timestamp: new Date().toISOString()
+    };
+
+    const jsonSnippet = JSON.stringify(exportData, null, 2);
+
+    const fullExportText = `/* ==========================================\n   JK Portfolio — Live Layout Export\n   Paste this into chat with Antigravity to\n   permanently commit your changes to GitHub!\n   ========================================== */\n\n${cssSnippet}/* Layout JSON Data:\n${jsonSnippet}\n*/`;
+
+    // Automatically copy to clipboard immediately
+    copyTextToClipboard(fullExportText);
+
+    // Render modal
+    let modalEl = document.querySelector('.code-export-backdrop');
+    if (modalEl) modalEl.remove();
+
+    modalEl = document.createElement('div');
+    modalEl.className = 'code-export-backdrop';
+    modalEl.innerHTML = `
+      <div class="code-export-modal" role="dialog" aria-modal="true">
+        <div class="code-export-header">
+          <h3>💾 Save &amp; Export Layout Code</h3>
+          <button class="code-export-close" id="code-export-close" type="button" aria-label="Close">✕</button>
+        </div>
+        <div class="code-export-body">
+          <p>
+            <strong style="color: #79d78e;">✓ Copied to clipboard!</strong>
+            To make your edits permanent across all devices and phones, simply <strong>paste this into chat with Antigravity</strong> and I will bake it directly into GitHub.
+          </p>
+          <pre class="code-export-box" id="code-export-box">${fullExportText}</pre>
+        </div>
+        <div class="code-export-footer">
+          <button class="code-export-btn" id="code-export-copy-btn" type="button">📋 Copy Again</button>
+          <button class="code-export-btn primary" id="code-export-done" type="button">Done</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modalEl);
+
+    const closeBtn = modalEl.querySelector('#code-export-close');
+    const doneBtn = modalEl.querySelector('#code-export-done');
+    const copyBtn = modalEl.querySelector('#code-export-copy-btn');
+
+    function closeModal() {
+      modalEl.remove();
+      document.removeEventListener('keydown', onEsc);
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+    doneBtn.addEventListener('click', closeModal);
+    modalEl.addEventListener('click', (e) => {
+      if (e.target === modalEl) closeModal();
+    });
+
+    copyBtn.addEventListener('click', () => {
+      copyTextToClipboard(fullExportText).then(() => {
+        copyBtn.textContent = '✓ Copied!';
+        setTimeout(() => { copyBtn.textContent = '📋 Copy Again'; }, 2000);
+      });
+    });
+
+    // Close on Escape key
+    const onEsc = (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    };
+    document.addEventListener('keydown', onEsc);
+  }
+
+  // --------------------------------------------------------------------------
   // Floating Customizer Toolbar UI
   // --------------------------------------------------------------------------
   function createEditorToolbar() {
@@ -1268,6 +1409,9 @@
 
         <!-- Dynamic Landscape PDF Booklet Export Button -->
         <button class="editor-btn" id="editor-export-pdf" type="button" title="Generate & Print Landscape Portfolio PDF">📄 PDF</button>
+
+        <!-- Save & Export Code Button -->
+        <button class="editor-btn" id="editor-export-code" type="button" title="Export HTML & CSS Layout to permanently save to GitHub">💾 Save Code</button>
 
         <button class="editor-btn" id="editor-reset" type="button" title="Reset all custom edits to default">↺ Reset</button>
         
@@ -1373,6 +1517,9 @@
         window.print();
       }, 350);
     });
+
+    // Save & Export Code Modal
+    toolbar.querySelector('#editor-export-code').addEventListener('click', openCodeExportModal);
 
     // Global Keyboard: Delete key & 'e' toggle
     document.addEventListener('keydown', (e) => {

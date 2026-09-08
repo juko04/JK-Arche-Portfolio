@@ -1212,6 +1212,29 @@
   // --------------------------------------------------------------------------
   // Layout Code Exporter (Export HTML & CSS for Permanent GitHub Sync)
   // --------------------------------------------------------------------------
+  function formatCssColor(color) {
+    if (!color || color === 'transparent' || color === 'rgba(0, 0, 0, 0)') {
+      return 'transparent';
+    }
+    if (color.startsWith('#') || color.startsWith('hsl') || color.startsWith('var(')) {
+      return color;
+    }
+    if (color.startsWith('rgb')) {
+      const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+      if (match) {
+        const r = parseInt(match[1], 10);
+        const g = parseInt(match[2], 10);
+        const b = parseInt(match[3], 10);
+        const a = match[4] !== undefined ? parseFloat(match[4]) : 1;
+        if (a < 1) {
+          return `rgba(${r}, ${g}, ${b}, ${a})`;
+        }
+        return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+      }
+    }
+    return color;
+  }
+
   function copyTextToClipboard(text) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       return navigator.clipboard.writeText(text);
@@ -1234,35 +1257,70 @@
     const page = getPageData();
     const pageKey = getPageKey();
 
-    // 1. Collect CSS for background circles and custom shapes
-    let cssSnippet = `/* === Baked Layout for ${pageKey} === */\n`;
+    // 1. Background & Global Theme Palette
+    const bodyCS = window.getComputedStyle(document.body);
+    const bodyBgColor = formatCssColor(document.body.style.backgroundColor || bodyCS.backgroundColor);
+    const bodyTextColor = formatCssColor(document.body.style.color || bodyCS.color);
+    const currentHue = state.globalTheme?.hue ?? 75;
+    const currentSat = state.globalTheme?.sat ?? '26%';
 
-    // Global Theme
-    if (state.globalTheme?.hue !== undefined) {
-      cssSnippet += `:root {\n  --theme-hue: ${state.globalTheme.hue};\n  --theme-sat: ${state.globalTheme.sat || '26%'};\n}\n\n`;
-    }
+    let cssSnippet = `/* ==========================================================================\n   JK Portfolio — Live Layout & Color Export\n   Page: ${pageKey} | Saved: ${new Date().toLocaleDateString()}\n   ========================================================================== */\n\n`;
 
+    cssSnippet += `/* --------------------------------------------------------------------------\n   1. Background & Theme Palette\n   -------------------------------------------------------------------------- */\n`;
+    cssSnippet += `:root {\n`;
+    cssSnippet += `  --theme-hue: ${currentHue};\n`;
+    cssSnippet += `  --theme-sat: ${currentSat};\n`;
+    cssSnippet += `}\n\n`;
+    cssSnippet += `body {\n`;
+    cssSnippet += `  background-color: ${bodyBgColor}; /* Active canvas background */\n`;
+    cssSnippet += `  color: ${bodyTextColor}; /* Primary body text color */\n`;
+    cssSnippet += `}\n\n`;
+
+    // 2. Background Shapes & Geometry (Colors, Dimensions, Positions)
+    cssSnippet += `/* --------------------------------------------------------------------------\n   2. Background Shapes & Geometry (Colors & Coordinates)\n   -------------------------------------------------------------------------- */\n`;
     const shapes = document.querySelectorAll('.geo-circle, .custom-shape');
+    const shapesSnapshot = [];
+
     shapes.forEach((el) => {
       const id = el.id || el.dataset.customId;
-      if (!id) return;
       const cs = window.getComputedStyle(el);
       const w = el.style.width || cs.width;
       const h = el.style.height || cs.height;
-      const bg = el.style.backgroundColor || cs.backgroundColor;
+      const bg = formatCssColor(el.style.backgroundColor || cs.backgroundColor);
+      const borderColor = formatCssColor(el.style.borderColor || cs.borderColor);
+      const borderWidth = el.style.borderWidth || cs.borderWidth;
+      const borderRadius = el.style.borderRadius || cs.borderRadius;
+      const opacity = el.style.opacity || cs.opacity;
       const rot = el.dataset.rotate || 0;
       const x = el.dataset.dragX || 0;
       const y = el.dataset.dragY || 0;
       const zIndex = el.style.zIndex || cs.zIndex;
 
-      cssSnippet += `.${id.startsWith('geo-circle') ? id : 'custom-shape#' + id} {\n`;
+      let selector = '';
+      if (id && id.startsWith('geo-circle')) {
+        selector = `.${id}`;
+      } else if (id) {
+        selector = `#${id}.custom-shape`;
+      } else if (el.className) {
+        selector = `.${el.className.split(' ').filter(c => c.startsWith('geo-circle') || c.startsWith('custom-shape'))[0] || 'shape'}`;
+      } else {
+        return;
+      }
+
+      cssSnippet += `${selector} {\n`;
       cssSnippet += `  width: ${w};\n`;
       cssSnippet += `  height: ${h};\n`;
-      if (bg && bg !== 'rgba(0, 0, 0, 0)') {
-        cssSnippet += `  background: ${bg};\n`;
+      if (bg && bg !== 'transparent') {
+        cssSnippet += `  background-color: ${bg};\n`;
       }
-      if (cs.borderColor && cs.borderColor !== 'rgba(0, 0, 0, 0)' && cs.borderWidth !== '0px') {
-        cssSnippet += `  border: ${cs.borderWidth} solid ${cs.borderColor};\n`;
+      if (borderColor && borderColor !== 'transparent' && borderWidth && borderWidth !== '0px') {
+        cssSnippet += `  border: ${borderWidth} solid ${borderColor};\n`;
+      }
+      if (borderRadius && borderRadius !== '0px') {
+        cssSnippet += `  border-radius: ${borderRadius};\n`;
+      }
+      if (opacity && parseFloat(opacity) < 1) {
+        cssSnippet += `  opacity: ${opacity};\n`;
       }
       if (x != 0 || y != 0 || rot != 0) {
         cssSnippet += `  transform: translate3d(${x}px, ${y}px, 0) rotate(${rot}deg);\n`;
@@ -1271,14 +1329,200 @@
         cssSnippet += `  z-index: ${zIndex};\n`;
       }
       cssSnippet += `}\n\n`;
+
+      shapesSnapshot.push({
+        id: id || selector,
+        backgroundColor: bg,
+        borderColor: borderColor,
+        borderWidth: borderWidth,
+        width: w,
+        height: h,
+        x,
+        y,
+        rotation: rot,
+        zIndex
+      });
     });
 
-    // 2. Full JSON State for Antigravity AI
+    // 3. Typography & Text Colors
+    cssSnippet += `/* --------------------------------------------------------------------------\n   3. Typography & Text Colors\n   -------------------------------------------------------------------------- */\n`;
+
+    const processedElements = new Set();
+    const textRules = [];
+    const textSnapshot = [];
+
+    function getCleanSelector(el) {
+      if (el.id) return `#${el.id}`;
+      if (el.dataset.customId) return `[data-custom-id="${el.dataset.customId}"]`;
+      if (el.dataset.editKey) return `[data-edit-key="${el.dataset.editKey}"]`;
+      if (el.className) {
+        const validClass = el.className.trim().split(/\s+/).find(c => !['editable', 'draggable-item', 'active-selected', 'is-dragging'].includes(c));
+        if (validClass) return `.${validClass}`;
+      }
+      return el.tagName.toLowerCase();
+    }
+
+    // A) Elements explicitly modified in page.styles
+    if (page.styles && typeof page.styles === 'object') {
+      Object.keys(page.styles).forEach((key) => {
+        const st = page.styles[key];
+        if (!st || typeof st !== 'object') return;
+        const el = findTargetElement(key);
+        if (!el || el.classList.contains('geo-circle') || el.classList.contains('custom-shape')) return;
+
+        processedElements.add(el);
+        const sel = getCleanSelector(el);
+        const cs = window.getComputedStyle(el);
+        const color = formatCssColor(st.color || el.style.color || cs.color);
+        const rot = el.dataset.rotate || 0;
+        const x = el.dataset.dragX || 0;
+        const y = el.dataset.dragY || 0;
+
+        let rule = `${sel} {\n`;
+        if (color) rule += `  color: ${color};\n`;
+        if (st.fontFamily) rule += `  font-family: ${st.fontFamily};\n`;
+        if (st.fontSize) rule += `  font-size: ${st.fontSize};\n`;
+        if (st.fontWeight) rule += `  font-weight: ${st.fontWeight};\n`;
+        if (st.fontStyle) rule += `  font-style: ${st.fontStyle};\n`;
+        if (x != 0 || y != 0 || rot != 0) {
+          rule += `  transform: translate3d(${x}px, ${y}px, 0) rotate(${rot}deg);\n`;
+        }
+        if (st.zIndex || (el.style.zIndex && el.style.zIndex !== 'auto')) {
+          rule += `  z-index: ${st.zIndex || el.style.zIndex};\n`;
+        }
+        rule += `}\n`;
+        textRules.push(rule);
+
+        textSnapshot.push({
+          selector: sel,
+          color,
+          fontFamily: st.fontFamily || el.style.fontFamily || cs.fontFamily,
+          fontSize: st.fontSize || el.style.fontSize || cs.fontSize,
+          fontWeight: st.fontWeight || el.style.fontWeight || cs.fontWeight,
+          x,
+          y,
+          text: (el.textContent || '').trim().slice(0, 45)
+        });
+      });
+    }
+
+    // B) Custom added text elements (.custom-added-text)
+    document.querySelectorAll('.custom-added-text').forEach((el) => {
+      if (processedElements.has(el)) return;
+      processedElements.add(el);
+      const sel = getCleanSelector(el);
+      const cs = window.getComputedStyle(el);
+      const color = formatCssColor(el.style.color || cs.color);
+      const rot = el.dataset.rotate || 0;
+      const x = el.dataset.dragX || 0;
+      const y = el.dataset.dragY || 0;
+
+      let rule = `${sel} {\n`;
+      if (color) rule += `  color: ${color};\n`;
+      if (el.style.fontFamily) rule += `  font-family: ${el.style.fontFamily};\n`;
+      if (el.style.fontSize) rule += `  font-size: ${el.style.fontSize};\n`;
+      if (el.style.fontWeight) rule += `  font-weight: ${el.style.fontWeight};\n`;
+      if (el.style.fontStyle) rule += `  font-style: ${el.style.fontStyle};\n`;
+      if (x != 0 || y != 0 || rot != 0) {
+        rule += `  transform: translate3d(${x}px, ${y}px, 0) rotate(${rot}deg);\n`;
+      }
+      rule += `}\n`;
+      textRules.push(rule);
+
+      textSnapshot.push({
+        selector: sel,
+        color,
+        fontFamily: el.style.fontFamily || cs.fontFamily,
+        fontSize: el.style.fontSize || cs.fontSize,
+        fontWeight: el.style.fontWeight || cs.fontWeight,
+        x,
+        y,
+        text: (el.textContent || '').trim().slice(0, 45)
+      });
+    });
+
+    // C) Major typographic anchors on page
+    const majorTextSelectors = [
+      '#hero-title',
+      '#hero-kicker',
+      '#hero-role',
+      '#hero-copy',
+      '.intro h1',
+      '.hero-title',
+      '.hero-kicker',
+      '.intro-body .role',
+      '.intro-body .intro-copy',
+      '.about-statement'
+    ];
+
+    majorTextSelectors.forEach((selQuery) => {
+      document.querySelectorAll(selQuery).forEach((el) => {
+        if (processedElements.has(el)) return;
+        processedElements.add(el);
+        const sel = getCleanSelector(el);
+        const cs = window.getComputedStyle(el);
+        const color = formatCssColor(el.style.color || cs.color);
+        const rot = el.dataset.rotate || 0;
+        const x = el.dataset.dragX || 0;
+        const y = el.dataset.dragY || 0;
+
+        let rule = `${sel} {\n`;
+        rule += `  color: ${color};\n`;
+        if (x != 0 || y != 0 || rot != 0) {
+          rule += `  transform: translate3d(${x}px, ${y}px, 0) rotate(${rot}deg);\n`;
+        }
+        rule += `}\n`;
+        textRules.push(rule);
+
+        textSnapshot.push({
+          selector: sel,
+          color,
+          x,
+          y,
+          text: (el.textContent || '').trim().slice(0, 45)
+        });
+      });
+    });
+
+    if (textRules.length > 0) {
+      cssSnippet += textRules.join('\n') + '\n';
+    } else {
+      cssSnippet += `/* Standard typography colors active: var(--ink) */\n\n`;
+    }
+
+    // 4. Added Markup (if any)
+    const addedItems = [];
+    if (page.added && page.added.length > 0) {
+      page.added.forEach(item => {
+        addedItems.push(`<!-- Added Text in ${item.parentSelector || 'body'} -->\n<p id="${item.id}" class="custom-added-text">${item.html}</p>`);
+      });
+    }
+    if (page.shapes && page.shapes.length > 0) {
+      page.shapes.forEach(shape => {
+        addedItems.push(`<!-- Added Custom Shape -->\n<div id="${shape.id}" class="custom-shape shape-${shape.type}"></div>`);
+      });
+    }
+    if (addedItems.length > 0) {
+      cssSnippet += `/* --------------------------------------------------------------------------\n   4. Added HTML Markup Elements\n   --------------------------------------------------------------------------\n${addedItems.join('\n\n')}\n*/\n\n`;
+    }
+
+    // 5. Full JSON State for Antigravity AI
     const exportData = {
       page: pageKey,
-      theme: state.globalTheme,
+      theme: {
+        hue: currentHue,
+        sat: currentSat,
+        backgroundColor: bodyBgColor,
+        textColor: bodyTextColor
+      },
+      background: {
+        color: bodyBgColor,
+        computed: bodyCS.backgroundColor
+      },
+      shapes: shapesSnapshot,
+      text: textSnapshot,
       positions: page.positions || {},
-      shapes: page.shapes || [],
+      shapesState: page.shapes || [],
       styles: page.styles || {},
       added: page.added || [],
       timestamp: new Date().toISOString()
@@ -1286,7 +1530,7 @@
 
     const jsonSnippet = JSON.stringify(exportData, null, 2);
 
-    const fullExportText = `/* ==========================================\n   JK Portfolio — Live Layout Export\n   Paste this into chat with Antigravity to\n   permanently commit your changes to GitHub!\n   ========================================== */\n\n${cssSnippet}/* Layout JSON Data:\n${jsonSnippet}\n*/`;
+    const fullExportText = `/* ==========================================\n   JK Portfolio — Live Layout & Color Export\n   Paste this into chat with Antigravity to\n   permanently commit your changes to GitHub!\n   ========================================== */\n\n${cssSnippet}/* Layout JSON Data:\n${jsonSnippet}\n*/`;
 
     // Automatically copy to clipboard immediately
     copyTextToClipboard(fullExportText);
@@ -1300,13 +1544,13 @@
     modalEl.innerHTML = `
       <div class="code-export-modal" role="dialog" aria-modal="true">
         <div class="code-export-header">
-          <h3>💾 Save &amp; Export Layout Code</h3>
+          <h3>💾 Save &amp; Export Layout &amp; Colors</h3>
           <button class="code-export-close" id="code-export-close" type="button" aria-label="Close">✕</button>
         </div>
         <div class="code-export-body">
           <p>
             <strong style="color: #79d78e;">✓ Copied to clipboard!</strong>
-            To make your edits permanent across all devices and phones, simply <strong>paste this into chat with Antigravity</strong> and I will bake it directly into GitHub.
+            Includes all current <strong>background</strong>, <strong>shape</strong>, and <strong>text</strong> colors, along with layout coordinates. To make your edits permanent across all devices, <strong>paste this into chat with Antigravity</strong> and I will bake it directly into GitHub.
           </p>
           <pre class="code-export-box" id="code-export-box">${fullExportText}</pre>
         </div>

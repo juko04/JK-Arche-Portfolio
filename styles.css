@@ -2957,33 +2957,29 @@ body.is-editing .active-selected {
     margin: 0 !important;
     padding: 0 !important;
     background: var(--field) !important;
-    width: 100vw !important;
-    height: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
     overflow: visible !important;
     font-family: var(--sans) !important;
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Completely hide standard web chrome */
-  .glass-nav,
-  .editor-toolbar,
-  .element-inspector,
-  .rail-controls,
-  .snap-guide-x,
-  .snap-guide-y,
-  .project-pagination,
-  .explore,
-  .shape-dropdown-menu,
-  .code-export-backdrop,
-  main,
-  #top {
+  /* Completely hide standard web chrome and any non-booklet content */
+  body > *:not(.print-portfolio-booklet):not(#print-portfolio-booklet) {
     display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
   }
 
   /* Display the dedicated landscape architectural print booklet */
   .print-portfolio-booklet {
     display: block !important;
-    width: 100vw !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
     background: var(--field) !important;
   }
 
@@ -2991,8 +2987,10 @@ body.is-editing .active-selected {
     width: 100vw !important;
     height: 100vh !important;
     max-height: 100vh !important;
-    page-break-after: always !important;
     page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: always !important;
+    break-after: page !important;
     position: relative !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
@@ -3001,27 +2999,70 @@ body.is-editing .active-selected {
     justify-content: space-between !important;
     background: var(--field) !important;
     color: var(--ink) !important;
-    padding: 3.5vw 4.5vw 2.5vw !important;
+    padding: 3vw 4vw 2.2vw !important;
   }
 
-  /* Cover Sheet Styling */
+  .print-sheet:first-child {
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+    margin-top: 0 !important;
+  }
+
+  .print-sheet:last-child {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  /* Cover Sheet Architectural Geometry */
   .print-cover-sheet {
     position: relative;
     background: var(--field) !important;
   }
 
-  .print-cover-stripes {
+  .print-cover-circles {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: repeating-linear-gradient(
-      -35deg,
-      transparent,
-      transparent 18vw,
-      rgba(244, 243, 237, 0.45) 18vw,
-      rgba(244, 243, 237, 0.45) 23vw
-    );
+    overflow: hidden;
     z-index: 1;
+  }
+
+  .print-circle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    box-sizing: border-box;
+  }
+
+  /* Large architectural background circle - upper right */
+  .print-circle-1 {
+    width: 38vw;
+    height: 38vw;
+    right: 4vw;
+    top: -5vw;
+    background: rgba(255, 255, 255, 0.42);
+    border: 1.5px solid rgba(255, 255, 255, 0.65);
+  }
+
+  /* Medium overlapping circle - layered behind narrative */
+  .print-circle-2 {
+    width: 25vw;
+    height: 25vw;
+    right: 22vw;
+    bottom: 5vw;
+    background: var(--field-light);
+    border: 1px solid var(--line);
+    opacity: 0.9;
+  }
+
+  /* Accent circle - signature dark charcoal architectural anchor */
+  .print-circle-3 {
+    width: 11vw;
+    height: 11vw;
+    right: 14vw;
+    bottom: 16vw;
+    background: #3d3434;
+    border: 1px solid rgba(0, 0, 0, 0.2);
   }
 
   .print-cover-top {
@@ -3056,7 +3097,6 @@ body.is-editing .active-selected {
     margin: 0.4vw 0 0;
     color: var(--ink);
   }
-
 
   .print-cover-middle {
     position: relative;
@@ -3104,12 +3144,12 @@ body.is-editing .active-selected {
     justify-content: space-between;
     align-items: flex-end;
     border-bottom: 1.5px solid var(--line-strong);
-    padding-bottom: 1.2vw;
-    margin-bottom: 2vw;
+    padding-bottom: 1vw;
+    margin-bottom: 1.8vw;
   }
 
   .print-project-header h2 {
-    font-size: 3.2vw;
+    font-size: 3vw;
     font-weight: 700;
     letter-spacing: -0.04em;
     margin: 0;
@@ -3131,31 +3171,40 @@ body.is-editing .active-selected {
     grid-template-columns: 1.35fr 1fr;
     gap: 3vw;
     flex: 1;
-    align-items: stretch;
+    align-items: center;
     min-height: 0;
   }
 
   .print-media-col {
     display: flex;
     flex-direction: column;
-    gap: 1.5vw;
     justify-content: center;
+    align-items: center;
+    width: 100%;
     height: 100%;
+    min-height: 0;
+    overflow: hidden;
   }
 
   .print-media-col img {
     width: 100%;
-    height: 100%;
-    max-height: 60vh;
+    max-width: 100%;
+    height: auto;
+    max-height: 54vh;
     object-fit: cover;
     border-radius: 4px;
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+    display: block;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .print-narrative-col {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    height: 100%;
+    min-height: 0;
   }
 
   .print-narrative-lead {
@@ -3219,7 +3268,7 @@ body.is-editing .active-selected {
     align-items: center;
     border-top: 1.5px solid var(--line-strong);
     padding-top: 1vw;
-    margin-top: 1.5vw;
+    margin-top: 1.2vw;
     font-family: var(--mono);
     font-size: 0.9vw;
     text-transform: uppercase;
@@ -3233,7 +3282,7 @@ body.is-editing .active-selected {
     gap: 2.5vw;
     flex: 1;
     min-height: 0;
-    align-items: stretch;
+    align-items: center;
   }
 
   .print-photo-text-col {
@@ -3241,6 +3290,8 @@ body.is-editing .active-selected {
     flex-direction: column;
     justify-content: space-between;
     padding-right: 0.5vw;
+    height: 100%;
+    min-height: 0;
   }
 
   .print-photo-5mosaic {
@@ -3248,8 +3299,9 @@ body.is-editing .active-selected {
     grid-template-columns: 1.3fr 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     gap: 0.8vw;
-    height: 100%;
-    max-height: 60vh;
+    height: 52vh;
+    min-height: 380px;
+    max-height: 54vh;
   }
 
   .print-photo-5mosaic .mosaic-lead {
@@ -3262,6 +3314,9 @@ body.is-editing .active-selected {
     object-fit: cover;
     border-radius: 3px;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    display: block;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .print-photo-grid {
@@ -3274,11 +3329,14 @@ body.is-editing .active-selected {
 
   .print-photo-grid img {
     width: 100%;
-    height: 100%;
-    max-height: 60vh;
+    height: auto;
+    max-height: 52vh;
     object-fit: cover;
     border-radius: 4px;
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+    display: block;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }
 

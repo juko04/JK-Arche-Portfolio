@@ -1254,11 +1254,38 @@
     const heroRole = document.querySelector('#hero-role')?.innerText || 'Designing for the dialogue between light, form, and spatial atmosphere.';
     const heroCopy = document.querySelector('#hero-copy')?.innerText || 'From daylighting studies and photometric concepts to architectural massing and material texture, I explore how light shapes human experience in the built environment.';
 
+    // Signature Architectural Circles on Cover (or live custom shapes if created by user)
+    const indexShapes = (state.pages && state.pages['index.html'] && Array.isArray(state.pages['index.html'].shapes)) 
+      ? state.pages['index.html'].shapes 
+      : [];
+    
+    let coverGeometryHtml = '';
+    if (indexShapes.length > 0) {
+      coverGeometryHtml = indexShapes.map(s => {
+        const bg = s.style?.backgroundColor || (s.filled ? 'var(--field-light)' : 'transparent');
+        const border = s.style?.borderColor || 'var(--line-strong)';
+        const radius = s.type === 'circle' ? '50%' : s.type === 'pill' ? '999px' : '0px';
+        const w = s.width || '140px';
+        const h = s.height || '140px';
+        const l = s.left || '50vw';
+        const t = s.top || '30vh';
+        return `<div class="print-custom-shape" style="position:absolute; left:${l}; top:${t}; width:${w}; height:${h}; background:${bg}; border:1.5px solid ${border}; border-radius:${radius}; pointer-events:none;"></div>`;
+      }).join('');
+    } else {
+      coverGeometryHtml = `
+        <div class="print-circle print-circle-1"></div>
+        <div class="print-circle print-circle-2"></div>
+        <div class="print-circle print-circle-3"></div>
+      `;
+    }
+
     // Dynamic Live Landscape Sheets
     booklet.innerHTML = `
       <!-- Sheet 1: Cover Sheet -->
       <div class="print-sheet print-cover-sheet">
-        <div class="print-cover-stripes"></div>
+        <div class="print-cover-circles" aria-hidden="true">
+          ${coverGeometryHtml}
+        </div>
         <div class="print-cover-top">
           <p class="print-kicker">${heroKicker}</p>
           <h1>Design Portfolio</h1>
@@ -1287,7 +1314,7 @@
         </div>
         <div class="print-project-grid">
           <div class="print-media-col">
-            <img src="assets/projects/childrens-museum.jpg" alt="Children's Museum Exterior Perspective">
+            <img src="assets/projects/childrens-museum.jpg" alt="Children's Museum Exterior Perspective" loading="eager" decoding="sync">
           </div>
           <div class="print-narrative-col">
             <div>
@@ -1321,7 +1348,7 @@
         </div>
         <div class="print-project-grid">
           <div class="print-media-col">
-            <img src="assets/projects/central-lobby.jpg" alt="University Central Lobby Lighting Render">
+            <img src="assets/projects/central-lobby.jpg" alt="University Central Lobby Lighting Render" loading="eager" decoding="sync">
           </div>
           <div class="print-narrative-col">
             <div>
@@ -1355,7 +1382,7 @@
         </div>
         <div class="print-project-grid">
           <div class="print-media-col">
-            <img src="assets/projects/bench-study.jpg" alt="Exterior Bench Mockup &amp; Grazing Light">
+            <img src="assets/projects/bench-study.jpg" alt="Exterior Bench Mockup &amp; Grazing Light" loading="eager" decoding="sync">
           </div>
           <div class="print-narrative-col">
             <div>
@@ -1389,7 +1416,7 @@
         </div>
         <div class="print-project-grid">
           <div class="print-media-col">
-            <img src="assets/projects/mountain-home.jpg" alt="Mountain Home Exterior Perspective">
+            <img src="assets/projects/mountain-home.jpg" alt="Mountain Home Exterior Perspective" loading="eager" decoding="sync">
           </div>
           <div class="print-narrative-col">
             <div>
@@ -1437,11 +1464,11 @@
             </div>
           </div>
           <div class="print-photo-5mosaic">
-            <img class="mosaic-lead" src="assets/photography/light/IMG_6082.JPG" alt="Atmospheric Night Light &amp; Horizon Study">
-            <img src="assets/photography/light/IMG_1770.JPG" alt="Vertical Luminaire Grazing Study">
-            <img src="assets/photography/light/IMG_0251.JPG" alt="Interior Daylight Atmosphere">
-            <img src="assets/photography/light/IMG_2694 2.JPG" alt="Reflected Glazing Surface">
-            <img src="assets/photography/light/IMG_2556.JPG" alt="Ambient Warmth Tone">
+            <img class="mosaic-lead" src="assets/photography/light/IMG_6082.JPG" alt="Atmospheric Night Light &amp; Horizon Study" loading="eager" decoding="sync">
+            <img src="assets/photography/light/IMG_1770.JPG" alt="Vertical Luminaire Grazing Study" loading="eager" decoding="sync">
+            <img src="assets/photography/light/IMG_0251.JPG" alt="Interior Daylight Atmosphere" loading="eager" decoding="sync">
+            <img src="assets/photography/light/IMG_2694%202.JPG" alt="Reflected Glazing Surface" loading="eager" decoding="sync">
+            <img src="assets/photography/light/IMG_2556.JPG" alt="Ambient Warmth Tone" loading="eager" decoding="sync">
           </div>
         </div>
         <div class="print-sheet-footer">
@@ -1475,11 +1502,11 @@
             </div>
           </div>
           <div class="print-photo-5mosaic">
-            <img class="mosaic-lead" src="assets/photography/arch/IMG_6268 2.jpeg" alt="Vertical Architectural Massing Monolith">
-            <img src="assets/photography/arch/IMG_6335.jpeg" alt="Structural Facade Alignment">
-            <img src="assets/photography/arch/kotara004502-R1-026-11A.jpg" alt="35mm Film Study 11A">
-            <img src="assets/photography/arch/kotara004502-R1-052-24A.jpg" alt="35mm Film Study 24A">
-            <img src="assets/photography/arch/073330D1-6DA4-4260-8F37-C975744056BB_1_105_c.jpeg" alt="Spatial Perspective Monochromes">
+            <img class="mosaic-lead" src="assets/photography/arch/IMG_6268%202.jpeg" alt="Vertical Architectural Massing Monolith" loading="eager" decoding="sync">
+            <img src="assets/photography/arch/IMG_6335.jpeg" alt="Structural Facade Alignment" loading="eager" decoding="sync">
+            <img src="assets/photography/arch/kotara004502-R1-026-11A.jpg" alt="35mm Film Study 11A" loading="eager" decoding="sync">
+            <img src="assets/photography/arch/kotara004502-R1-052-24A.jpg" alt="35mm Film Study 24A" loading="eager" decoding="sync">
+            <img src="assets/photography/arch/073330D1-6DA4-4260-8F37-C975744056BB_1_105_c.jpeg" alt="Spatial Perspective Monochromes" loading="eager" decoding="sync">
           </div>
         </div>
         <div class="print-sheet-footer">
@@ -2088,11 +2115,43 @@
     });
 
     // Generate & Print Landscape PDF
-    toolbar.querySelector('#editor-export-pdf').addEventListener('click', () => {
+    toolbar.querySelector('#editor-export-pdf').addEventListener('click', async () => {
+      showToast('Rendering PDF...');
       buildDynamicLandscapeBooklet();
-      setTimeout(() => {
-        window.print();
-      }, 350);
+      const booklet = document.querySelector('#print-portfolio-booklet');
+      if (!booklet) return;
+
+      const imgs = Array.from(booklet.querySelectorAll('img'));
+      await Promise.all(imgs.map((img) => {
+        return new Promise((resolve) => {
+          if (img.complete && img.naturalWidth > 0) {
+            if (img.decode) {
+              img.decode().then(resolve).catch(resolve);
+            } else {
+              resolve();
+            }
+          } else {
+            img.onload = () => {
+              if (img.decode) {
+                img.decode().then(resolve).catch(resolve);
+              } else {
+                resolve();
+              }
+            };
+            img.onerror = resolve;
+          }
+        });
+      }));
+
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          window.print();
+        }, 150);
+      });
+    });
+
+    window.addEventListener('beforeprint', () => {
+      buildDynamicLandscapeBooklet();
     });
 
     // Save & Export Code Modal

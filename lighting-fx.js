@@ -1,23 +1,26 @@
 /**
  * Julian Kotara — Architectural & Lighting Design Portfolio
- * lighting-fx.js: Ambient Spotlight Cursor & Colorado Solar Time-of-Day Lighting Simulator
+ * lighting-fx.js: Ambient Spotlight Cursor & Solar Time-of-Day Simulator
  * 
  * Features:
- * 1. Site-wide subtle spotlight cursor (60fps rAF with smooth organic easing).
- * 2. Colorado Solar Time-of-Day Engine (Boulder/Denver 40.0° N) calculating
- *    real-time solar altitude, azimuth, sunrise, sunset, and solar shadow on the hero title.
- * 3. Nighttime Architectural Illumination (luminous backlit glow after dusk).
- * 4. Interactive Time Scrubber allowing manual scrubbing through all 24 hours or live Colorado clock sync.
+ * 1. Site-Wide Ambient Spotlight Cursor (60fps rAF with smooth organic easing,
+ *    and enhanced luminous beam over dark pages & photography).
+ * 2. Solar Daylight & Time-of-Day Engine:
+ *    - Automatic local timezone support (100% private, client-side, zero network calls).
+ *    - Left-to-right shadow movement following solar azimuth (top=North, bottom=South).
+ *    - Subtle green canvas daylight dimming on the homepage (midday bright -> nocturnal sage).
+ *    - High-contrast radiant architectural backlit night glow on "Julian Kotara".
+ *    - Dynamic solar shading on top navigation (.glass-nav) carried across all pages.
+ * 3. Interactive Time Scrubber Widget with manual 24h range slider and Colorado studio toggle.
  */
 
 (function () {
   'use strict';
 
   // ==========================================================================
-  // 1. Site-Wide Ambient Spotlight Cursor (Subtle, Organic Architectural Beam)
+  // 1. Site-Wide Ambient Spotlight Cursor (Subtle on light, Vivid on dark)
   // ==========================================================================
   function initAmbientSpotlight() {
-    // Only run on devices with fine pointer hover
     if (window.matchMedia && !window.matchMedia('(hover: hover)').matches) {
       return;
     }
@@ -31,6 +34,13 @@
       document.body.appendChild(spotlightLayer);
     }
 
+    // Check if current page or section is dark
+    const isDarkPage = document.body.classList.contains('photo-page') || 
+                       document.querySelector('.photo-container') !== null;
+    if (isDarkPage) {
+      spotlightLayer.classList.add('is-dark');
+    }
+
     let targetX = window.innerWidth / 2;
     let targetY = window.innerHeight / 2;
     let currentX = targetX;
@@ -41,14 +51,12 @@
     let animId = null;
 
     function render() {
-      // Smooth organic lerp easing (0.18)
       currentX += (targetX - currentX) * 0.18;
       currentY += (targetY - currentY) * 0.18;
 
       spotlightLayer.style.setProperty('--spot-x', `${currentX.toFixed(1)}px`);
       spotlightLayer.style.setProperty('--spot-y', `${currentY.toFixed(1)}px`);
 
-      // Continue animating while there is movement
       const dist = Math.hypot(targetX - currentX, targetY - currentY);
       if (dist > 0.1 || isMoving) {
         animId = requestAnimationFrame(render);
@@ -74,7 +82,7 @@
       clearTimeout(fadeTimeout);
       fadeTimeout = setTimeout(() => {
         isMoving = false;
-      }, 2000);
+      }, 2500);
     }
 
     function onPointerLeave() {
@@ -89,13 +97,10 @@
 
 
   // ==========================================================================
-  // 2. Solar Engine & Time-of-Day Lighting Simulator
-  //    Adapts automatically to the visitor's local timezone (100% client-side,
-  //    zero network calls, zero permissions, completely privacy-safe).
+  // 2. Solar Engine & Astronomical Time-of-Day Calculations
   // ==========================================================================
   const DEFAULT_LATITUDE = 40.015; // Boulder, CO reference latitude
 
-  // Get current date & decimal hour (supports Local Time by default, or Colorado Time)
   function getLiveDate(mode = 'local') {
     if (mode === 'colorado') {
       try {
@@ -105,11 +110,9 @@
         return new Date();
       }
     }
-    // Pure client-side local browser/device clock
     return new Date();
   }
 
-  // Get user-friendly timezone label (e.g. "MDT", "EDT", "PDT", "BST", "CET")
   function getTimezoneAbbreviation(mode = 'local') {
     try {
       const tz = mode === 'colorado' ? 'America/Denver' : undefined;
@@ -124,25 +127,20 @@
     }
   }
 
-  // Calculate day of year (1-366)
   function getDayOfYear(date) {
     const start = new Date(date.getFullYear(), 0, 0);
     const diff = date - start + (start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000;
     return Math.floor(diff / (1000 * 60 * 60 * 24));
   }
 
-  // Compute Solar Position for a given date and decimal hour (0.00 - 24.00)
   function computeSolar(date, decimalHour, isColorado = false) {
     const N = getDayOfYear(date);
     const latRad = (DEFAULT_LATITUDE * Math.PI) / 180;
 
-    // Solar Declination (degrees -> radians)
     const declinationDeg = 23.45 * Math.sin(((360 / 365) * (N - 81) * Math.PI) / 180);
     const declinationRad = (declinationDeg * Math.PI) / 180;
 
-    // Sunrise & Sunset Hour Angle
     const cosH0 = -Math.tan(latRad) * Math.tan(declinationRad);
-    // In local clock time worldwide, solar noon is naturally near 12.5 - 13.0
     const solarNoonClock = isColorado ? 13.02 : 12.8;
     let sunriseHour = 6.5;
     let sunsetHour = 19.5;
@@ -153,16 +151,13 @@
       sunsetHour = solarNoonClock + H0Deg / 15;
     }
 
-    // Solar Hour Angle H
     const solarTime = decimalHour - (solarNoonClock - 12.0);
     const HRad = ((solarTime - 12) * 15 * Math.PI) / 180;
 
-    // Solar Altitude (Elevation) alpha
     const sinAlpha = Math.sin(latRad) * Math.sin(declinationRad) + Math.cos(latRad) * Math.cos(declinationRad) * Math.cos(HRad);
     const alphaRad = Math.asin(Math.max(-1, Math.min(1, sinAlpha)));
     const alphaDeg = (alphaRad * 180) / Math.PI;
 
-    // Solar Azimuth theta (0 = North, 90 = East, 180 = South, 270 = West)
     const cosTheta = (Math.sin(declinationRad) - Math.sin(latRad) * Math.sin(alphaRad)) /
                      (Math.cos(latRad) * Math.cos(alphaRad) + 1e-6);
     const thetaClamped = Math.max(-1, Math.min(1, cosTheta));
@@ -172,9 +167,18 @@
       thetaDeg = 360 - thetaDeg;
     }
 
-    // Determine Lighting Phase
+    // Solar Daylight Factor S (1.0 = midday sun, 0.35 = horizon/sunset, 0.0 = deep night)
+    let daylightFactor = 0;
+    if (alphaDeg > 0) {
+      daylightFactor = 0.35 + 0.65 * Math.min(1, alphaDeg / 35);
+    } else if (alphaDeg >= -6) {
+      daylightFactor = 0.35 * (alphaDeg + 6) / 6;
+    } else {
+      daylightFactor = 0;
+    }
+
     let phase = 'day';
-    let phaseLabel = 'Daylight';
+    let phaseLabel = 'Solar Daylight';
     let icon = '☀️';
 
     if (alphaDeg < -6) {
@@ -189,10 +193,6 @@
       phase = 'golden';
       phaseLabel = decimalHour < 12 ? 'Morning Golden Hour' : 'Evening Golden Hour';
       icon = '🌅';
-    } else {
-      phase = 'day';
-      phaseLabel = 'Solar Daylight';
-      icon = '☀️';
     }
 
     return {
@@ -201,13 +201,13 @@
       sunsetHour,
       altitude: alphaDeg,
       azimuth: thetaDeg,
+      daylightFactor,
       phase,
       phaseLabel,
       icon
     };
   }
 
-  // Format decimal hour to 12-hour clock (e.g. 7.25 -> "7:15 AM")
   function formatTime(decimalHour) {
     let normalized = decimalHour % 24;
     if (normalized < 0) normalized += 24;
@@ -221,74 +221,115 @@
 
 
   // ==========================================================================
-  // 3. Dynamic Text Shadow & Backlight Renderer on #hero-title
+  // 3. Dynamic Top Navigation Shading (Applied across ALL pages)
   // ==========================================================================
-  let isSolarEffectEnabled = true;
+  function applyNavShading(S) {
+    const r = Math.round(245 * S + 26 * (1 - S));
+    const g = Math.round(244 * S + 29 * (1 - S));
+    const b = Math.round(237 * S + 22 * (1 - S));
+    const borderAlpha = (0.45 * S + 0.14 * (1 - S)).toFixed(2);
+    const ink = S > 0.35 ? '#21231a' : '#ece9df';
 
-  function applyHeroLighting(solar) {
+    document.documentElement.style.setProperty('--solar-nav-bg', `rgba(${r}, ${g}, ${b}, 0.88)`);
+    document.documentElement.style.setProperty('--solar-nav-border', `rgba(255, 255, 255, ${borderAlpha})`);
+    document.documentElement.style.setProperty('--solar-nav-ink', ink);
+  }
+
+
+  // ==========================================================================
+  // 4. Subtle Homepage Canvas Dimming (index.html only)
+  // ==========================================================================
+  function applyCanvasDimming(S) {
+    const intro = document.querySelector('.intro');
+    if (!intro) return;
+
+    // Subtly modulates lightness between 65% (bright midday) and 38% (deep nocturnal sage)
+    const lightness = Math.round(38 + 27 * S);
+    const sat = Math.round(20 + 6 * S);
+    const canvasBg = `hsl(75, ${sat}%, ${lightness}%)`;
+
+    document.documentElement.style.setProperty('--solar-canvas-bg', canvasBg);
+    document.body.style.backgroundColor = canvasBg;
+
+    // High contrast ink tones on the dimmed green canvas
+    const heroInk = S > 0.35 ? '#21231a' : '#ece9df';
+    const heroMuted = S > 0.35 ? 'rgba(67, 70, 57, 0.7)' : 'rgba(236, 233, 223, 0.75)';
+    const heroLine = S > 0.35 ? 'hsla(75, 14%, 12%, 0.16)' : 'rgba(255, 255, 255, 0.18)';
+    const circleAlpha = (0.16 * (1 - S) + 0.35 * S).toFixed(2);
+
+    document.documentElement.style.setProperty('--solar-hero-ink', heroInk);
+    document.documentElement.style.setProperty('--solar-hero-muted', heroMuted);
+    document.documentElement.style.setProperty('--solar-hero-line', heroLine);
+    document.documentElement.style.setProperty('--solar-circle-alpha', circleAlpha);
+  }
+
+
+  // ==========================================================================
+  // 5. Left-to-Right Solar Shadow & Radiant Night Glow on #hero-title
+  // ==========================================================================
+  function applyHeroLighting(solar, S) {
     const heroTitle = document.querySelector('#hero-title');
     if (!heroTitle) return;
 
-    if (!isSolarEffectEnabled) {
-      heroTitle.style.textShadow = '';
-      return;
-    }
-
     const { altitude, azimuth } = solar;
 
-    // --- NIGHT MODE: Architectural Backlit Glow ---
+    // --- NIGHT MODE: Luminous off-white with radiant multi-tier back-glow ---
     if (altitude <= -6) {
-      // Soft, luminous museum-grade backlit typography
+      document.documentElement.style.setProperty('--solar-title-color', '#f5f6ed');
       heroTitle.style.textShadow = [
-        '0 0 16px rgba(255, 255, 255, 0.48)',
-        '0 0 38px rgba(245, 240, 220, 0.28)',
-        '0 0 70px rgba(185, 205, 160, 0.18)'
+        '0 0 16px rgba(255, 255, 255, 0.92)',
+        '0 0 38px rgba(245, 240, 220, 0.68)',
+        '0 0 75px rgba(185, 215, 155, 0.45)',
+        '0 0 115px rgba(150, 190, 120, 0.28)'
       ].join(', ');
       return;
     }
 
-    // --- TWILIGHT TRANSITION (-6° to 0°): Blend shadow into night glow ---
+    // --- TWILIGHT TRANSITION (-6° to 0°): Smooth crossfade ---
     if (altitude <= 0) {
-      const t = (altitude + 6) / 6; // 0 (night) to 1 (horizon)
-      const glowOpacity = (1 - t) * 0.45;
-      const shadowOpacity = t * 0.2;
-      const angleRad = (azimuth * Math.PI) / 180;
-      const dx = (-Math.sin(angleRad) * 24).toFixed(1);
-      const dy = (Math.cos(angleRad) * 14).toFixed(1);
+      const t = (altitude + 6) / 6; // 0 (night) to 1 (sunset)
+      const titleR = Math.round(245 * (1 - t) + 33 * t);
+      const titleG = Math.round(246 * (1 - t) + 35 * t);
+      const titleB = Math.round(237 * (1 - t) + 26 * t);
+      document.documentElement.style.setProperty('--solar-title-color', `rgb(${titleR}, ${titleG}, ${titleB})`);
+
+      const azRad = (azimuth * Math.PI) / 180;
+      const dx = (-Math.sin(azRad) * 28).toFixed(1);
+      const dy = (Math.cos(azRad) * 16 * 0.7).toFixed(1);
 
       heroTitle.style.textShadow = [
-        `0 0 ${(24 * (1 - t)).toFixed(1)}px rgba(255, 255, 255, ${glowOpacity.toFixed(2)})`,
-        `${dx}px ${dy}px 24px rgba(60, 45, 30, ${shadowOpacity.toFixed(2)})`
+        `0 0 ${(34 * (1 - t)).toFixed(1)}px rgba(255, 255, 255, ${(0.88 * (1 - t)).toFixed(2)})`,
+        `0 0 ${(68 * (1 - t)).toFixed(1)}px rgba(245, 240, 220, ${(0.55 * (1 - t)).toFixed(2)})`,
+        `${dx}px ${dy}px 24px rgba(50, 38, 26, ${(0.22 * t).toFixed(2)})`
       ].join(', ');
       return;
     }
 
-    // --- DAYTIME SOLAR CAST SHADOW (altitude > 0°) ---
-    // Shadow direction is opposite to sun azimuth
-    const shadowAngleRad = ((azimuth + 180) * Math.PI) / 180;
+    // --- DAYTIME: Title is dark charcoal #21231a ---
+    document.documentElement.style.setProperty('--solar-title-color', '#21231a');
 
-    // Shadow distance: inversely proportional to sun altitude (longer at sunrise/sunset, crisp and short at midday)
-    const effectiveAlt = Math.max(altitude, 8);
+    // Solar azimuth mapping (top=North, bottom=South, right=East, left=West):
+    // Morning (East sun): dx < 0 (points LEFT)
+    // Midday (South sun): dx = 0, dy < 0 (points UP / NORTH)
+    // Evening (West sun): dx > 0 (points RIGHT)
+    const azRad = (azimuth * Math.PI) / 180;
+    const effectiveAlt = Math.max(altitude, 6);
     const cotAlt = 1 / Math.tan((effectiveAlt * Math.PI) / 180);
     const distance = Math.min(Math.max(cotAlt * 12, 5), 32);
 
-    // Coordinate offsets (dy scaled by 0.72 for perspective)
-    const dx = (Math.sin(shadowAngleRad) * distance).toFixed(1);
-    const dy = (-Math.cos(shadowAngleRad) * distance * 0.72).toFixed(1);
+    const dx = (-Math.sin(azRad) * distance).toFixed(1);
+    const dy = (Math.cos(azRad) * distance * 0.7).toFixed(1);
 
-    // Diffusion: Umbra (core) and Penumbra (scattering)
     const altRatio = Math.min(altitude / 60, 1);
     const umbraBlur = (3 + (1 - altRatio) * 6).toFixed(1);
     const penumbraBlur = (10 + (1 - altRatio) * 18).toFixed(1);
 
-    // Warmth: Golden hour (altitude < 16°) has warm amber/terracotta tone; midday has crisp neutral tone
     let umbraColor = '';
     let penumbraColor = '';
-
     if (altitude < 16) {
-      const warmth = (1 - altitude / 16);
-      umbraColor = `rgba(${Math.round(45 + warmth * 40)}, ${Math.round(35 + warmth * 10)}, 25, 0.32)`;
-      penumbraColor = `rgba(${Math.round(110 + warmth * 60)}, ${Math.round(75 + warmth * 25)}, 45, 0.18)`;
+      const warmth = 1 - altitude / 16;
+      umbraColor = `rgba(${Math.round(45 + warmth * 40)}, ${Math.round(35 + warmth * 10)}, 25, 0.35)`;
+      penumbraColor = `rgba(${Math.round(110 + warmth * 60)}, ${Math.round(75 + warmth * 25)}, 45, 0.2)`;
     } else {
       umbraColor = 'rgba(30, 32, 24, 0.28)';
       penumbraColor = 'rgba(45, 48, 36, 0.14)';
@@ -302,20 +343,19 @@
 
 
   // ==========================================================================
-  // 4. Interactive Time Scrubber Widget (Discreet Architectural Study)
+  // 6. Interactive Time Scrubber Widget (index.html hero)
   // ==========================================================================
   function initSolarWidget() {
     const heroSection = document.querySelector('.intro');
-    if (!heroSection) return; // Only active on pages with the hero
+    if (!heroSection) return;
 
-    // Create wrapper if not existing
     let widget = document.querySelector('#solar-time-widget');
     if (!widget) {
       widget = document.createElement('div');
       widget.id = 'solar-time-widget';
       widget.className = 'solar-time-widget';
       widget.setAttribute('role', 'region');
-      widget.setAttribute('aria-label', 'Colorado Solar & Lighting Simulation');
+      widget.setAttribute('aria-label', 'Solar & Lighting Simulation');
 
       widget.innerHTML = `
         <div class="solar-widget-collapsed-pill" id="solar-collapsed-pill" title="Click to open Solar Lighting Scrubber">
@@ -357,7 +397,7 @@
             <button type="button" class="solar-quick-btn" data-hour="13">Noon</button>
             <button type="button" class="solar-quick-btn" data-hour="19.25">Sunset</button>
             <button type="button" class="solar-quick-btn" data-hour="22">Night Glow</button>
-            <button type="button" class="solar-live-toggle is-live" id="solar-live-toggle" title="Sync to your local device clock (100% private)">● Live Local</button>
+            <button type="button" class="solar-live-toggle is-live" id="solar-live-toggle" title="Sync to your local device clock">● Live Local</button>
             <button type="button" class="solar-quick-btn solar-co-toggle" id="solar-co-toggle" title="View Boulder, Colorado Time">CO Studio</button>
           </div>
         </div>
@@ -366,13 +406,11 @@
       heroSection.appendChild(widget);
     }
 
-    // State Variables
-    let timeMode = 'local'; // 'local' or 'colorado'
+    let timeMode = 'local';
     let isLive = true;
     let isCollapsed = false;
     let currentDecimalHour = 13.0;
 
-    // DOM References
     const collapsedPill = widget.querySelector('#solar-collapsed-pill');
     const panel = widget.querySelector('#solar-widget-panel');
     const minimizeBtn = widget.querySelector('#solar-minimize-btn');
@@ -393,9 +431,7 @@
     function updateWidget(solar) {
       const tzLabel = getTimezoneAbbreviation(timeMode);
       const timeStr = formatTime(solar.decimalHour);
-      const isNight = solar.altitude <= -6;
 
-      // Update Texts & Badges
       miniIcon.textContent = solar.icon;
       miniTime.textContent = `${timeStr} ${tzLabel}`;
       iconLarge.textContent = solar.icon;
@@ -433,8 +469,14 @@
         coToggle.classList.remove('is-active');
       }
 
-      // Apply to #hero-title
-      applyHeroLighting(solar);
+      // 1. Shading on Top Navigation Bar (Shared across all pages)
+      applyNavShading(solar.daylightFactor);
+
+      // 2. Canvas Dimming on first page
+      applyCanvasDimming(solar.daylightFactor);
+
+      // 3. Dynamic Shadow & Night Glow on #hero-title
+      applyHeroLighting(solar, solar.daylightFactor);
     }
 
     function syncLive() {
@@ -455,12 +497,10 @@
       updateWidget(solar);
     }
 
-    // Range Slider Scrubbing
     rangeInput.addEventListener('input', (e) => {
       onManualScrub(e.target.value);
     });
 
-    // Quick Preset Buttons
     widget.querySelectorAll('.solar-quick-btn:not(.solar-co-toggle)').forEach((btn) => {
       btn.addEventListener('click', () => {
         const targetHour = parseFloat(btn.dataset.hour);
@@ -468,21 +508,18 @@
       });
     });
 
-    // Live Local Button
     liveToggle.addEventListener('click', () => {
       timeMode = 'local';
       isLive = true;
       syncLive();
     });
 
-    // Colorado Studio Toggle
     coToggle.addEventListener('click', () => {
       timeMode = 'colorado';
       isLive = true;
       syncLive();
     });
 
-    // Collapse / Expand Toggles
     minimizeBtn.addEventListener('click', () => {
       isCollapsed = true;
       widget.classList.add('is-collapsed');
@@ -493,23 +530,42 @@
       widget.classList.remove('is-collapsed');
     });
 
-    // Initial Live Sync and Interval
     syncLive();
-    setInterval(syncLive, 10000); // Check live time every 10s
+    setInterval(syncLive, 10000);
   }
 
 
   // ==========================================================================
-  // 5. Lifecycle Initialization
+  // 7. Global Navigation Shading on Non-Hero Pages
   // ==========================================================================
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      initAmbientSpotlight();
-      initSolarWidget();
-    });
-  } else {
+  function initGlobalNavShading() {
+    // If not on hero page, still compute and apply live solar nav shading
+    if (document.querySelector('.intro')) return; // Handled by widget
+
+    function syncNonHeroNav() {
+      const liveDate = getLiveDate('local');
+      const decimalHour = liveDate.getHours() + liveDate.getMinutes() / 60 + liveDate.getSeconds() / 3600;
+      const solar = computeSolar(liveDate, decimalHour, false);
+      applyNavShading(solar.daylightFactor);
+    }
+
+    syncNonHeroNav();
+    setInterval(syncNonHeroNav, 10000);
+  }
+
+
+  // ==========================================================================
+  // 8. Lifecycle Initialization
+  // ==========================================================================
+  function init() {
     initAmbientSpotlight();
+    initGlobalNavShading();
     initSolarWidget();
   }
-})();
 
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

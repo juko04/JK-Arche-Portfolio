@@ -59,6 +59,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.4s ease;
 }
 
 img {
@@ -117,15 +118,16 @@ em {
   right: var(--site-padding);
   height: 56px;
   padding: 0 22px;
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  border: 1px solid var(--solar-nav-border, rgba(255, 255, 255, 0.45));
   border-radius: var(--radius-sm);
-  background: var(--glass);
+  background: var(--solar-nav-bg, var(--glass));
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 .monogram {
@@ -133,7 +135,8 @@ em {
   font-weight: 800;
   letter-spacing: -0.06em;
   text-decoration: none;
-  color: var(--ink);
+  color: var(--solar-nav-ink, var(--ink));
+  transition: color 0.4s ease;
 }
 
 .monogram span {
@@ -152,10 +155,10 @@ em {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
-  color: var(--ink);
+  color: var(--solar-nav-ink, var(--ink));
   padding: 6px 0;
   position: relative;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, color 0.4s ease, border-color 0.4s ease;
 }
 
 .glass-nav nav a:hover {
@@ -163,7 +166,7 @@ em {
 }
 
 .glass-nav nav a.active {
-  border-bottom: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--solar-nav-ink, var(--ink));
 }
 
 /* ==========================================================================
@@ -179,6 +182,8 @@ em {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background-color: var(--solar-canvas-bg, transparent);
+  transition: background-color 0.4s ease;
 }
 
 /* Organic Background Circles */
@@ -194,7 +199,8 @@ em {
   height: clamp(320px, 46vw, 680px);
   top: clamp(-240px, -18vh, -100px);
   left: clamp(-220px, -12vw, -80px);
-  background-color: rgba(255, 255, 255, 0.35);
+  background-color: rgba(255, 255, 255, var(--solar-circle-alpha, 0.35));
+  transition: background-color 0.4s ease;
 }
 
 .geo-circle-bottom-right {
@@ -202,7 +208,8 @@ em {
   height: clamp(360px, 52vw, 820px);
   bottom: clamp(-260px, -20vh, -100px);
   right: clamp(-180px, -10vw, -60px);
-  background-color: rgba(255, 255, 255, 0.35);
+  background-color: rgba(255, 255, 255, var(--solar-circle-alpha, 0.35));
+  transition: background-color 0.4s ease;
 }
 
 .intro-top {
@@ -213,6 +220,8 @@ em {
 .hero-kicker {
   position: relative;
   z-index: 6;
+  color: var(--solar-hero-muted, var(--muted));
+  transition: color 0.4s ease;
 }
 
 .intro h1,
@@ -223,6 +232,8 @@ em {
   line-height: 0.82;
   letter-spacing: -0.07em;
   margin: 16px 0 0;
+  color: var(--solar-title-color, var(--ink));
+  transition: text-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s ease;
 }
 
 .intro-body {
@@ -241,14 +252,17 @@ em {
   letter-spacing: -0.04em;
   font-weight: 500;
   margin: 0;
+  color: var(--solar-hero-ink, var(--ink));
+  transition: color 0.4s ease;
 }
 
 .intro-copy {
   font-size: clamp(14px, 1.15vw, 17px);
   line-height: 1.55;
-  color: var(--ink);
+  color: var(--solar-hero-ink, var(--ink));
   max-width: 480px;
   margin: 0 0 0 auto;
+  transition: color 0.4s ease;
 }
 
 .intro-bottom {
@@ -259,7 +273,9 @@ em {
   align-items: center;
   margin-top: clamp(40px, 6vh, 60px);
   padding-top: 20px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--solar-hero-line, var(--line));
+  color: var(--solar-hero-ink, var(--ink));
+  transition: color 0.4s ease, border-color 0.4s ease;
 }
 
 .explore {
@@ -2187,7 +2203,6 @@ body.is-editing .draggable-item:active {
 body.is-editing img {
   cursor: pointer;
   -webkit-user-drag: none;
-  user-drag: none;
   transition: filter 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -2209,7 +2224,6 @@ body.is-dragging img,
 body.is-transforming img {
   pointer-events: none !important;
   -webkit-user-drag: none !important;
-  user-drag: none !important;
 }
 
 .custom-shape {
@@ -2992,7 +3006,6 @@ body.is-editing .active-selected {
   *, *:before, *:after {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    color-adjust: exact !important;
   }
 
   html, body {
@@ -3399,9 +3412,9 @@ body.is-editing .active-selected {
   transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   background: radial-gradient(
     650px circle at var(--spot-x, -1000px) var(--spot-y, -1000px),
-    rgba(255, 255, 255, 0.08) 0%,
-    rgba(255, 255, 255, 0.03) 35%,
-    rgba(255, 255, 255, 0.005) 60%,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0.045) 35%,
+    rgba(255, 255, 255, 0.008) 60%,
     transparent 80%
   );
   mix-blend-mode: soft-light;
@@ -3409,6 +3422,20 @@ body.is-editing .active-selected {
 
 .ambient-spotlight-layer.is-active {
   opacity: 1;
+}
+
+/* Noticeable, luminous beam on dark pages & photography */
+.photo-page .ambient-spotlight-layer,
+body.photo-page .ambient-spotlight-layer,
+.ambient-spotlight-layer.is-dark {
+  mix-blend-mode: screen;
+  background: radial-gradient(
+    620px circle at var(--spot-x, -1000px) var(--spot-y, -1000px),
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.09) 30%,
+    rgba(255, 255, 255, 0.02) 58%,
+    transparent 78%
+  );
 }
 
 @media (hover: none) {

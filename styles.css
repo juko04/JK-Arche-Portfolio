@@ -3685,6 +3685,12 @@ body.is-editing .active-selected {
   color: #fff;
 }
 
+.solar-co-toggle.is-active {
+  background: rgba(215, 140, 75, 0.22);
+  border-color: rgba(215, 140, 75, 0.45);
+  color: #ffb885;
+}
+
 /* Mobile & Tablet Adaptation */
 @media (max-width: 960px) {
   .solar-time-widget {

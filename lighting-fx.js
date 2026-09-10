@@ -89,19 +89,38 @@
 
 
   // ==========================================================================
-  // 2. Colorado Solar Engine & Time-of-Day Lighting Simulator
-  //    Coordinates: Boulder / Denver, Colorado (40.015° N, 105.27° W, UTC-6 MDT)
+  // 2. Solar Engine & Time-of-Day Lighting Simulator
+  //    Adapts automatically to the visitor's local timezone (100% client-side,
+  //    zero network calls, zero permissions, completely privacy-safe).
   // ==========================================================================
-  const COLORADO_LATITUDE = 40.015; // Boulder, CO
-  const COLORADO_LONGITUDE = -105.27;
+  const DEFAULT_LATITUDE = 40.015; // Boulder, CO reference latitude
 
-  // Get current real-time Colorado date & decimal hour
-  function getColoradoNow() {
+  // Get current date & decimal hour (supports Local Time by default, or Colorado Time)
+  function getLiveDate(mode = 'local') {
+    if (mode === 'colorado') {
+      try {
+        const denverStr = new Date().toLocaleString('en-US', { timeZone: 'America/Denver' });
+        return new Date(denverStr);
+      } catch (e) {
+        return new Date();
+      }
+    }
+    // Pure client-side local browser/device clock
+    return new Date();
+  }
+
+  // Get user-friendly timezone label (e.g. "MDT", "EDT", "PDT", "BST", "CET")
+  function getTimezoneAbbreviation(mode = 'local') {
     try {
-      const denverStr = new Date().toLocaleString('en-US', { timeZone: 'America/Denver' });
-      return new Date(denverStr);
+      const tz = mode === 'colorado' ? 'America/Denver' : undefined;
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: tz,
+        timeZoneName: 'short'
+      }).formatToParts(new Date());
+      const tzPart = parts.find(p => p.type === 'timeZoneName');
+      return tzPart ? tzPart.value : (mode === 'colorado' ? 'MDT' : 'Local');
     } catch (e) {
-      return new Date();
+      return mode === 'colorado' ? 'MDT' : 'Local';
     }
   }
 
@@ -112,30 +131,30 @@
     return Math.floor(diff / (1000 * 60 * 60 * 24));
   }
 
-  // Compute Colorado Solar Position for a given date and decimal hour (0.00 - 24.00)
-  function computeColoradoSolar(date, decimalHour) {
+  // Compute Solar Position for a given date and decimal hour (0.00 - 24.00)
+  function computeSolar(date, decimalHour, isColorado = false) {
     const N = getDayOfYear(date);
-    const latRad = (COLORADO_LATITUDE * Math.PI) / 180;
+    const latRad = (DEFAULT_LATITUDE * Math.PI) / 180;
 
     // Solar Declination (degrees -> radians)
     const declinationDeg = 23.45 * Math.sin(((360 / 365) * (N - 81) * Math.PI) / 180);
     const declinationRad = (declinationDeg * Math.PI) / 180;
 
-    // Sunrise & Sunset Hour Angle in Colorado
+    // Sunrise & Sunset Hour Angle
     const cosH0 = -Math.tan(latRad) * Math.tan(declinationRad);
+    // In local clock time worldwide, solar noon is naturally near 12.5 - 13.0
+    const solarNoonClock = isColorado ? 13.02 : 12.8;
     let sunriseHour = 6.5;
     let sunsetHour = 19.5;
 
     if (cosH0 >= -1 && cosH0 <= 1) {
       const H0Deg = (Math.acos(cosH0) * 180) / Math.PI;
-      // MDT Solar Noon offset is approx 13:01 (105.27° W vs 90° W timezone meridian)
-      const solarNoonClock = 13.02;
       sunriseHour = solarNoonClock - H0Deg / 15;
       sunsetHour = solarNoonClock + H0Deg / 15;
     }
 
     // Solar Hour Angle H
-    const solarTime = decimalHour - (13.02 - 12.0);
+    const solarTime = decimalHour - (solarNoonClock - 12.0);
     const HRad = ((solarTime - 12) * 15 * Math.PI) / 180;
 
     // Solar Altitude (Elevation) alpha
@@ -299,16 +318,16 @@
       widget.setAttribute('aria-label', 'Colorado Solar & Lighting Simulation');
 
       widget.innerHTML = `
-        <div class="solar-widget-collapsed-pill" id="solar-collapsed-pill" title="Click to open Colorado Solar Lighting Scrubber">
+        <div class="solar-widget-collapsed-pill" id="solar-collapsed-pill" title="Click to open Solar Lighting Scrubber">
           <span class="solar-icon" id="mini-solar-icon">☀️</span>
           <span class="solar-time-text" id="mini-solar-time">--:--</span>
-          <span class="solar-pulse-dot" title="Live Colorado Time active"></span>
+          <span class="solar-pulse-dot" title="Live Clock active"></span>
         </div>
 
         <div class="solar-widget-panel" id="solar-widget-panel">
           <div class="solar-panel-header">
             <div class="solar-title-group">
-              <span class="solar-header-kicker">Solar Lighting Study · Boulder, CO</span>
+              <span class="solar-header-kicker" id="solar-header-kicker">Solar Lighting Study · Local Time</span>
               <div class="solar-status-row">
                 <span class="solar-icon-large" id="solar-icon-large">☀️</span>
                 <span class="solar-time-display" id="solar-time-display">--:--</span>
@@ -338,7 +357,8 @@
             <button type="button" class="solar-quick-btn" data-hour="13">Noon</button>
             <button type="button" class="solar-quick-btn" data-hour="19.25">Sunset</button>
             <button type="button" class="solar-quick-btn" data-hour="22">Night Glow</button>
-            <button type="button" class="solar-live-toggle is-live" id="solar-live-toggle" title="Sync to real-time Colorado clock">● Live CO</button>
+            <button type="button" class="solar-live-toggle is-live" id="solar-live-toggle" title="Sync to your local device clock (100% private)">● Live Local</button>
+            <button type="button" class="solar-quick-btn solar-co-toggle" id="solar-co-toggle" title="View Boulder, Colorado Time">CO Studio</button>
           </div>
         </div>
       `;
@@ -347,6 +367,7 @@
     }
 
     // State Variables
+    let timeMode = 'local'; // 'local' or 'colorado'
     let isLive = true;
     let isCollapsed = false;
     let currentDecimalHour = 13.0;
@@ -355,7 +376,9 @@
     const collapsedPill = widget.querySelector('#solar-collapsed-pill');
     const panel = widget.querySelector('#solar-widget-panel');
     const minimizeBtn = widget.querySelector('#solar-minimize-btn');
+    const headerKicker = widget.querySelector('#solar-header-kicker');
     const liveToggle = widget.querySelector('#solar-live-toggle');
+    const coToggle = widget.querySelector('#solar-co-toggle');
     const rangeInput = widget.querySelector('#solar-range-input');
     const miniIcon = widget.querySelector('#mini-solar-icon');
     const miniTime = widget.querySelector('#mini-solar-time');
@@ -368,16 +391,23 @@
     const tickSunset = widget.querySelector('#tick-sunset');
 
     function updateWidget(solar) {
+      const tzLabel = getTimezoneAbbreviation(timeMode);
       const timeStr = formatTime(solar.decimalHour);
       const isNight = solar.altitude <= -6;
 
       // Update Texts & Badges
       miniIcon.textContent = solar.icon;
-      miniTime.textContent = timeStr;
+      miniTime.textContent = `${timeStr} ${tzLabel}`;
       iconLarge.textContent = solar.icon;
-      timeDisplay.textContent = timeStr + (isLive ? ' (Live)' : '');
+
+      const liveSuffix = isLive ? (timeMode === 'colorado' ? ' (CO Live)' : ' (Live)') : '';
+      timeDisplay.textContent = `${timeStr} ${tzLabel}${liveSuffix}`;
       phaseBadge.textContent = solar.phaseLabel;
       phaseBadge.className = `solar-phase-badge phase-${solar.phase}`;
+
+      headerKicker.textContent = timeMode === 'colorado' 
+        ? 'Solar Lighting Study · Boulder, CO' 
+        : `Solar Lighting Study · Local Time (${tzLabel})`;
 
       metricAlt.textContent = `${solar.altitude.toFixed(1)}°`;
       metricAz.textContent = `${solar.azimuth.toFixed(0)}°`;
@@ -391,9 +421,16 @@
 
       if (isLive) {
         rangeInput.value = solar.decimalHour;
-        liveToggle.classList.add('is-live');
+        if (timeMode === 'local') {
+          liveToggle.classList.add('is-live');
+          coToggle.classList.remove('is-active');
+        } else {
+          liveToggle.classList.remove('is-live');
+          coToggle.classList.add('is-active');
+        }
       } else {
         liveToggle.classList.remove('is-live');
+        coToggle.classList.remove('is-active');
       }
 
       // Apply to #hero-title
@@ -402,10 +439,10 @@
 
     function syncLive() {
       if (!isLive) return;
-      const coNow = getColoradoNow();
-      const decimalHour = coNow.getHours() + coNow.getMinutes() / 60 + coNow.getSeconds() / 3600;
+      const liveDate = getLiveDate(timeMode);
+      const decimalHour = liveDate.getHours() + liveDate.getMinutes() / 60 + liveDate.getSeconds() / 3600;
       currentDecimalHour = decimalHour;
-      const solar = computeColoradoSolar(coNow, currentDecimalHour);
+      const solar = computeSolar(liveDate, currentDecimalHour, timeMode === 'colorado');
       updateWidget(solar);
     }
 
@@ -413,8 +450,8 @@
       isLive = false;
       currentDecimalHour = parseFloat(hour);
       rangeInput.value = currentDecimalHour;
-      const coDate = getColoradoNow();
-      const solar = computeColoradoSolar(coDate, currentDecimalHour);
+      const liveDate = getLiveDate(timeMode);
+      const solar = computeSolar(liveDate, currentDecimalHour, timeMode === 'colorado');
       updateWidget(solar);
     }
 
@@ -424,15 +461,23 @@
     });
 
     // Quick Preset Buttons
-    widget.querySelectorAll('.solar-quick-btn').forEach((btn) => {
+    widget.querySelectorAll('.solar-quick-btn:not(.solar-co-toggle)').forEach((btn) => {
       btn.addEventListener('click', () => {
         const targetHour = parseFloat(btn.dataset.hour);
         onManualScrub(targetHour);
       });
     });
 
-    // Live Button Toggle
+    // Live Local Button
     liveToggle.addEventListener('click', () => {
+      timeMode = 'local';
+      isLive = true;
+      syncLive();
+    });
+
+    // Colorado Studio Toggle
+    coToggle.addEventListener('click', () => {
+      timeMode = 'colorado';
       isLive = true;
       syncLive();
     });
@@ -467,3 +512,4 @@
     initSolarWidget();
   }
 })();
+

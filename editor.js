@@ -215,7 +215,7 @@
     if (el.dataset.customId) return el.dataset.customId;
     if (el.dataset.editKey) return el.dataset.editKey;
 
-    const anchor = el.closest('[id], [data-project], [data-custom-id], section, header, footer');
+    const anchor = el.closest('[id], [data-project], [data-custom-id], .skills-grid, .skill-col, .about-right, .about-sticky, section, main, header, footer');
     let prefix = 'page';
     if (anchor) {
       if (anchor.id) prefix = anchor.id;
@@ -2235,7 +2235,7 @@
   // --------------------------------------------------------------------------
   function setupEditableElements() {
     const editableTargets = document.querySelectorAll(
-      'h1, h2, h3, h4, p, .kicker, .role, .intro-copy, .story-lead, .fact-value, figcaption, .work-list-item strong, .about-statement, .about-narrative p, .contact-link'
+      'h1, h2, h3, h4, p, li, .kicker, .role, .intro-copy, .story-lead, .fact-value, figcaption, .work-list-item strong, .about-statement, .about-narrative p, .contact-link, .skills-grid h4, .skills-grid li, .skill-col h4, .skill-col li'
     );
 
     editableTargets.forEach((el, index) => {
@@ -2351,6 +2351,11 @@
       '.about-sticky',
       '.about-statement',
       '.about-narrative',
+      '#skills-grid',
+      '.skills-grid',
+      '.skill-col',
+      '.skill-col h4',
+      '.skill-col li',
       '.work-group-title',
       '.work-list-item',
       '.story-lead',

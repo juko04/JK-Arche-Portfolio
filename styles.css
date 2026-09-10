@@ -2125,13 +2125,24 @@ body.is-editing .draggable-item {
   cursor: grab;
 }
 
-body.is-editing .draggable-item.editable {
-  user-select: text;
+body.is-editing .draggable-item.editable,
+body.is-editing .editable,
+body.is-editing [contenteditable="true"] {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  cursor: text;
 }
 
 body.is-editing .draggable-item:not(.editable) {
   user-select: none;
   -webkit-user-select: none;
+}
+
+body.is-editing .draggable-item:not(.editable) .editable,
+body.is-editing .draggable-item:not(.editable) [contenteditable="true"] {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  cursor: text;
 }
 
 body.is-editing .draggable-item:hover {

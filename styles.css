@@ -2123,7 +2123,15 @@ body.is-editing .intro-bottom {
 
 body.is-editing .draggable-item {
   cursor: grab;
+}
+
+body.is-editing .draggable-item.editable {
   user-select: text;
+}
+
+body.is-editing .draggable-item:not(.editable) {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 body.is-editing .draggable-item:hover {
@@ -2136,12 +2144,36 @@ body.is-editing .draggable-item:active {
 
 body.is-editing img {
   cursor: pointer;
+  -webkit-user-drag: none;
+  user-drag: none;
   transition: filter 0.2s ease, box-shadow 0.2s ease;
 }
 
 body.is-editing img:hover {
   filter: brightness(0.85);
   box-shadow: 0 0 0 3px var(--terracotta);
+}
+
+/* Drag & Transform Selection Shield (Prevents text/image highlighting while moving shapes) */
+body.is-dragging,
+body.is-dragging *,
+body.is-transforming,
+body.is-transforming * {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+body.is-dragging img,
+body.is-transforming img {
+  pointer-events: none !important;
+  -webkit-user-drag: none !important;
+  user-drag: none !important;
+}
+
+.custom-shape {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -webkit-user-drag: none !important;
 }
 
 
@@ -2298,6 +2330,21 @@ body.is-editing img:hover {
 .editor-btn:hover {
   background: rgba(255, 255, 255, 0.25);
   border-color: #ffffff;
+}
+
+.editor-btn:disabled,
+.editor-btn[disabled] {
+  opacity: 0.35;
+  cursor: not-allowed !important;
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.editor-btn:disabled:hover,
+.editor-btn[disabled]:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: none;
 }
 
 .saved-toast {

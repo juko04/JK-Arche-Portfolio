@@ -35,6 +35,12 @@
     pages: {} // Scoped per page: { positions: {}, shapes: [], texts: {}, styles: {}, deleted: [], added: [] }
   };
 
+  const MAX_HISTORY = 60;
+  let historyStack = [];
+  let historyIndex = -1;
+  let isApplyingHistory = false;
+  let textDebounceTimer = null;
+
   let isEditing = false;
   let activeElement = null;
   let inspectorEl = null;
@@ -86,21 +92,113 @@
   }
 
   // Save to localStorage
-  function saveState() {
+  function saveState(triggerToast = true) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      showToast();
+      if (triggerToast) showToast('✓ Saved');
     } catch (e) {
       console.warn('Could not save customizer state:', e);
     }
   }
 
-  function showToast() {
+  function showToast(msg = '✓ Saved') {
     const toast = document.querySelector('#saved-toast');
     if (toast) {
+      toast.textContent = msg;
       toast.classList.add('show');
       clearTimeout(toast._timer);
       toast._timer = setTimeout(() => toast.classList.remove('show'), 1200);
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // Undo & Redo History Engine
+  // --------------------------------------------------------------------------
+  function pushHistory(actionName) {
+    if (isApplyingHistory) return;
+
+    // Make sure latest live text from DOM is synced before snapshotting
+    syncAllTexts();
+
+    const snapshot = JSON.stringify(state);
+
+    // Skip duplicate if identical to current top
+    if (historyIndex >= 0 && historyStack[historyIndex] === snapshot) {
+      return;
+    }
+
+    // Truncate any redo branch ahead
+    if (historyIndex < historyStack.length - 1) {
+      historyStack = historyStack.slice(0, historyIndex + 1);
+    }
+
+    historyStack.push(snapshot);
+    if (historyStack.length > MAX_HISTORY) {
+      historyStack.shift();
+    }
+    historyIndex = historyStack.length - 1;
+
+    updateUndoRedoUI();
+  }
+
+  function undo() {
+    // Flush any pending text debounce
+    if (textDebounceTimer) {
+      clearTimeout(textDebounceTimer);
+      textDebounceTimer = null;
+      syncAllTexts();
+      const snap = JSON.stringify(state);
+      if (historyIndex >= 0 && historyStack[historyIndex] !== snap) {
+        pushHistory('Text Edit');
+      }
+    }
+
+    if (historyIndex <= 0) {
+      showToast('Nothing to undo');
+      return;
+    }
+
+    historyIndex--;
+    applyHistorySnapshot(historyStack[historyIndex]);
+    showToast('↺ Undo');
+  }
+
+  function redo() {
+    if (historyIndex >= historyStack.length - 1) {
+      showToast('Nothing to redo');
+      return;
+    }
+
+    historyIndex++;
+    applyHistorySnapshot(historyStack[historyIndex]);
+    showToast('↻ Redo');
+  }
+
+  function applyHistorySnapshot(snapshotString) {
+    isApplyingHistory = true;
+    try {
+      state = JSON.parse(snapshotString);
+      saveState(false);
+      applyFullStateToDOM();
+      updateUndoRedoUI();
+    } catch (e) {
+      console.warn('Error applying history snapshot:', e);
+    } finally {
+      isApplyingHistory = false;
+    }
+  }
+
+  function updateUndoRedoUI() {
+    const undoBtn = document.querySelector('#editor-undo');
+    const redoBtn = document.querySelector('#editor-redo');
+    const canUndo = historyIndex > 0;
+    const canRedo = historyIndex < historyStack.length - 1;
+
+    if (undoBtn) {
+      undoBtn.disabled = !canUndo;
+    }
+    if (redoBtn) {
+      redoBtn.disabled = !canRedo;
     }
   }
 
@@ -177,127 +275,183 @@
   }
 
   // --------------------------------------------------------------------------
-  // Restore State to DOM (Scoped to current page)
+  // Unified DOM State Reconciler & State Restoration
   // --------------------------------------------------------------------------
-  function restoreDOM() {
+  function applyFullStateToDOM() {
     try {
       // 1. Theme
       if (state.globalTheme?.hue !== undefined) {
         applyTheme(state.globalTheme.hue, state.globalTheme.sat || '26%');
+        const hueSlider = document.querySelector('#hue-range');
+        if (hueSlider) hueSlider.value = state.globalTheme.hue;
+        const swatches = document.querySelectorAll('.color-swatch-btn');
+        swatches.forEach(b => {
+          b.classList.toggle('active', parseInt(b.dataset.hue, 10) === state.globalTheme.hue);
+        });
       }
 
       const page = getPageData();
       if (!page) return;
 
-      // 2. Remove Deleted Elements
-      if (Array.isArray(page.deleted)) {
-        page.deleted.forEach((key) => {
-          try {
-            const el = findTargetElement(key);
-            if (el) el.remove();
-          } catch (e) {
-            console.warn('Error removing deleted element:', key, e);
+      // 2. Deleted Elements Reversal & Application
+      const deletedList = Array.isArray(page.deleted) ? page.deleted : [];
+      deletedList.forEach((key) => {
+        try {
+          const el = findTargetElement(key);
+          if (el) {
+            el.style.display = 'none';
+            el.dataset.editorDeleted = 'true';
           }
-        });
-      }
+        } catch (e) {
+          console.warn('Error hiding deleted element:', key, e);
+        }
+      });
+      document.querySelectorAll('[data-editor-deleted="true"]').forEach((el) => {
+        const key = getElementKey(el);
+        if (!deletedList.includes(key)) {
+          el.style.display = '';
+          delete el.dataset.editorDeleted;
+        }
+      });
 
-      // 3. Restore Text Content
-      if (page.texts && typeof page.texts === 'object') {
-        Object.keys(page.texts).forEach((key) => {
-          try {
-            const el = findTargetElement(key);
-            if (el && typeof page.texts[key] === 'string') {
-              el.innerHTML = page.texts[key];
-            }
-          } catch (e) {
-            console.warn('Error restoring text:', key, e);
+      // 3. Custom Shapes (Recreate missing, Remove pruned, Update styles)
+      const targetShapes = Array.isArray(page.shapes) ? page.shapes : [];
+      const targetShapeIds = new Set(targetShapes.map(s => s.id));
+      document.querySelectorAll('.custom-shape').forEach((el) => {
+        if (!targetShapeIds.has(el.id)) {
+          el.remove();
+        }
+      });
+      targetShapes.forEach((shapeData) => {
+        try {
+          let el = document.getElementById(shapeData.id);
+          if (!el) {
+            el = createShapeDOM(shapeData);
           }
-        });
-      }
-
-      // 4. Restore Custom Shapes for this page
-      if (Array.isArray(page.shapes)) {
-        page.shapes.forEach((shapeData) => {
-          try {
-            if (shapeData && shapeData.id && !document.getElementById(shapeData.id)) {
-              createShapeDOM(shapeData);
-            }
-          } catch (e) {
-            console.warn('Error restoring shape:', shapeData, e);
+          if (el && shapeData.style) {
+            Object.assign(el.style, shapeData.style);
           }
-        });
-      }
+        } catch (e) {
+          console.warn('Error restoring shape:', shapeData, e);
+        }
+      });
 
-      // 5. Restore Added Paragraphs
-      if (Array.isArray(page.added)) {
-        page.added.forEach((item) => {
-          try {
-            if (!item || !item.id) return;
+      // 4. Added Paragraphs (Recreate missing, Remove pruned, Update content)
+      const targetAdded = Array.isArray(page.added) ? page.added : [];
+      const targetAddedIds = new Set(targetAdded.map(a => a.id));
+      document.querySelectorAll('.custom-added-text').forEach((el) => {
+        if (!targetAddedIds.has(el.id)) {
+          el.remove();
+        }
+      });
+      targetAdded.forEach((item) => {
+        try {
+          if (!item || !item.id) return;
+          let el = document.getElementById(item.id);
+          if (!el) {
             const parent = document.querySelector(item.parentSelector) || document.querySelector('main') || document.body;
-            if (parent && !document.getElementById(item.id)) {
-              const p = document.createElement('p');
-              p.id = item.id;
-              p.dataset.customId = item.id;
-              p.dataset.editKey = item.id;
-              p.className = 'editable draggable-item custom-added-text';
-              p.innerHTML = (page.texts && page.texts[item.id]) ? page.texts[item.id] : (item.html || '');
-              if (item.style) Object.assign(p.style, item.style);
-              parent.appendChild(p);
-              initDragAndSelect(p, item.id);
+            if (parent) {
+              el = document.createElement('p');
+              el.id = item.id;
+              el.dataset.customId = item.id;
+              el.dataset.editKey = item.id;
+              el.className = 'editable draggable-item custom-added-text';
+              if (isEditing) el.contentEditable = 'true';
+              if (item.style) Object.assign(el.style, item.style);
+              parent.appendChild(el);
+              initDragAndSelect(el, item.id);
             }
-          } catch (e) {
-            console.warn('Error restoring added paragraph:', item, e);
           }
-        });
-      }
+          if (el) {
+            el.innerHTML = (page.texts && page.texts[item.id]) ? page.texts[item.id] : (item.html || '');
+          }
+        } catch (e) {
+          console.warn('Error restoring added paragraph:', item, e);
+        }
+      });
+
+      // 5. Restore Text Content
+      const editableTargets = document.querySelectorAll('.editable');
+      editableTargets.forEach((el) => {
+        if (el.closest('.editor-toolbar') || el.closest('.glass-nav') || el.closest('.print-portfolio-booklet') || el.closest('.transform-bounding-box') || el.closest('.code-export-backdrop')) return;
+        const key = el.dataset.editKey || getElementKey(el);
+        if (key) {
+          if (page.texts && typeof page.texts[key] === 'string') {
+            el.innerHTML = page.texts[key];
+          } else if (el.dataset.initialHtml) {
+            el.innerHTML = el.dataset.initialHtml;
+          }
+        }
+      });
 
       // 6. Restore Styles (Font, Size, Color, Layer Z-Index)
-      if (page.styles && typeof page.styles === 'object') {
-        Object.keys(page.styles).forEach((key) => {
-          try {
-            const el = findTargetElement(key);
-            if (el && page.styles[key] && typeof page.styles[key] === 'object') {
-              Object.assign(el.style, page.styles[key]);
-            }
-          } catch (e) {
-            console.warn('Error restoring styles:', key, e);
-          }
-        });
-      }
+      const allElements = document.querySelectorAll('.editable, .draggable-item');
+      allElements.forEach((el) => {
+        const key = getElementKey(el);
+        const st = (page.styles && typeof page.styles === 'object') ? page.styles[key] : null;
+        if (st && typeof st === 'object') {
+          if (st.color) el.style.color = st.color; else el.style.color = '';
+          if (st.fontFamily) el.style.fontFamily = st.fontFamily; else el.style.fontFamily = '';
+          if (st.fontSize) el.style.fontSize = st.fontSize; else el.style.fontSize = '';
+          if (st.fontWeight) el.style.fontWeight = st.fontWeight; else el.style.fontWeight = '';
+          if (st.fontStyle) el.style.fontStyle = st.fontStyle; else el.style.fontStyle = '';
+          if (st.zIndex) el.style.zIndex = st.zIndex; else el.style.zIndex = '';
+          if (st.backgroundColor) el.style.backgroundColor = st.backgroundColor;
+        } else if (!el.classList.contains('custom-shape')) {
+          el.style.color = '';
+          el.style.fontFamily = '';
+          el.style.fontSize = '';
+          el.style.fontWeight = '';
+          el.style.fontStyle = '';
+          el.style.zIndex = '';
+        }
+      });
 
       // 7. Restore Positions, Dimensions & Rotations
-      if (page.positions && typeof page.positions === 'object') {
-        const isMobile = window.innerWidth <= 768;
-        Object.keys(page.positions).forEach((id) => {
-          try {
-            const el = findTargetElement(id);
-            if (el && page.positions[id]) {
-              // On mobile viewports, do NOT apply desktop translate3d coordinates to structural hero text
-              if (isMobile && (el.classList.contains('hero-title') || el.classList.contains('hero-kicker') || el.classList.contains('intro-body'))) {
-                return;
-              }
-              const { x, y, width, height, rotate } = page.positions[id];
-              // Only apply custom width & height to custom shapes, preserving fluid typography
-              if (el.classList.contains('custom-shape')) {
-                if (width && !isMobile) el.style.width = width;
-                if (height && !isMobile) el.style.height = height;
-              }
-              const rot = rotate || 0;
-              if (x || y || rot) {
-                el.style.transform = `translate3d(${x || 0}px, ${y || 0}px, 0) rotate(${rot}deg)`;
-              }
-              el.dataset.dragX = x || 0;
-              el.dataset.dragY = y || 0;
-              el.dataset.rotate = rot;
-            }
-          } catch (e) {
-            console.warn('Error restoring positions:', id, e);
+      const isMobile = window.innerWidth <= 768;
+      const positionedElements = document.querySelectorAll('.draggable-item, [data-drag-x], [data-drag-y], [data-rotate]');
+      positionedElements.forEach((el) => {
+        const id = el.id || el.dataset.customId || el.dataset.editKey || getElementKey(el);
+        const pos = (page.positions && typeof page.positions === 'object') ? page.positions[id] : null;
+        if (pos) {
+          if (isMobile && (el.classList.contains('hero-title') || el.classList.contains('hero-kicker') || el.classList.contains('intro-body'))) {
+            return;
           }
-        });
+          const { x, y, width, height, rotate } = pos;
+          if (el.classList.contains('custom-shape')) {
+            if (width && !isMobile) el.style.width = width;
+            if (height && !isMobile) el.style.height = height;
+          }
+          const rot = rotate || 0;
+          el.style.transform = (x || y || rot) ? `translate3d(${x || 0}px, ${y || 0}px, 0) rotate(${rot}deg)` : '';
+          el.dataset.dragX = x || 0;
+          el.dataset.dragY = y || 0;
+          el.dataset.rotate = rot;
+        } else {
+          el.style.transform = '';
+          el.dataset.dragX = 0;
+          el.dataset.dragY = 0;
+          el.dataset.rotate = 0;
+        }
+      });
+
+      // 8. Active Selection & Inspector Sync
+      if (activeElement) {
+        if (!document.body.contains(activeElement) || activeElement.style.display === 'none') {
+          selectElement(null);
+        } else {
+          updateTransformBox();
+          positionInspector();
+          renderInspector(activeElement);
+        }
       }
     } catch (e) {
-      console.warn('Could not complete restoreDOM:', e);
+      console.warn('Could not complete applyFullStateToDOM:', e);
     }
+  }
+
+  function restoreDOM() {
+    applyFullStateToDOM();
   }
 
 
@@ -377,6 +531,8 @@
     if (!activeElement || !isEditing) return;
     e.stopPropagation();
     e.preventDefault();
+    window.getSelection()?.removeAllRanges();
+    document.body.classList.add('is-transforming');
 
     isTransforming = true;
     const handleType = e.currentTarget.dataset.handle;
@@ -443,6 +599,7 @@
     function onUp() {
       if (!isTransforming) return;
       isTransforming = false;
+      document.body.classList.remove('is-transforming');
       document.removeEventListener('mousemove', onMove);
       document.removeEventListener('mouseup', onUp);
       document.removeEventListener('touchmove', onMove);
@@ -462,6 +619,7 @@
       saveState();
       updateTransformBox();
       positionInspector();
+      pushHistory('Transform Shape');
     }
 
     document.addEventListener('mousemove', onMove);
@@ -495,6 +653,10 @@
       if (e.target.isContentEditable && !e.altKey) {
         return;
       }
+
+      e.preventDefault();
+      window.getSelection()?.removeAllRanges();
+      document.body.classList.add('is-dragging');
 
       isDragging = true;
       startMouseX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
@@ -560,40 +722,50 @@
         bottom: currentBoxTop + height,
       };
 
-      const SNAP_THRESHOLD = 8;
+      const SNAP_THRESHOLD = 6;
       let snapOffsetX = 0;
       let snapOffsetY = 0;
       let snapLineX = null;
       let snapLineY = null;
 
-      // X-axis snapping
-      for (const t of cachedTargets) {
-        for (const dKey of ['left', 'centerX', 'right']) {
-          for (const tKey of ['left', 'centerX', 'right']) {
-            const diff = Math.abs(currentEdges[dKey] - t[tKey]);
-            if (diff <= SNAP_THRESHOLD) {
-              snapOffsetX = t[tKey] - currentEdges[dKey];
-              snapLineY = t[tKey];
-              break;
-            }
+      // Smart X-axis snapping
+      for (let i = 0; i < cachedTargets.length; i++) {
+        const t = cachedTargets[i];
+        const deltas = [
+          { dist: t.left - currentEdges.left, guide: t.left },
+          { dist: t.right - currentEdges.right, guide: t.right },
+          { dist: t.centerX - currentEdges.centerX, guide: t.centerX },
+          { dist: t.right - currentEdges.left, guide: t.right },
+          { dist: t.left - currentEdges.right, guide: t.left }
+        ];
+
+        for (let d of deltas) {
+          if (Math.abs(d.dist) < SNAP_THRESHOLD) {
+            snapOffsetX = d.dist;
+            snapLineY = d.guide;
+            break;
           }
-          if (snapLineY !== null) break;
         }
         if (snapLineY !== null) break;
       }
 
-      // Y-axis snapping
-      for (const t of cachedTargets) {
-        for (const dKey of ['top', 'centerY', 'bottom']) {
-          for (const tKey of ['top', 'centerY', 'bottom']) {
-            const diff = Math.abs(currentEdges[dKey] - t[tKey]);
-            if (diff <= SNAP_THRESHOLD) {
-              snapOffsetY = t[tKey] - currentEdges[dKey];
-              snapLineX = t[tKey];
-              break;
-            }
+      // Smart Y-axis snapping
+      for (let i = 0; i < cachedTargets.length; i++) {
+        const t = cachedTargets[i];
+        const deltas = [
+          { dist: t.top - currentEdges.top, guide: t.top },
+          { dist: t.bottom - currentEdges.bottom, guide: t.bottom },
+          { dist: t.centerY - currentEdges.centerY, guide: t.centerY },
+          { dist: t.bottom - currentEdges.top, guide: t.bottom },
+          { dist: t.top - currentEdges.bottom, guide: t.top }
+        ];
+
+        for (let d of deltas) {
+          if (Math.abs(d.dist) < SNAP_THRESHOLD) {
+            snapOffsetY = d.dist;
+            snapLineX = d.guide;
+            break;
           }
-          if (snapLineX !== null) break;
         }
         if (snapLineX !== null) break;
       }
@@ -630,6 +802,7 @@
       if (!isDragging) return;
       isDragging = false;
       hideSnapGuides();
+      document.body.classList.remove('is-dragging');
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
@@ -656,6 +829,10 @@
       saveState();
       updateTransformBox();
       positionInspector();
+
+      if (finalX !== initialTranslateX || finalY !== initialTranslateY) {
+        pushHistory('Move Element');
+      }
     }
 
     element.addEventListener('mousedown', onMouseDown);
@@ -786,62 +963,107 @@
     inspectorEl.querySelector('#insp-layer-up')?.addEventListener('click', () => {
       const currentZ = parseInt(window.getComputedStyle(el).zIndex, 10) || (el.classList.contains('geo-circle') ? 1 : 2);
       const newZ = Math.min(100, currentZ + 2);
-      applyElementStyle(el, 'zIndex', newZ.toString());
-      showToast();
+      applyElementStyle(el, 'zIndex', newZ.toString(), true);
     });
 
     inspectorEl.querySelector('#insp-layer-down')?.addEventListener('click', () => {
       const currentZ = parseInt(window.getComputedStyle(el).zIndex, 10) || (el.classList.contains('geo-circle') ? 1 : 2);
       const newZ = Math.max(0, currentZ - 2);
-      applyElementStyle(el, 'zIndex', newZ.toString());
-      showToast();
+      applyElementStyle(el, 'zIndex', newZ.toString(), true);
     });
 
     // Hook Inspector Events
     if (isShape) {
-      inspectorEl.querySelector('#insp-shape-color')?.addEventListener('input', (e) => {
-        if (el.classList.contains('shape-line')) {
-          applyElementStyle(el, 'backgroundColor', e.target.value);
-        } else {
-          applyElementStyle(el, 'backgroundColor', e.target.value);
-          applyElementStyle(el, 'borderColor', e.target.value);
+      const shapeColorInput = inspectorEl.querySelector('#insp-shape-color');
+      shapeColorInput?.addEventListener('input', (e) => {
+        applyElementStyle(el, 'backgroundColor', e.target.value, false);
+        if (!el.classList.contains('shape-line')) {
+          applyElementStyle(el, 'borderColor', e.target.value, false);
+        }
+      });
+      shapeColorInput?.addEventListener('change', (e) => {
+        applyElementStyle(el, 'backgroundColor', e.target.value, true);
+        if (!el.classList.contains('shape-line')) {
+          applyElementStyle(el, 'borderColor', e.target.value, true);
         }
       });
     }
 
     if (isText) {
       inspectorEl.querySelector('#insp-font-family')?.addEventListener('change', (e) => {
-        applyElementStyle(el, 'fontFamily', e.target.value);
+        applyElementStyle(el, 'fontFamily', e.target.value, true);
         updateTransformBox();
       });
 
       inspectorEl.querySelector('#insp-size-up')?.addEventListener('click', () => {
         const curr = parseFloat(window.getComputedStyle(el).fontSize) || 16;
-        applyElementStyle(el, 'fontSize', `${curr + 2}px`);
+        applyElementStyle(el, 'fontSize', `${curr + 2}px`, true);
         updateTransformBox();
       });
       inspectorEl.querySelector('#insp-size-down')?.addEventListener('click', () => {
         const curr = parseFloat(window.getComputedStyle(el).fontSize) || 16;
-        applyElementStyle(el, 'fontSize', `${Math.max(10, curr - 2)}px`);
+        applyElementStyle(el, 'fontSize', `${Math.max(10, curr - 2)}px`, true);
         updateTransformBox();
       });
 
-      inspectorEl.querySelector('#insp-bold')?.addEventListener('click', (e) => {
-        const isBold = el.style.fontWeight === 'bold' || window.getComputedStyle(el).fontWeight >= 600;
-        applyElementStyle(el, 'fontWeight', isBold ? '400' : '700');
-        e.currentTarget.classList.toggle('active', !isBold);
-        updateTransformBox();
+      const boldBtn = inspectorEl.querySelector('#insp-bold');
+      const italicBtn = inspectorEl.querySelector('#insp-italic');
+
+      // CRITICAL: Prevent losing text selection in contentEditable when clicking bold/italic buttons
+      [boldBtn, italicBtn].forEach(btn => {
+        btn?.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+        });
       });
 
-      inspectorEl.querySelector('#insp-italic')?.addEventListener('click', (e) => {
-        const isItalic = el.style.fontStyle === 'italic';
-        applyElementStyle(el, 'fontStyle', isItalic ? 'normal' : 'italic');
-        e.currentTarget.classList.toggle('active', !isItalic);
-        updateTransformBox();
+      boldBtn?.addEventListener('click', (e) => {
+        const sel = window.getSelection();
+        if (sel && !sel.isCollapsed && el.contains(sel.anchorNode)) {
+          // Format selected text exclusively!
+          document.execCommand('bold', false, null);
+          const page = getPageData();
+          if (!page.texts) page.texts = {};
+          const k = el.dataset.editKey || getElementKey(el);
+          page.texts[k] = el.innerHTML.trim();
+          saveState(false);
+          pushHistory('Bold Selection');
+          updateTransformBox();
+        } else {
+          // Fallback: Toggle entire element
+          const isBold = el.style.fontWeight === 'bold' || window.getComputedStyle(el).fontWeight >= 600;
+          applyElementStyle(el, 'fontWeight', isBold ? '400' : '700', true);
+          e.currentTarget.classList.toggle('active', !isBold);
+          updateTransformBox();
+        }
       });
 
-      inspectorEl.querySelector('#insp-color')?.addEventListener('input', (e) => {
-        applyElementStyle(el, 'color', e.target.value);
+      italicBtn?.addEventListener('click', (e) => {
+        const sel = window.getSelection();
+        if (sel && !sel.isCollapsed && el.contains(sel.anchorNode)) {
+          // Format selected text exclusively!
+          document.execCommand('italic', false, null);
+          const page = getPageData();
+          if (!page.texts) page.texts = {};
+          const k = el.dataset.editKey || getElementKey(el);
+          page.texts[k] = el.innerHTML.trim();
+          saveState(false);
+          pushHistory('Italic Selection');
+          updateTransformBox();
+        } else {
+          // Fallback: Toggle entire element
+          const isItalic = el.style.fontStyle === 'italic';
+          applyElementStyle(el, 'fontStyle', isItalic ? 'normal' : 'italic', true);
+          e.currentTarget.classList.toggle('active', !isItalic);
+          updateTransformBox();
+        }
+      });
+
+      const textColorInput = inspectorEl.querySelector('#insp-color');
+      textColorInput?.addEventListener('input', (e) => {
+        applyElementStyle(el, 'color', e.target.value, false);
+      });
+      textColorInput?.addEventListener('change', (e) => {
+        applyElementStyle(el, 'color', e.target.value, true);
       });
     }
 
@@ -851,14 +1073,17 @@
     });
   }
 
-  function applyElementStyle(el, prop, val) {
+  function applyElementStyle(el, prop, val, recordHistory = true) {
     el.style[prop] = val;
     const key = getElementKey(el);
     const page = getPageData();
     if (!page.styles) page.styles = {};
     if (!page.styles[key]) page.styles[key] = {};
     page.styles[key][prop] = val;
-    saveState();
+    saveState(false);
+    if (recordHistory) {
+      pushHistory(`Style ${prop}`);
+    }
   }
 
   function deleteElement(el) {
@@ -874,11 +1099,13 @@
       page.shapes = page.shapes.filter(s => s.id !== el.id && s.id !== key);
     }
 
-    el.remove();
+    el.dataset.editorDeleted = 'true';
+    el.style.display = 'none';
     hideInspector();
     if (transformBox) transformBox.style.display = 'none';
     activeElement = null;
     saveState();
+    pushHistory('Delete Element');
   }
 
   function rgbToHex(rgb) {
@@ -949,6 +1176,7 @@
     if (shapeEl) {
       selectElement(shapeEl);
     }
+    pushHistory('Add Shape');
   }
 
   // --------------------------------------------------------------------------
@@ -986,16 +1214,25 @@
       if (item) item.html = p.innerHTML;
       if (!page.texts) page.texts = {};
       page.texts[newId] = p.innerHTML.trim();
-      saveState();
+      saveState(false);
+      clearTimeout(textDebounceTimer);
+      textDebounceTimer = setTimeout(() => {
+        pushHistory('Edit Added Text');
+      }, 350);
     };
 
     p.addEventListener('input', onAddedTextChange);
-    p.addEventListener('blur', onAddedTextChange);
+    p.addEventListener('blur', () => {
+      clearTimeout(textDebounceTimer);
+      syncAllTexts();
+      pushHistory('Edit Added Text');
+    });
     p.addEventListener('keyup', onAddedTextChange);
 
-    saveState();
+    saveState(false);
     selectElement(p);
     p.focus();
+    pushHistory('Add Text');
   }
 
   // --------------------------------------------------------------------------
@@ -1719,6 +1956,14 @@
           </div>
         </div>
 
+        <div class="editor-divider"></div>
+
+        <!-- Undo & Redo Buttons -->
+        <button class="editor-btn" id="editor-undo" type="button" title="Undo (Cmd+Z)" disabled>↺ Undo</button>
+        <button class="editor-btn" id="editor-redo" type="button" title="Redo (Cmd+Y / Cmd+Shift+Z)" disabled>↻ Redo</button>
+
+        <div class="editor-divider"></div>
+
         <!-- Dynamic Landscape PDF Booklet Export Button -->
         <button class="editor-btn" id="editor-export-pdf" type="button" title="Generate & Print Landscape Portfolio PDF">📄 PDF</button>
 
@@ -1781,6 +2026,7 @@
         toolbar.querySelector('#hue-range').value = hue;
         applyTheme(hue, sat);
         saveState();
+        pushHistory('Theme Swatch');
       });
     });
 
@@ -1790,11 +2036,18 @@
       const val = parseInt(e.target.value, 10);
       toolbar.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('active'));
       applyTheme(val, '26%');
-      saveState();
+      saveState(false);
+    });
+    hueSlider.addEventListener('change', () => {
+      pushHistory('Theme Hue');
     });
 
     // Add Text
     toolbar.querySelector('#editor-add-text').addEventListener('click', addNewParagraph);
+
+    // Undo & Redo Click Handlers
+    toolbar.querySelector('#editor-undo').addEventListener('click', undo);
+    toolbar.querySelector('#editor-redo').addEventListener('click', redo);
 
     // Shape Dropdown Menu Toggle
     const shapeBtn = toolbar.querySelector('#editor-add-shape-btn');
@@ -1809,15 +2062,7 @@
     shapeMenu.querySelectorAll('.shape-option-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         const type = btn.dataset.shape;
-        createShapeDOM({
-          id: `custom-shape-${Date.now()}`,
-          type: type,
-          filled: type === 'circle' || type === 'rect',
-          width: type === 'line' ? '200px' : '140px',
-          height: type === 'line' ? '2px' : '140px',
-          top: '35vh',
-          left: '42vw'
-        });
+        addNewShape(type);
         shapeMenu.style.display = 'none';
       });
     });
@@ -1853,9 +2098,50 @@
     // Save & Export Code Modal
     toolbar.querySelector('#editor-export-code').addEventListener('click', openCodeExportModal);
 
-    // Global Keyboard: Delete key & 'e' toggle
+    // Global Keyboard: Undo (Cmd+Z), Redo (Cmd+Y / Cmd+Shift+Z), Word Bold (Cmd+B), Word Italic (Cmd+I), Delete & 'e' toggle
     document.addEventListener('keydown', (e) => {
-      if (e.key.toLowerCase() === 'e' && !e.target.isContentEditable && e.target.tagName !== 'INPUT') {
+      const isCmdOrCtrl = e.metaKey || e.ctrlKey;
+      const key = e.key.toLowerCase();
+
+      // Undo: Cmd+Z (without Shift)
+      if (isCmdOrCtrl && key === 'z' && !e.shiftKey) {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+          undo();
+          return;
+        }
+      }
+
+      // Redo: Cmd+Y OR Cmd+Shift+Z
+      if ((isCmdOrCtrl && key === 'y') || (isCmdOrCtrl && key === 'z' && e.shiftKey)) {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+          redo();
+          return;
+        }
+      }
+
+      // Inline Word Bold (Cmd+B)
+      if (isCmdOrCtrl && key === 'b' && e.target.isContentEditable) {
+        setTimeout(() => {
+          syncAllTexts();
+          pushHistory('Bold Selection');
+          updateTransformBox();
+        }, 0);
+        return;
+      }
+
+      // Inline Word Italic (Cmd+I)
+      if (isCmdOrCtrl && key === 'i' && e.target.isContentEditable) {
+        setTimeout(() => {
+          syncAllTexts();
+          pushHistory('Italic Selection');
+          updateTransformBox();
+        }, 0);
+        return;
+      }
+
+      if (key === 'e' && !e.target.isContentEditable && e.target.tagName !== 'INPUT' && !isCmdOrCtrl) {
         setEditMode(!isEditing);
       } else if ((e.key === 'Delete' || e.key === 'Backspace') && activeElement && !e.target.isContentEditable && e.target.tagName !== 'INPUT') {
         deleteElement(activeElement);
@@ -1908,12 +2194,27 @@
         const page = getPageData();
         if (!page.texts) page.texts = {};
         page.texts[key] = el.innerHTML.trim();
-        saveState();
+        saveState(false);
+        clearTimeout(textDebounceTimer);
+        textDebounceTimer = setTimeout(() => {
+          pushHistory('Edit Text');
+        }, 350);
       };
 
       el.addEventListener('input', onContentChange);
-      el.addEventListener('blur', onContentChange);
-      el.addEventListener('keyup', onContentChange);
+      el.addEventListener('blur', () => {
+        clearTimeout(textDebounceTimer);
+        syncAllTexts();
+        pushHistory('Edit Text');
+      });
+      el.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter' || e.key === 'Backspace') {
+          clearTimeout(textDebounceTimer);
+          textDebounceTimer = setTimeout(() => {
+            pushHistory('Edit Text');
+          }, 200);
+        }
+      });
     });
 
     // Image replacement
@@ -1941,6 +2242,7 @@
             if (!page.images) page.images = {};
             page.images[imgKey] = evt.target.result;
             saveState();
+            pushHistory('Replace Image');
           };
           reader.readAsDataURL(file);
         };
@@ -1963,7 +2265,7 @@
         }
       }
     });
-    saveState();
+    saveState(false);
   }
 
   // --------------------------------------------------------------------------
@@ -2009,6 +2311,7 @@
     setupEditableElements();
     restoreDOM();
     createEditorToolbar();
+    pushHistory('Initial Baseline');
   }
 
   if (document.readyState === 'loading') {

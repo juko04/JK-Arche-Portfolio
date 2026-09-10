@@ -181,9 +181,36 @@ em {
   justify-content: space-between;
 }
 
+/* Organic Background Circles */
+.geo-circle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
 
+.geo-circle-top-left {
+  width: clamp(320px, 46vw, 680px);
+  height: clamp(320px, 46vw, 680px);
+  top: clamp(-240px, -18vh, -100px);
+  left: clamp(-220px, -12vw, -80px);
+  background-color: rgba(255, 255, 255, 0.35);
+}
+
+.geo-circle-bottom-right {
+  width: clamp(360px, 52vw, 820px);
+  height: clamp(360px, 52vw, 820px);
+  bottom: clamp(-260px, -20vh, -100px);
+  right: clamp(-180px, -10vw, -60px);
+  background-color: rgba(255, 255, 255, 0.35);
+}
 
 .intro-top {
+  position: relative;
+  z-index: 6;
+}
+
+.hero-kicker {
   position: relative;
   z-index: 6;
 }
@@ -202,9 +229,9 @@ em {
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 30px;
-  align-items: flex-end;
+  grid-template-columns: 1.15fr 1fr;
+  gap: clamp(30px, 4vw, 60px);
+  align-items: start;
   margin-top: clamp(40px, 8vh, 90px);
 }
 
@@ -220,7 +247,7 @@ em {
   font-size: clamp(14px, 1.15vw, 17px);
   line-height: 1.55;
   color: var(--ink);
-  max-width: 440px;
+  max-width: 480px;
   margin: 0 0 0 auto;
 }
 
@@ -2119,6 +2146,10 @@ body.is-editing .intro-body,
 body.is-editing .intro-bottom {
   position: relative;
   z-index: 20;
+}
+
+body.is-editing .geo-circle {
+  pointer-events: auto;
 }
 
 body.is-editing .draggable-item {

@@ -5,7 +5,7 @@
  */
 
 (function () {
-  const STORAGE_KEY = 'jk_portfolio_customizer_v7';
+  const STORAGE_KEY = 'jk_portfolio_customizer_v8';
 
   // Preset Color Palettes (Preserves exact lightness & contrast)
   const COLOR_PRESETS = [
@@ -418,7 +418,7 @@
             return;
           }
           const { x, y, width, height, rotate } = pos;
-          if (el.classList.contains('custom-shape')) {
+          if (el.classList.contains('custom-shape') || el.classList.contains('geo-circle')) {
             if (width && !isMobile) el.style.width = width;
             if (height && !isMobile) el.style.height = height;
           }
@@ -2102,6 +2102,7 @@
     toolbar.querySelector('#editor-reset').addEventListener('click', () => {
       if (confirm('Reset all custom text, added shapes, positions, sizes, rotations, and color edits back to defaults?')) {
         [
+          'jk_portfolio_customizer_v8',
           'jk_portfolio_customizer_v7',
           'jk_portfolio_customizer_v6',
           'jk_portfolio_customizer_v5',
@@ -2361,7 +2362,8 @@
       '.story-lead',
       '.story-sidebar',
       '.figure-item',
-      '.custom-shape'
+      '.custom-shape',
+      '.geo-circle'
     ];
 
     draggableSelectors.forEach((sel) => {

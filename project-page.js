@@ -384,7 +384,11 @@ document.addEventListener('DOMContentLoaded', () => {
     </main>
   `;
 
-  // Dynamically attach editor tools
+  // Dynamically attach lighting effects & editor tools
+  const fxScript = document.createElement('script');
+  fxScript.src = 'lighting-fx.js';
+  document.body.appendChild(fxScript);
+
   const editorScript = document.createElement('script');
   editorScript.src = 'editor.js';
   document.body.appendChild(editorScript);

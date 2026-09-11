@@ -186,10 +186,23 @@
     const heroLine = S > 0.35 ? 'hsla(75, 14%, 12%, 0.16)' : 'rgba(255, 255, 255, 0.18)';
     const circleAlpha = (0.16 * (1 - S) + 0.35 * S).toFixed(2);
 
+    const btnBg = S > 0.35 ? 'rgba(30, 34, 25, 0.08)' : 'rgba(255, 255, 255, 0.10)';
+    const btnHover = S > 0.35 ? 'rgba(30, 34, 25, 0.16)' : 'rgba(255, 255, 255, 0.20)';
+    const liveBg = S > 0.35 ? 'rgba(75, 165, 85, 0.20)' : 'rgba(80, 200, 100, 0.22)';
+    const liveInk = S > 0.35 ? '#1f6e2b' : '#7ef49a';
+    const coBg = S > 0.35 ? 'rgba(215, 140, 75, 0.22)' : 'rgba(235, 155, 90, 0.28)';
+    const coInk = S > 0.35 ? '#8e4b12' : '#ffb885';
+
     document.documentElement.style.setProperty('--solar-hero-ink', heroInk);
     document.documentElement.style.setProperty('--solar-hero-muted', heroMuted);
     document.documentElement.style.setProperty('--solar-hero-line', heroLine);
     document.documentElement.style.setProperty('--solar-circle-alpha', circleAlpha);
+    document.documentElement.style.setProperty('--solar-btn-bg', btnBg);
+    document.documentElement.style.setProperty('--solar-btn-hover', btnHover);
+    document.documentElement.style.setProperty('--solar-live-bg', liveBg);
+    document.documentElement.style.setProperty('--solar-live-ink', liveInk);
+    document.documentElement.style.setProperty('--solar-co-bg', coBg);
+    document.documentElement.style.setProperty('--solar-co-ink', coInk);
   }
 
 
@@ -216,16 +229,16 @@
     // --- 1. Architectural Stood-Off Backlit Halo ---
     // Letters appear stood-off further from the wall: softer intensity, wider spread, deep atmospheric falloff
     if (glowT > 0.005) {
-      const g1 = (0.60 * glowT).toFixed(2);
-      const g2 = (0.38 * glowT).toFixed(2);
-      const g3 = (0.22 * glowT).toFixed(2);
-      const g4 = (0.09 * glowT).toFixed(2);
+      const g1 = (0.85 * glowT).toFixed(2);
+      const g2 = (0.58 * glowT).toFixed(2);
+      const g3 = (0.35 * glowT).toFixed(2);
+      const g4 = (0.18 * glowT).toFixed(2);
 
       shadowLayers.push(
-        `0 0 10px rgba(255, 245, 215, ${g1})`,
-        `0 0 24px rgba(250, 225, 160, ${g2})`,
-        `0 0 48px rgba(230, 205, 140, ${g3})`,
-        `0 0 78px rgba(200, 180, 120, ${g4})`
+        `0 0 10px rgba(255, 248, 225, ${g1})`,
+        `0 0 26px rgba(252, 230, 165, ${g2})`,
+        `0 0 54px rgba(235, 205, 140, ${g3})`,
+        `0 0 92px rgba(205, 180, 120, ${g4})`
       );
     }
 
@@ -301,17 +314,21 @@
         </div>
 
         <div class="solar-widget-panel" id="solar-widget-panel">
-          <div class="solar-panel-header">
-            <div class="solar-status-row">
+          <div class="solar-panel-top-row">
+            <div class="solar-time-status">
               <span class="solar-icon-large" id="solar-icon-large">☀️</span>
               <span class="solar-time-display" id="solar-time-display">--:--</span>
+              <span class="solar-metric-alt-az" id="solar-metric-summary">--°</span>
             </div>
-            <button type="button" class="solar-minimize-btn" id="solar-minimize-btn" aria-label="Minimize scrubber" title="Minimize">✕</button>
-          </div>
-
-          <div class="solar-metric-details" id="solar-metric-details">
-            <span>Alt: <strong id="solar-metric-alt">--°</strong> · Az: <strong id="solar-metric-az">--°</strong></span>
-            <span class="solar-phase-badge" id="solar-phase-badge">Daylight</span>
+            <div class="solar-presets-bar">
+              <button type="button" class="solar-quick-btn" data-hour="6.75" title="Sunrise">Rise</button>
+              <button type="button" class="solar-quick-btn" data-hour="13" title="Solar Noon">Noon</button>
+              <button type="button" class="solar-quick-btn" data-hour="19.25" title="Sunset">Set</button>
+              <button type="button" class="solar-quick-btn" data-hour="22" title="Night Glow">Night</button>
+              <button type="button" class="solar-live-toggle is-live" id="solar-live-toggle" title="Sync to device clock">Live</button>
+              <button type="button" class="solar-quick-btn solar-co-toggle" id="solar-co-toggle" title="Boulder, Colorado Time">CO</button>
+              <button type="button" class="solar-minimize-btn" id="solar-minimize-btn" aria-label="Minimize scrubber" title="Minimize">✕</button>
+            </div>
           </div>
 
           <div class="solar-slider-wrapper">
@@ -324,15 +341,6 @@
               <span>12A</span>
             </div>
           </div>
-
-          <div class="solar-quick-bar">
-            <button type="button" class="solar-quick-btn" data-hour="6.75">Rise</button>
-            <button type="button" class="solar-quick-btn" data-hour="13">Noon</button>
-            <button type="button" class="solar-quick-btn" data-hour="19.25">Set</button>
-            <button type="button" class="solar-quick-btn" data-hour="22">Night</button>
-            <button type="button" class="solar-live-toggle is-live" id="solar-live-toggle" title="Sync to device clock">● Live</button>
-            <button type="button" class="solar-quick-btn solar-co-toggle" id="solar-co-toggle" title="Boulder, Colorado Time">CO</button>
-          </div>
         </div>
       `;
 
@@ -344,6 +352,23 @@
     } else if (heroTitle && widget.previousElementSibling !== heroTitle) {
       heroTitle.parentNode.insertBefore(widget, heroTitle.nextElementSibling);
     }
+
+    // Dynamic width alignment: match exact length of last name "Kotara", ending cleanly at the 'a'
+    function syncWidgetWidth() {
+      const lastName = document.querySelector('#hero-last-name');
+      if (!lastName || !widget) return;
+      const rect = lastName.getBoundingClientRect();
+      if (rect.width > 0) {
+        const w = Math.round(rect.width);
+        widget.style.width = `${w}px`;
+      }
+    }
+
+    syncWidgetWidth();
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(syncWidgetWidth);
+    }
+    window.addEventListener('resize', syncWidgetWidth, { passive: true });
 
     let timeMode = 'local';
     let isLive = true;
@@ -360,9 +385,7 @@
     const miniTime = widget.querySelector('#mini-solar-time');
     const iconLarge = widget.querySelector('#solar-icon-large');
     const timeDisplay = widget.querySelector('#solar-time-display');
-    const phaseBadge = widget.querySelector('#solar-phase-badge');
-    const metricAlt = widget.querySelector('#solar-metric-alt');
-    const metricAz = widget.querySelector('#solar-metric-az');
+    const metricSummary = widget.querySelector('#solar-metric-summary');
     const tickSunrise = widget.querySelector('#tick-sunrise');
     const tickSunset = widget.querySelector('#tick-sunset');
 
@@ -370,17 +393,13 @@
       const tzLabel = getTimezoneAbbreviation(timeMode);
       const timeStr = formatTime(solar.decimalHour);
 
-      miniIcon.textContent = solar.icon;
-      miniTime.textContent = `${timeStr} ${tzLabel}`;
-      iconLarge.textContent = solar.icon;
+      if (miniIcon) miniIcon.textContent = solar.icon;
+      if (miniTime) miniTime.textContent = `${timeStr} ${tzLabel}`;
+      if (iconLarge) iconLarge.textContent = solar.icon;
 
-      const liveSuffix = isLive ? (timeMode === 'colorado' ? ' (CO)' : ' (Live)') : '';
-      timeDisplay.textContent = `${timeStr} ${tzLabel}${liveSuffix}`;
-      phaseBadge.textContent = solar.phaseLabel;
-      phaseBadge.className = `solar-phase-badge phase-${solar.phase}`;
-
-      metricAlt.textContent = `${solar.altitude.toFixed(1)}°`;
-      metricAz.textContent = `${solar.azimuth.toFixed(0)}°`;
+      const liveSuffix = isLive ? (timeMode === 'colorado' ? ' CO' : '') : '';
+      if (timeDisplay) timeDisplay.textContent = `${timeStr} ${tzLabel}${liveSuffix}`;
+      if (metricSummary) metricSummary.textContent = `${solar.altitude.toFixed(0)}°`;
 
       if (tickSunrise) {
         tickSunrise.textContent = `Rise ${formatTime(solar.sunriseHour).replace(' ', '')}`;
@@ -431,9 +450,41 @@
       updateWidget(solar);
     }
 
+    // Stutter-free scrubbing: disable CSS transitions and coalesce with requestAnimationFrame
+    let scrubRafId = null;
+
+    function handleScrub(val) {
+      document.body.classList.add('is-scrubbing');
+      if (scrubRafId) cancelAnimationFrame(scrubRafId);
+      scrubRafId = requestAnimationFrame(() => {
+        onManualScrub(val);
+      });
+    }
+
+    function stopScrub() {
+      if (scrubRafId) cancelAnimationFrame(scrubRafId);
+      document.body.classList.remove('is-scrubbing');
+    }
+
+    rangeInput.addEventListener('pointerdown', () => {
+      document.body.classList.add('is-scrubbing');
+    });
+    rangeInput.addEventListener('touchstart', () => {
+      document.body.classList.add('is-scrubbing');
+    }, { passive: true });
+
     rangeInput.addEventListener('input', (e) => {
+      handleScrub(e.target.value);
+    });
+
+    rangeInput.addEventListener('change', (e) => {
+      stopScrub();
       onManualScrub(e.target.value);
     });
+
+    window.addEventListener('pointerup', stopScrub);
+    window.addEventListener('touchend', stopScrub);
+    window.addEventListener('pointercancel', stopScrub);
 
     widget.querySelectorAll('.solar-quick-btn:not(.solar-co-toggle)').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -462,6 +513,7 @@
     collapsedPill.addEventListener('click', () => {
       isCollapsed = false;
       widget.classList.remove('is-collapsed');
+      syncWidgetWidth();
     });
 
     syncLive();

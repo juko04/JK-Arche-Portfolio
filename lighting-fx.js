@@ -17,83 +17,9 @@
 (function () {
   'use strict';
 
-  // ==========================================================================
-  // 1. Site-Wide Ambient Spotlight Cursor (Subtle on light, Vivid on dark)
-  // ==========================================================================
-  function initAmbientSpotlight() {
-    if (window.matchMedia && !window.matchMedia('(hover: hover)').matches) {
-      return;
-    }
-
-    let spotlightLayer = document.querySelector('#ambient-spotlight-layer');
-    if (!spotlightLayer) {
-      spotlightLayer = document.createElement('div');
-      spotlightLayer.id = 'ambient-spotlight-layer';
-      spotlightLayer.className = 'ambient-spotlight-layer';
-      spotlightLayer.setAttribute('aria-hidden', 'true');
-      document.body.appendChild(spotlightLayer);
-    }
-
-    // Check if current page or section is dark
-    const isDarkPage = document.body.classList.contains('photo-page') || 
-                       document.querySelector('.photo-container') !== null;
-    if (isDarkPage) {
-      spotlightLayer.classList.add('is-dark');
-    }
-
-    let targetX = window.innerWidth / 2;
-    let targetY = window.innerHeight / 2;
-    let currentX = targetX;
-    let currentY = targetY;
-    let isMoving = false;
-    let isVisible = false;
-    let fadeTimeout = null;
-    let animId = null;
-
-    function render() {
-      currentX += (targetX - currentX) * 0.18;
-      currentY += (targetY - currentY) * 0.18;
-
-      spotlightLayer.style.setProperty('--spot-x', `${currentX.toFixed(1)}px`);
-      spotlightLayer.style.setProperty('--spot-y', `${currentY.toFixed(1)}px`);
-
-      const dist = Math.hypot(targetX - currentX, targetY - currentY);
-      if (dist > 0.1 || isMoving) {
-        animId = requestAnimationFrame(render);
-      } else {
-        animId = null;
-      }
-    }
-
-    function onPointerMove(e) {
-      targetX = e.clientX;
-      targetY = e.clientY;
-      isMoving = true;
-
-      if (!isVisible) {
-        isVisible = true;
-        spotlightLayer.classList.add('is-active');
-      }
-
-      if (!animId) {
-        animId = requestAnimationFrame(render);
-      }
-
-      clearTimeout(fadeTimeout);
-      fadeTimeout = setTimeout(() => {
-        isMoving = false;
-      }, 2500);
-    }
-
-    function onPointerLeave() {
-      isVisible = false;
-      isMoving = false;
-      spotlightLayer.classList.remove('is-active');
-    }
-
-    window.addEventListener('pointermove', onPointerMove, { passive: true });
-    document.documentElement.addEventListener('mouseleave', onPointerLeave, { passive: true });
-  }
+  // Remove any legacy spotlight element from DOM
+  const existingSpot = document.querySelector('#ambient-spotlight-layer');
+  if (existingSpot) existingSpot.remove();
 
 
   // ==========================================================================
@@ -268,7 +194,7 @@
 
 
   // ==========================================================================
-  // 5. Left-to-Right & Up-Down Solar Shadow Arc + Backlit Night Halo on #hero-title
+  // 5. Left-to-Right & Up-Down Solar Shadow Arc + Stood-off Night Backlight
   // ==========================================================================
   function applyHeroLighting(solar, S) {
     const heroTitle = document.querySelector('#hero-title');
@@ -276,91 +202,78 @@
 
     const { altitude, azimuth, maxNoonAlt } = solar;
 
-    // --- NIGHT MODE: Architectural reverse halo-lit channel letter glow ---
-    // Matches Screenshot 1 ("ELYSON"): Solid dark bronze/charcoal front face with tight, bright rim halo
-    if (altitude <= -6) {
-      document.documentElement.style.setProperty('--solar-title-color', '#1e2118');
-      heroTitle.style.textShadow = [
-        '0 0 3px rgba(255, 250, 230, 0.98)',
-        '0 0 8px rgba(255, 240, 195, 0.82)',
-        '0 0 18px rgba(245, 220, 155, 0.48)',
-        '0 0 32px rgba(210, 190, 125, 0.22)'
-      ].join(', ');
-      return;
+    // Front face is solid, dark architectural metal/charcoal
+    document.documentElement.style.setProperty('--solar-title-color', '#1e2118');
+
+    // Smooth continuous cross-fade parameters across dawn and dusk (eliminates any shadow bounce):
+    // daylightT: 0 at deep night (<= -5°), ramp smoothly to 1.0 at daylight (>= +3°)
+    const daylightT = Math.min(Math.max((altitude + 5) / 8, 0), 1);
+    // glowT: 1.0 at deep night (<= -5°), dissolve smoothly to 0 at daylight (>= +3°)
+    const glowT = Math.min(Math.max((-altitude + 3) / 8, 0), 1);
+
+    const shadowLayers = [];
+
+    // --- 1. Architectural Stood-Off Backlit Halo ---
+    // Letters appear stood-off further from the wall: softer intensity, wider spread, deep atmospheric falloff
+    if (glowT > 0.005) {
+      const g1 = (0.60 * glowT).toFixed(2);
+      const g2 = (0.38 * glowT).toFixed(2);
+      const g3 = (0.22 * glowT).toFixed(2);
+      const g4 = (0.09 * glowT).toFixed(2);
+
+      shadowLayers.push(
+        `0 0 10px rgba(255, 245, 215, ${g1})`,
+        `0 0 24px rgba(250, 225, 160, ${g2})`,
+        `0 0 48px rgba(230, 205, 140, ${g3})`,
+        `0 0 78px rgba(200, 180, 120, ${g4})`
+      );
     }
 
-    // --- TWILIGHT TRANSITION (-6° to 0°): Smooth crossfade ---
-    if (altitude <= 0) {
-      const t = (altitude + 6) / 6; // 0 (night) to 1 (sunset)
-      document.documentElement.style.setProperty('--solar-title-color', '#21231a');
-
+    // --- 2. Directional Solar Shadow (Continuous 2D Vector) ---
+    // Single continuous vector function eliminating any bounce at sunrise / twilight:
+    if (daylightT > 0.005) {
       const azRad = (azimuth * Math.PI) / 180;
-      const dx = (-Math.sin(azRad) * 34).toFixed(1);
-      const dy = (-4 * t).toFixed(1);
+      const effectiveAlt = Math.max(altitude, 0);
+      const noonAlt = maxNoonAlt || 54.2;
 
-      heroTitle.style.textShadow = [
-        `0 0 ${(3 + 5 * (1 - t)).toFixed(1)}px rgba(255, 250, 230, ${(0.98 * (1 - t)).toFixed(2)})`,
-        `0 0 ${(8 + 10 * (1 - t)).toFixed(1)}px rgba(255, 240, 195, ${(0.82 * (1 - t)).toFixed(2)})`,
-        `0 0 ${(18 + 12 * (1 - t)).toFixed(1)}px rgba(245, 220, 155, ${(0.48 * (1 - t)).toFixed(2)})`,
-        `${dx}px ${dy}px 24px rgba(70, 48, 28, ${(0.35 * t).toFixed(2)})`
-      ].join(', ');
-      return;
+      // Horizontal reach: reaches ~36px when sun is low at horizon, smoothly shrinks to 0 at solar noon
+      const horizReach = 36 * Math.cos((effectiveAlt * Math.PI) / 180);
+      const dx = (-Math.sin(azRad) * horizReach).toFixed(1);
+
+      // Vertical reach: determined by solar noon altitude cotangent (reflecting latitude & season)
+      const cotNoon = 1 / Math.tan((Math.min(noonAlt, 89.9) * Math.PI) / 180);
+      const vertNoonReach = Math.max(0, Math.min(cotNoon * 22.0, 38.0));
+
+      // Throughout the day, vertical offset tracks altitude elevation arc
+      const sinNoon = Math.sin((noonAlt * Math.PI) / 180);
+      const altRatio = Math.sin((effectiveAlt * Math.PI) / 180) / (sinNoon + 1e-6);
+      const dy = (-vertNoonReach * Math.min(Math.max(altRatio, 0), 1.15)).toFixed(1);
+
+      const normAlt = Math.min(effectiveAlt / noonAlt, 1);
+      const umbraBlur = (2.5 + (1 - normAlt) * 5).toFixed(1);
+      const penumbraBlur = (8 + (1 - normAlt) * 15).toFixed(1);
+
+      const umbraAlpha = (0.35 * daylightT).toFixed(2);
+      const penumbraAlpha = (0.20 * daylightT).toFixed(2);
+
+      let umbraColor = '';
+      let penumbraColor = '';
+      if (altitude < 16) {
+        const warmth = 1 - Math.max(altitude, 0) / 16;
+        umbraColor = `rgba(${Math.round(45 + warmth * 40)}, ${Math.round(35 + warmth * 10)}, 25, ${umbraAlpha})`;
+        penumbraColor = `rgba(${Math.round(110 + warmth * 60)}, ${Math.round(75 + warmth * 25)}, 45, ${penumbraAlpha})`;
+      } else {
+        umbraColor = `rgba(30, 32, 24, ${umbraAlpha})`;
+        penumbraColor = `rgba(45, 48, 36, ${penumbraAlpha})`;
+      }
+
+      shadowLayers.push(
+        `${(dx * 0.45).toFixed(1)}px ${(dy * 0.45).toFixed(1)}px ${umbraBlur}px ${umbraColor}`,
+        `${dx}px ${dy}px ${penumbraBlur}px ${penumbraColor}`
+      );
     }
 
-    // --- DAYTIME: Title is dark charcoal #21231a ---
-    document.documentElement.style.setProperty('--solar-title-color', '#21231a');
-
-    // Solar azimuth mapping (top=North, bottom=South, right=East, left=West):
-    // Morning (East sun): dx < 0 (points LEFT)
-    // Midday (South sun): dx = 0, dy < 0 (points UP / NORTH)
-    // Evening (West sun): dx > 0 (points RIGHT)
-    //
-    // Up/Down movement tracks solar altitude (how high the sun is in the sky):
-    // - At sunrise/sunset (altitude ~0°): Sun is at horizon, casting long horizontal shadow along baseline (dy ≈ 0).
-    // - As sun climbs toward noon: dy moves UP (North, away from southern sun).
-    // - At solar noon in Colorado: Sun is ~50°-54° at equinox, ~26.5° in winter (not 90° zenith overhead like the equator).
-    //   At the equator (90° overhead), dy = 0.
-    //   In Colorado, noon shadow extends by cot(noonAlt) * scale (~18px at equinox, ~36px in winter).
-    const azRad = (azimuth * Math.PI) / 180;
-    const effectiveAlt = Math.max(altitude, 2);
-    const noonAlt = maxNoonAlt || 54.2;
-
-    // Horizontal reach: reaches ~36px when sun is low at horizon, smoothly shrinks to 0 at solar noon
-    const horizReach = 36 * Math.cos((effectiveAlt * Math.PI) / 180);
-    const dx = (-Math.sin(azRad) * horizReach).toFixed(1);
-
-    // Vertical reach: determined by solar noon altitude cotangent (reflecting latitude & season)
-    // Equator (90°): cot(90) = 0 -> reach is 0!
-    // Colorado equinox (~54°): cot(54) * 22 ≈ 16px
-    // Colorado winter (~26°): cot(26) * 22 ≈ 38px
-    const cotNoon = 1 / Math.tan((Math.min(noonAlt, 89.9) * Math.PI) / 180);
-    const vertNoonReach = Math.max(0, Math.min(cotNoon * 22.0, 38.0));
-
-    // Throughout the day, vertical offset tracks the altitude elevation arc
-    const sinNoon = Math.sin((noonAlt * Math.PI) / 180);
-    const altRatio = Math.sin((effectiveAlt * Math.PI) / 180) / (sinNoon + 1e-6);
-    const dy = (-vertNoonReach * Math.min(Math.max(altRatio, 0), 1.15)).toFixed(1);
-
-    // Architectural umbra & penumbra blur and color modulation
-    const normAlt = Math.min(altitude / noonAlt, 1);
-    const umbraBlur = (2 + (1 - normAlt) * 5).toFixed(1);
-    const penumbraBlur = (7 + (1 - normAlt) * 15).toFixed(1);
-
-    let umbraColor = '';
-    let penumbraColor = '';
-    if (altitude < 16) {
-      const warmth = 1 - altitude / 16;
-      umbraColor = `rgba(${Math.round(45 + warmth * 40)}, ${Math.round(35 + warmth * 10)}, 25, 0.35)`;
-      penumbraColor = `rgba(${Math.round(110 + warmth * 60)}, ${Math.round(75 + warmth * 25)}, 45, 0.2)`;
-    } else {
-      umbraColor = 'rgba(30, 32, 24, 0.28)';
-      penumbraColor = 'rgba(45, 48, 36, 0.14)';
-    }
-
-    heroTitle.style.textShadow = [
-      `${(dx * 0.45).toFixed(1)}px ${(dy * 0.45).toFixed(1)}px ${umbraBlur}px ${umbraColor}`,
-      `${dx}px ${dy}px ${penumbraBlur}px ${penumbraColor}`
-    ].join(', ');
+    heroTitle.style.textShadow = shadowLayers.join(', ');
   }
 
 
@@ -376,52 +289,49 @@
     if (!widget) {
       widget = document.createElement('div');
       widget.id = 'solar-time-widget';
-      widget.className = 'solar-time-widget';
+      widget.className = 'solar-time-widget is-collapsed';
       widget.setAttribute('role', 'region');
       widget.setAttribute('aria-label', 'Solar & Lighting Simulation');
 
       widget.innerHTML = `
-        <div class="solar-widget-collapsed-pill" id="solar-collapsed-pill" title="Click to open Solar Lighting Scrubber">
+        <div class="solar-widget-collapsed-pill" id="solar-collapsed-pill" title="Click to adjust Solar Lighting Study">
           <span class="solar-icon" id="mini-solar-icon">☀️</span>
           <span class="solar-time-text" id="mini-solar-time">--:--</span>
-          <span class="solar-pulse-dot" title="Live Clock active"></span>
+          <span class="solar-pill-toggle" aria-hidden="true">▾</span>
         </div>
 
         <div class="solar-widget-panel" id="solar-widget-panel">
           <div class="solar-panel-header">
-            <div class="solar-title-group">
-              <span class="solar-header-kicker" id="solar-header-kicker">Solar Lighting Study · Local Time</span>
-              <div class="solar-status-row">
-                <span class="solar-icon-large" id="solar-icon-large">☀️</span>
-                <span class="solar-time-display" id="solar-time-display">--:--</span>
-                <span class="solar-phase-badge" id="solar-phase-badge">Daylight</span>
-              </div>
+            <div class="solar-status-row">
+              <span class="solar-icon-large" id="solar-icon-large">☀️</span>
+              <span class="solar-time-display" id="solar-time-display">--:--</span>
             </div>
             <button type="button" class="solar-minimize-btn" id="solar-minimize-btn" aria-label="Minimize scrubber" title="Minimize">✕</button>
           </div>
 
           <div class="solar-metric-details" id="solar-metric-details">
-            Altitude: <strong id="solar-metric-alt">--°</strong> · Azimuth: <strong id="solar-metric-az">--°</strong>
+            <span>Alt: <strong id="solar-metric-alt">--°</strong> · Az: <strong id="solar-metric-az">--°</strong></span>
+            <span class="solar-phase-badge" id="solar-phase-badge">Daylight</span>
           </div>
 
           <div class="solar-slider-wrapper">
             <input type="range" class="solar-range-input" id="solar-range-input" min="0" max="24" step="0.25" value="13" aria-label="Simulate Time of Day">
             <div class="solar-slider-ticks">
               <span>12A</span>
-              <span class="tick-sunrise" id="tick-sunrise" title="Sunrise">Sunrise</span>
+              <span class="tick-sunrise" id="tick-sunrise">Rise</span>
               <span>12P</span>
-              <span class="tick-sunset" id="tick-sunset" title="Sunset">Sunset</span>
+              <span class="tick-sunset" id="tick-sunset">Set</span>
               <span>12A</span>
             </div>
           </div>
 
           <div class="solar-quick-bar">
-            <button type="button" class="solar-quick-btn" data-hour="6.75">Sunrise</button>
+            <button type="button" class="solar-quick-btn" data-hour="6.75">Rise</button>
             <button type="button" class="solar-quick-btn" data-hour="13">Noon</button>
-            <button type="button" class="solar-quick-btn" data-hour="19.25">Sunset</button>
-            <button type="button" class="solar-quick-btn" data-hour="22">Night Glow</button>
-            <button type="button" class="solar-live-toggle is-live" id="solar-live-toggle" title="Sync to your local device clock">● Live Local</button>
-            <button type="button" class="solar-quick-btn solar-co-toggle" id="solar-co-toggle" title="View Boulder, Colorado Time">CO Studio</button>
+            <button type="button" class="solar-quick-btn" data-hour="19.25">Set</button>
+            <button type="button" class="solar-quick-btn" data-hour="22">Night</button>
+            <button type="button" class="solar-live-toggle is-live" id="solar-live-toggle" title="Sync to device clock">● Live</button>
+            <button type="button" class="solar-quick-btn solar-co-toggle" id="solar-co-toggle" title="Boulder, Colorado Time">CO</button>
           </div>
         </div>
       `;
@@ -437,13 +347,12 @@
 
     let timeMode = 'local';
     let isLive = true;
-    let isCollapsed = false;
+    let isCollapsed = true;
     let currentDecimalHour = 13.0;
 
     const collapsedPill = widget.querySelector('#solar-collapsed-pill');
     const panel = widget.querySelector('#solar-widget-panel');
     const minimizeBtn = widget.querySelector('#solar-minimize-btn');
-    const headerKicker = widget.querySelector('#solar-header-kicker');
     const liveToggle = widget.querySelector('#solar-live-toggle');
     const coToggle = widget.querySelector('#solar-co-toggle');
     const rangeInput = widget.querySelector('#solar-range-input');
@@ -465,14 +374,10 @@
       miniTime.textContent = `${timeStr} ${tzLabel}`;
       iconLarge.textContent = solar.icon;
 
-      const liveSuffix = isLive ? (timeMode === 'colorado' ? ' (CO Live)' : ' (Live)') : '';
+      const liveSuffix = isLive ? (timeMode === 'colorado' ? ' (CO)' : ' (Live)') : '';
       timeDisplay.textContent = `${timeStr} ${tzLabel}${liveSuffix}`;
       phaseBadge.textContent = solar.phaseLabel;
       phaseBadge.className = `solar-phase-badge phase-${solar.phase}`;
-
-      headerKicker.textContent = timeMode === 'colorado' 
-        ? 'Solar Lighting Study · Boulder, CO' 
-        : `Solar Lighting Study · Local Time (${tzLabel})`;
 
       metricAlt.textContent = `${solar.altitude.toFixed(1)}°`;
       metricAz.textContent = `${solar.azimuth.toFixed(0)}°`;
@@ -587,7 +492,6 @@
   // 8. Lifecycle Initialization
   // ==========================================================================
   function init() {
-    initAmbientSpotlight();
     initGlobalNavShading();
     initSolarWidget();
   }

@@ -195,12 +195,15 @@
       icon = '🌅';
     }
 
+    const maxNoonAlt = Math.max(5, Math.min(90, 90 - DEFAULT_LATITUDE + declinationDeg));
+
     return {
       decimalHour,
       sunriseHour,
       sunsetHour,
       altitude: alphaDeg,
       azimuth: thetaDeg,
+      maxNoonAlt,
       daylightFactor,
       phase,
       phaseLabel,
@@ -265,22 +268,23 @@
 
 
   // ==========================================================================
-  // 5. Left-to-Right Solar Shadow & Radiant Night Glow on #hero-title
+  // 5. Left-to-Right & Up-Down Solar Shadow Arc + Backlit Night Halo on #hero-title
   // ==========================================================================
   function applyHeroLighting(solar, S) {
     const heroTitle = document.querySelector('#hero-title');
     if (!heroTitle) return;
 
-    const { altitude, azimuth } = solar;
+    const { altitude, azimuth, maxNoonAlt } = solar;
 
-    // --- NIGHT MODE: Luminous off-white with radiant multi-tier back-glow ---
+    // --- NIGHT MODE: Architectural reverse halo-lit channel letter glow ---
+    // Matches Screenshot 1 ("ELYSON"): Solid dark bronze/charcoal front face with tight, bright rim halo
     if (altitude <= -6) {
-      document.documentElement.style.setProperty('--solar-title-color', '#f5f6ed');
+      document.documentElement.style.setProperty('--solar-title-color', '#1e2118');
       heroTitle.style.textShadow = [
-        '0 0 16px rgba(255, 255, 255, 0.92)',
-        '0 0 38px rgba(245, 240, 220, 0.68)',
-        '0 0 75px rgba(185, 215, 155, 0.45)',
-        '0 0 115px rgba(150, 190, 120, 0.28)'
+        '0 0 3px rgba(255, 250, 230, 0.98)',
+        '0 0 8px rgba(255, 240, 195, 0.82)',
+        '0 0 18px rgba(245, 220, 155, 0.48)',
+        '0 0 32px rgba(210, 190, 125, 0.22)'
       ].join(', ');
       return;
     }
@@ -288,19 +292,17 @@
     // --- TWILIGHT TRANSITION (-6° to 0°): Smooth crossfade ---
     if (altitude <= 0) {
       const t = (altitude + 6) / 6; // 0 (night) to 1 (sunset)
-      const titleR = Math.round(245 * (1 - t) + 33 * t);
-      const titleG = Math.round(246 * (1 - t) + 35 * t);
-      const titleB = Math.round(237 * (1 - t) + 26 * t);
-      document.documentElement.style.setProperty('--solar-title-color', `rgb(${titleR}, ${titleG}, ${titleB})`);
+      document.documentElement.style.setProperty('--solar-title-color', '#21231a');
 
       const azRad = (azimuth * Math.PI) / 180;
-      const dx = (-Math.sin(azRad) * 28).toFixed(1);
-      const dy = (Math.cos(azRad) * 16 * 0.7).toFixed(1);
+      const dx = (-Math.sin(azRad) * 34).toFixed(1);
+      const dy = (-4 * t).toFixed(1);
 
       heroTitle.style.textShadow = [
-        `0 0 ${(34 * (1 - t)).toFixed(1)}px rgba(255, 255, 255, ${(0.88 * (1 - t)).toFixed(2)})`,
-        `0 0 ${(68 * (1 - t)).toFixed(1)}px rgba(245, 240, 220, ${(0.55 * (1 - t)).toFixed(2)})`,
-        `${dx}px ${dy}px 24px rgba(50, 38, 26, ${(0.22 * t).toFixed(2)})`
+        `0 0 ${(3 + 5 * (1 - t)).toFixed(1)}px rgba(255, 250, 230, ${(0.98 * (1 - t)).toFixed(2)})`,
+        `0 0 ${(8 + 10 * (1 - t)).toFixed(1)}px rgba(255, 240, 195, ${(0.82 * (1 - t)).toFixed(2)})`,
+        `0 0 ${(18 + 12 * (1 - t)).toFixed(1)}px rgba(245, 220, 155, ${(0.48 * (1 - t)).toFixed(2)})`,
+        `${dx}px ${dy}px 24px rgba(70, 48, 28, ${(0.35 * t).toFixed(2)})`
       ].join(', ');
       return;
     }
@@ -312,17 +314,37 @@
     // Morning (East sun): dx < 0 (points LEFT)
     // Midday (South sun): dx = 0, dy < 0 (points UP / NORTH)
     // Evening (West sun): dx > 0 (points RIGHT)
+    //
+    // Up/Down movement tracks solar altitude (how high the sun is in the sky):
+    // - At sunrise/sunset (altitude ~0°): Sun is at horizon, casting long horizontal shadow along baseline (dy ≈ 0).
+    // - As sun climbs toward noon: dy moves UP (North, away from southern sun).
+    // - At solar noon in Colorado: Sun is ~50°-54° at equinox, ~26.5° in winter (not 90° zenith overhead like the equator).
+    //   At the equator (90° overhead), dy = 0.
+    //   In Colorado, noon shadow extends by cot(noonAlt) * scale (~18px at equinox, ~36px in winter).
     const azRad = (azimuth * Math.PI) / 180;
-    const effectiveAlt = Math.max(altitude, 6);
-    const cotAlt = 1 / Math.tan((effectiveAlt * Math.PI) / 180);
-    const distance = Math.min(Math.max(cotAlt * 12, 5), 32);
+    const effectiveAlt = Math.max(altitude, 2);
+    const noonAlt = maxNoonAlt || 54.2;
 
-    const dx = (-Math.sin(azRad) * distance).toFixed(1);
-    const dy = (Math.cos(azRad) * distance * 0.7).toFixed(1);
+    // Horizontal reach: reaches ~36px when sun is low at horizon, smoothly shrinks to 0 at solar noon
+    const horizReach = 36 * Math.cos((effectiveAlt * Math.PI) / 180);
+    const dx = (-Math.sin(azRad) * horizReach).toFixed(1);
 
-    const altRatio = Math.min(altitude / 60, 1);
-    const umbraBlur = (3 + (1 - altRatio) * 6).toFixed(1);
-    const penumbraBlur = (10 + (1 - altRatio) * 18).toFixed(1);
+    // Vertical reach: determined by solar noon altitude cotangent (reflecting latitude & season)
+    // Equator (90°): cot(90) = 0 -> reach is 0!
+    // Colorado equinox (~54°): cot(54) * 22 ≈ 16px
+    // Colorado winter (~26°): cot(26) * 22 ≈ 38px
+    const cotNoon = 1 / Math.tan((Math.min(noonAlt, 89.9) * Math.PI) / 180);
+    const vertNoonReach = Math.max(0, Math.min(cotNoon * 22.0, 38.0));
+
+    // Throughout the day, vertical offset tracks the altitude elevation arc
+    const sinNoon = Math.sin((noonAlt * Math.PI) / 180);
+    const altRatio = Math.sin((effectiveAlt * Math.PI) / 180) / (sinNoon + 1e-6);
+    const dy = (-vertNoonReach * Math.min(Math.max(altRatio, 0), 1.15)).toFixed(1);
+
+    // Architectural umbra & penumbra blur and color modulation
+    const normAlt = Math.min(altitude / noonAlt, 1);
+    const umbraBlur = (2 + (1 - normAlt) * 5).toFixed(1);
+    const penumbraBlur = (7 + (1 - normAlt) * 15).toFixed(1);
 
     let umbraColor = '';
     let penumbraColor = '';
@@ -343,10 +365,11 @@
 
 
   // ==========================================================================
-  // 6. Interactive Time Scrubber Widget (index.html hero)
+  // 6. Interactive Time Scrubber Widget (Integrated directly below hero name)
   // ==========================================================================
   function initSolarWidget() {
     const heroSection = document.querySelector('.intro');
+    const heroTitle = document.querySelector('#hero-title');
     if (!heroSection) return;
 
     let widget = document.querySelector('#solar-time-widget');
@@ -403,7 +426,13 @@
         </div>
       `;
 
-      heroSection.appendChild(widget);
+      if (heroTitle && heroTitle.parentNode) {
+        heroTitle.parentNode.insertBefore(widget, heroTitle.nextElementSibling);
+      } else {
+        heroSection.appendChild(widget);
+      }
+    } else if (heroTitle && widget.previousElementSibling !== heroTitle) {
+      heroTitle.parentNode.insertBefore(widget, heroTitle.nextElementSibling);
     }
 
     let timeMode = 'local';

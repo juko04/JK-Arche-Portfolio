@@ -3411,11 +3411,11 @@ body.is-editing .active-selected {
   opacity: 0;
   transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   background: radial-gradient(
-    650px circle at var(--spot-x, -1000px) var(--spot-y, -1000px),
-    rgba(255, 255, 255, 0.12) 0%,
-    rgba(255, 255, 255, 0.045) 35%,
-    rgba(255, 255, 255, 0.008) 60%,
-    transparent 80%
+    360px circle at var(--spot-x, -1000px) var(--spot-y, -1000px),
+    rgba(255, 255, 255, 0.065) 0%,
+    rgba(255, 255, 255, 0.02) 35%,
+    rgba(255, 255, 255, 0.004) 55%,
+    transparent 75%
   );
   mix-blend-mode: soft-light;
 }
@@ -3424,18 +3424,33 @@ body.is-editing .active-selected {
   opacity: 1;
 }
 
-/* Noticeable, luminous beam on dark pages & photography */
+/* Subtle, refined beam on dark pages & photography (placed behind images) */
 .photo-page .ambient-spotlight-layer,
 body.photo-page .ambient-spotlight-layer,
 .ambient-spotlight-layer.is-dark {
+  z-index: 1;
   mix-blend-mode: screen;
   background: radial-gradient(
-    620px circle at var(--spot-x, -1000px) var(--spot-y, -1000px),
-    rgba(255, 255, 255, 0.22) 0%,
-    rgba(255, 255, 255, 0.09) 30%,
-    rgba(255, 255, 255, 0.02) 58%,
-    transparent 78%
+    340px circle at var(--spot-x, -1000px) var(--spot-y, -1000px),
+    rgba(255, 255, 255, 0.10) 0%,
+    rgba(255, 255, 255, 0.035) 30%,
+    rgba(255, 255, 255, 0.008) 55%,
+    transparent 75%
   );
+}
+
+/* Ensure spotlight stays behind all images and collage on photography page */
+.photo-page .photo-container {
+  position: relative;
+  z-index: 2;
+}
+
+.photo-page .photo-collage-grid,
+.photo-page .collage-item,
+.photo-page .collage-item img,
+.photo-page .photo-carousel-wrapper {
+  position: relative;
+  z-index: 3;
 }
 
 @media (hover: none) {
@@ -3449,12 +3464,12 @@ body.photo-page .ambient-spotlight-layer,
   transition: text-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* 2. Colorado Solar & Lighting Simulation Widget */
+/* 2. Colorado Solar & Lighting Simulation Widget (Integrated below hero title) */
 .solar-time-widget {
-  position: absolute;
-  top: clamp(80px, 12vh, 120px);
-  right: var(--site-padding);
-  z-index: 80;
+  position: relative;
+  margin: 16px 0 clamp(20px, 3vh, 32px) 0;
+  max-width: 440px;
+  z-index: 20;
   font-family: var(--sans);
   pointer-events: auto;
   user-select: none;
@@ -3719,22 +3734,15 @@ body.photo-page .ambient-spotlight-layer,
 }
 
 /* Mobile & Tablet Adaptation */
-@media (max-width: 960px) {
-  .solar-time-widget {
-    top: clamp(70px, 10vh, 90px);
-    right: 16px;
-  }
-}
-
 @media (max-width: 768px) {
   .solar-time-widget {
-    top: 72px;
-    right: 12px;
+    margin: 12px 0 20px 0;
+    max-width: 100%;
   }
   
   .solar-widget-panel {
-    width: calc(100vw - 24px);
-    max-width: 330px;
+    width: 100%;
+    max-width: 100%;
   }
 }
 

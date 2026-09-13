@@ -195,20 +195,24 @@ em {
 }
 
 .geo-circle-top-left {
-  width: clamp(320px, 46vw, 680px);
-  height: clamp(320px, 46vw, 680px);
+  width: clamp(320px, 46vw, 673.438px);
+  height: clamp(320px, 46vw, 673.438px);
   top: clamp(-240px, -18vh, -100px);
   left: clamp(-220px, -12vw, -80px);
   background-color: rgba(255, 255, 255, var(--solar-circle-alpha, 0.35));
+  border-radius: 50%;
+  z-index: 1;
   transition: background-color 0.4s ease;
 }
 
 .geo-circle-bottom-right {
-  width: clamp(360px, 52vw, 820px);
-  height: clamp(360px, 52vw, 820px);
+  width: clamp(360px, 52vw, 761.273px);
+  height: clamp(360px, 52vw, 761.273px);
   bottom: clamp(-260px, -20vh, -100px);
   right: clamp(-180px, -10vw, -60px);
   background-color: rgba(255, 255, 255, var(--solar-circle-alpha, 0.35));
+  border-radius: 50%;
+  z-index: 1;
   transition: background-color 0.4s ease;
 }
 
@@ -3082,42 +3086,51 @@ body.is-editing .active-selected {
     z-index: 1;
   }
 
-  .print-circle {
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
-    box-sizing: border-box;
+  .print-circle,
+  .print-cover-sheet .geo-circle {
+    position: absolute !important;
+    border-radius: 50% !important;
+    pointer-events: none !important;
+    box-sizing: border-box !important;
+    border: none !important;
+    z-index: 1 !important;
   }
 
-  /* Large architectural background circle - upper right */
+  /* Organic Background Circle - Top Left (Identical to Web Page) */
+  .print-cover-sheet .geo-circle-top-left,
+  .print-circle-top-left,
   .print-circle-1 {
-    width: 38vw;
-    height: 38vw;
-    right: 4vw;
-    top: -5vw;
-    background: rgba(255, 255, 255, 0.42);
-    border: 1.5px solid rgba(255, 255, 255, 0.65);
+    width: 46vw !important;
+    height: 46vw !important;
+    max-width: 673.438px !important;
+    max-height: 673.438px !important;
+    top: -18vh !important;
+    left: -12vw !important;
+    background: rgba(255, 255, 255, 0.35) !important;
+    background-color: rgba(255, 255, 255, 0.35) !important;
+    border: none !important;
+    border-radius: 50% !important;
   }
 
-  /* Medium overlapping circle - layered behind narrative */
+  /* Organic Background Circle - Bottom Right (Identical to Web Page) */
+  .print-cover-sheet .geo-circle-bottom-right,
+  .print-circle-bottom-right,
   .print-circle-2 {
-    width: 25vw;
-    height: 25vw;
-    right: 22vw;
-    bottom: 5vw;
-    background: var(--field-light);
-    border: 1px solid var(--line);
-    opacity: 0.9;
+    width: 52vw !important;
+    height: 52vw !important;
+    max-width: 761.273px !important;
+    max-height: 761.273px !important;
+    bottom: -20vh !important;
+    right: -10vw !important;
+    background: rgba(255, 255, 255, 0.35) !important;
+    background-color: rgba(255, 255, 255, 0.35) !important;
+    border: none !important;
+    border-radius: 50% !important;
   }
 
-  /* Accent circle - signature dark charcoal architectural anchor */
+  /* Obsolete third circle removed */
   .print-circle-3 {
-    width: 11vw;
-    height: 11vw;
-    right: 14vw;
-    bottom: 16vw;
-    background: #3d3434;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    display: none !important;
   }
 
   .print-cover-top {

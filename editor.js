@@ -1254,14 +1254,44 @@
     const heroRole = document.querySelector('#hero-role')?.innerText || 'Designing for the dialogue between light, form, and spatial atmosphere.';
     const heroCopy = document.querySelector('#hero-copy')?.innerText || 'From daylighting studies and photometric concepts to architectural massing and material texture, I explore how light shapes human experience in the built environment.';
 
-    // Signature Architectural Circles on Cover (or live custom shapes if created by user)
+    // Signature Architectural Circles on Cover (matching live page exactly)
+    const liveCircleTopLeft = document.querySelector('#geo-circle-top-left, .geo-circle-top-left');
+    const liveCircleBottomRight = document.querySelector('#geo-circle-bottom-right, .geo-circle-bottom-right');
+
+    let tlStyle = '';
+    let brStyle = '';
+    if (liveCircleTopLeft) {
+      const w = liveCircleTopLeft.style.width;
+      const h = liveCircleTopLeft.style.height;
+      const tf = liveCircleTopLeft.style.transform;
+      const bg = liveCircleTopLeft.style.backgroundColor;
+      if (w) tlStyle += `width:${w} !important;`;
+      if (h) tlStyle += `height:${h} !important;`;
+      if (tf) tlStyle += `transform:${tf} !important;`;
+      if (bg) tlStyle += `background-color:${bg} !important;`;
+    }
+    if (liveCircleBottomRight) {
+      const w = liveCircleBottomRight.style.width;
+      const h = liveCircleBottomRight.style.height;
+      const tf = liveCircleBottomRight.style.transform;
+      const bg = liveCircleBottomRight.style.backgroundColor;
+      if (w) brStyle += `width:${w} !important;`;
+      if (h) brStyle += `height:${h} !important;`;
+      if (tf) brStyle += `transform:${tf} !important;`;
+      if (bg) brStyle += `background-color:${bg} !important;`;
+    }
+
     const indexShapes = (state.pages && state.pages['index.html'] && Array.isArray(state.pages['index.html'].shapes)) 
       ? state.pages['index.html'].shapes 
       : [];
     
-    let coverGeometryHtml = '';
+    let coverGeometryHtml = `
+      <div class="geo-circle geo-circle-top-left print-circle-top-left" style="${tlStyle}" aria-hidden="true"></div>
+      <div class="geo-circle geo-circle-bottom-right print-circle-bottom-right" style="${brStyle}" aria-hidden="true"></div>
+    `;
+
     if (indexShapes.length > 0) {
-      coverGeometryHtml = indexShapes.map(s => {
+      coverGeometryHtml += indexShapes.map(s => {
         const bg = s.style?.backgroundColor || (s.filled ? 'var(--field-light)' : 'transparent');
         const border = s.style?.borderColor || 'var(--line-strong)';
         const radius = s.type === 'circle' ? '50%' : s.type === 'pill' ? '999px' : '0px';
@@ -1271,12 +1301,6 @@
         const t = s.top || '30vh';
         return `<div class="print-custom-shape" style="position:absolute; left:${l}; top:${t}; width:${w}; height:${h}; background:${bg}; border:1.5px solid ${border}; border-radius:${radius}; pointer-events:none;"></div>`;
       }).join('');
-    } else {
-      coverGeometryHtml = `
-        <div class="print-circle print-circle-1"></div>
-        <div class="print-circle print-circle-2"></div>
-        <div class="print-circle print-circle-3"></div>
-      `;
     }
 
     // Dynamic Live Landscape Sheets

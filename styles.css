@@ -4161,23 +4161,25 @@ body.is-scrubbing *::after {
 .compare-stage {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 2360 / 1640;
   max-height: 680px;
   border-radius: 6px;
   overflow: hidden;
-  background: #090a08;
+  background: #000000;
   border: 1px solid rgba(255, 255, 255, 0.1);
   user-select: none;
   touch-action: none;
+  cursor: ew-resize;
+  --split-pos: 50%;
 }
 
 .compare-layer {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
+  pointer-events: none;
 }
 
 .compare-layer img {
@@ -4186,6 +4188,7 @@ body.is-scrubbing *::after {
   object-fit: contain;
   display: block;
   pointer-events: none;
+  user-select: none;
 }
 
 .compare-layer-daylight {
@@ -4194,14 +4197,18 @@ body.is-scrubbing *::after {
 
 .compare-layer-electric {
   z-index: 2;
-  width: 50%; /* driven by JS slider */
-  border-right: 2px solid #d1a868;
-  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.4);
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  clip-path: inset(0 0 0 var(--split-pos, 50%));
+  will-change: clip-path;
 }
 
 .compare-layer-electric img {
-  width: 100%; /* sized to stage in JS or container */
-  max-width: none;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 /* Interactive Divider Handle */
@@ -4209,17 +4216,32 @@ body.is-scrubbing *::after {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 50%;
-  width: 36px;
-  margin-left: -18px;
+  left: var(--split-pos, 50%);
+  width: 40px;
+  margin-left: -20px;
   z-index: 10;
   cursor: ew-resize;
   display: flex;
   align-items: center;
   justify-content: center;
+  outline: none;
+}
+
+.compare-divider-handle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: #d1a868;
+  box-shadow: 0 0 8px rgba(209, 168, 104, 0.8), 0 0 16px rgba(0, 0, 0, 0.9);
 }
 
 .compare-handle-knob {
+  position: relative;
+  z-index: 2;
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -4228,15 +4250,17 @@ body.is-scrubbing *::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 800;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 20px rgba(209, 168, 104, 0.6);
-  transition: transform 0.15s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 20px rgba(209, 168, 104, 0.7);
+  transition: transform 0.15s ease, background-color 0.15s ease;
+  user-select: none;
 }
 
 .compare-divider-handle:hover .compare-handle-knob,
 .compare-divider-handle.dragging .compare-handle-knob {
   transform: scale(1.15);
+  background: #f0cb88;
 }
 
 .compare-labels {
@@ -4252,14 +4276,35 @@ body.is-scrubbing *::after {
   color: #8bb3e8;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .compare-label-elec {
   color: #e5b97d;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+}
+
+.compare-zoom-link {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: inherit;
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.compare-zoom-link:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #ffffff;
 }
 
 /* ==========================================================================

@@ -182,9 +182,9 @@
         <div class="compare-head">
           <div class="compare-head-left">
             <span class="compare-tag">Interactive Study · Level 02 Comparison</span>
-            <h3>Daylighting Autonomy vs. 2700K Electric Plan</h3>
+            <h3>Daylighting Autonomy vs. 2700K Interior Lighting Plan</h3>
             <p>
-              Drag the luminous divider or use the mode buttons to observe how the supplemental electric lighting layout fills voids left by shifting sun angles across 8:30 AM, 12:30 PM, and 4:30 PM.
+              Drag the luminous divider or use the mode buttons to observe how the interior electric lighting supplements natural daylight without scaling. The blue study maps direct sunlight penetration across 8:30 AM, 12:30 PM (darker blue at solar noon), and 4:30 PM, while the yellow plan details the 2700K warm interior fixture layout.
             </p>
           </div>
           <div class="compare-mode-switch">
@@ -197,11 +197,11 @@
         <div class="compare-stage" id="compare-stage">
           <!-- Daylight Base Layer -->
           <div class="compare-layer compare-layer-daylight">
-            <img src="assets/Light Sketches/Senior Design/2nd floor.jpg" alt="Level 02 Daylight Study at 8:30 AM, 12:30 PM, and 4:30 PM">
+            <img src="assets/Light Sketches/Senior Design/2nd floor.jpg" alt="Level 02 Daylight Study showing direct sunlight at 8:30 AM, 12:30 PM (darker), and 4:30 PM">
           </div>
           <!-- Electric Top Layer with clip-path -->
           <div class="compare-layer compare-layer-electric" id="compare-layer-electric">
-            <img src="assets/Light Sketches/Senior Design/2nd floor.png" alt="Level 02 Electric Lighting Plan 2700K">
+            <img src="assets/Light Sketches/Senior Design/2nd floor.png" alt="Level 02 Interior Lighting Plan with 2700K warm fixtures">
           </div>
           <!-- Draggable Divider Handle -->
           <div class="compare-divider-handle" id="compare-handle" tabindex="0" role="slider" aria-label="Split comparison position" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
@@ -210,22 +210,28 @@
         </div>
 
         <div class="compare-labels">
-          <span class="compare-label-day"><span>☀️</span> Natural Daylight Study (8:30 AM · 12:30 PM · 4:30 PM)</span>
-          <span class="compare-label-elec">Supplemental Electric Lighting Scheme (2700K Warm LED) <span>💡</span></span>
+          <div class="compare-label-day">
+            <span>☀️ Direct Sunlight Study · 8:30 AM · 12:30 PM (Darker) · 4:30 PM</span>
+            <button class="compare-zoom-link" data-sketch-index="4" type="button" aria-label="Open Daylight Study in Fullscreen">⤢ Lightbox</button>
+          </div>
+          <div class="compare-label-elec">
+            <button class="compare-zoom-link" data-sketch-index="5" type="button" aria-label="Open Interior Plan in Fullscreen">⤢ Lightbox</button>
+            <span>Interior Lighting Plan · 2700K Warm LED 💡</span>
+          </div>
         </div>
       </div>
 
       <!-- 2-Column Grid: Atmospheric Perspectives -->
       <div class="sketch-grid sketch-grid-2" style="margin-bottom: 30px;">
-        <!-- 02.01 Exterior Night Render -->
-        <article class="sketch-card" data-sketch-index="4">
+        <!-- 02.03 Exterior Night Render -->
+        <article class="sketch-card" data-sketch-index="6">
           <div class="sketch-card-media" tabindex="0" role="button" aria-label="Zoom Exterior Nocturnal Approach sketch">
             <img src="assets/Light Sketches/Senior Design/Exterior.jpg" alt="Senior Design Exterior Nocturnal Approach" loading="lazy">
             <span class="sketch-zoom-badge"><span>⤢</span> Zoom</span>
           </div>
           <div class="sketch-card-body">
             <div>
-              <span class="sketch-category">Study 02.01 · Exterior Architecture</span>
+              <span class="sketch-category">Study 02.03 · Exterior Architecture</span>
               <h4>Nocturnal Approach &amp; Timber Undercroft Uplight</h4>
               <p>
                 Exterior nocturnal perspective highlighting warm timber soffit grazing, illuminated structural columns, and low-glare pedestrian approach pathways designed for IDA Dark-Sky compliance.
@@ -239,15 +245,15 @@
           </div>
         </article>
 
-        <!-- 02.02 Biophilic 2nd Floor Lobby -->
-        <article class="sketch-card" data-sketch-index="5">
+        <!-- 02.04 Biophilic 2nd Floor Lobby -->
+        <article class="sketch-card" data-sketch-index="7">
           <div class="sketch-card-media" tabindex="0" role="button" aria-label="Zoom Biophilic Atrium Lobby sketch">
             <img src="assets/Light Sketches/Senior Design/2nd floor lobby.jpg" alt="Senior Design Second Floor Lobby sketch" loading="lazy">
             <span class="sketch-zoom-badge"><span>⤢</span> Zoom</span>
           </div>
           <div class="sketch-card-body">
             <div>
-              <span class="sketch-category">Study 02.02 · Interior Atrium</span>
+              <span class="sketch-category">Study 02.04 · Interior Atrium</span>
               <h4>Biophilic Gathering Lobby &amp; Arboreal Column Uplight</h4>
               <p>
                 Multi-level gathering lobby with warm trunk and branch uplighting on organic timber columns, complemented by soft clerestory ambient wash creating dappled, tree-canopy light.
@@ -264,15 +270,15 @@
 
       <!-- 2-Column Grid: Hallway & Pathway Studies -->
       <div class="sketch-grid sketch-grid-2" style="margin-bottom: 30px;">
-        <!-- 02.03 West Hallway -->
-        <article class="sketch-card" data-sketch-index="6">
+        <!-- 02.05 West Hallway -->
+        <article class="sketch-card" data-sketch-index="8">
           <div class="sketch-card-media" tabindex="0" role="button" aria-label="Zoom West Hallway Wall Grazing sketch">
             <img src="assets/Light Sketches/Senior Design/West hallway.png" alt="Senior Design West Hallway sketch" loading="lazy">
             <span class="sketch-zoom-badge"><span>⤢</span> Zoom</span>
           </div>
           <div class="sketch-card-body">
             <div>
-              <span class="sketch-category">Study 02.03 · Circulation Wing</span>
+              <span class="sketch-category">Study 02.05 · Circulation Wing</span>
               <h4>West Hallway Linear Grazing &amp; Wayfinding</h4>
               <p>
                 Continuous recessed linear wall-grazing luminaire wash enhancing vertical wall plane brightness, accentuating architectural texture while guiding pedestrian circulation.
@@ -285,15 +291,15 @@
           </div>
         </article>
 
-        <!-- 02.04 Site Pathway & Landscape -->
-        <article class="sketch-card" data-sketch-index="7">
+        <!-- 02.06 Site Pathway & Landscape -->
+        <article class="sketch-card" data-sketch-index="9">
           <div class="sketch-card-media" tabindex="0" role="button" aria-label="Zoom Terraced Site Seating & Pathway Plan">
             <img src="assets/Light Sketches/Senior Design/site-pathway.png" alt="Senior Design Site Pathway Plan" loading="lazy">
             <span class="sketch-zoom-badge"><span>⤢</span> Zoom</span>
           </div>
           <div class="sketch-card-body">
             <div>
-              <span class="sketch-category">Study 02.04 · Landscape &amp; Site</span>
+              <span class="sketch-category">Study 02.06 · Landscape &amp; Site</span>
               <h4>Terraced Site Seating &amp; Pathway Illumination</h4>
               <p>
                 Landscape plan featuring integrated bench underglow, soft turf washes, and low-level pathway bollards preserving night-sky darkness while ensuring nighttime safety.
@@ -309,15 +315,15 @@
 
       <!-- 2-Column Grid: Floor 1 & Floor 3 Lighting Strategies -->
       <div class="sketch-grid sketch-grid-2">
-        <!-- 02.05 Floor 1 Plan -->
-        <article class="sketch-card" data-sketch-index="8">
+        <!-- 02.07 Floor 1 Plan -->
+        <article class="sketch-card" data-sketch-index="10">
           <div class="sketch-card-media" tabindex="0" role="button" aria-label="Zoom Level 01 Lighting Strategy Plan">
             <img src="assets/Light Sketches/Senior Design/1st floor.png" alt="Senior Design Level 01 Lighting Plan" loading="lazy">
             <span class="sketch-zoom-badge"><span>⤢</span> Zoom</span>
           </div>
           <div class="sketch-card-body">
             <div>
-              <span class="sketch-category">Study 02.05 · Plan Strategy</span>
+              <span class="sketch-category">Study 02.07 · Plan Strategy</span>
               <h4>Level 01 Lighting Strategy · Classrooms &amp; Commons</h4>
               <p>
                 Integrated ceiling coves, direct/indirect linear pendants, and zoned task lighting configured for multi-purpose educational classrooms and public lecture halls.
@@ -330,15 +336,15 @@
           </div>
         </article>
 
-        <!-- 02.06 Floor 3 Plan -->
-        <article class="sketch-card" data-sketch-index="9">
+        <!-- 02.08 Floor 3 Plan -->
+        <article class="sketch-card" data-sketch-index="11">
           <div class="sketch-card-media" tabindex="0" role="button" aria-label="Zoom Level 03 Lighting Strategy Plan">
             <img src="assets/Light Sketches/Senior Design/3rd floor.png" alt="Senior Design Level 03 Lighting Plan" loading="lazy">
             <span class="sketch-zoom-badge"><span>⤢</span> Zoom</span>
           </div>
           <div class="sketch-card-body">
             <div>
-              <span class="sketch-category">Study 02.06 · Plan Strategy</span>
+              <span class="sketch-category">Study 02.08 · Plan Strategy</span>
               <h4>Level 03 Lighting Strategy · Workstations &amp; Boardroom</h4>
               <p>
                 Circadian-tuned perimeter cove lighting paired with glare-controlled downlights for collaborative workstations, private conference suites, and boardroom pods.
@@ -374,7 +380,7 @@
 
       <div class="sketch-grid sketch-grid-2">
         <!-- Scheme 01 -->
-        <article class="sketch-card" data-sketch-index="10">
+        <article class="sketch-card" data-sketch-index="12">
           <div class="sketch-card-media" tabindex="0" role="button" aria-label="Zoom Scheme 01 Geometric Luminous Strands">
             <img src="assets/Light Sketches/IMG_0334.jpeg" alt="Children's Museum Facade Lighting Scheme 01" loading="lazy">
             <span class="sketch-zoom-badge"><span>⤢</span> Zoom</span>
@@ -396,7 +402,7 @@
         </article>
 
         <!-- Scheme 02 -->
-        <article class="sketch-card" data-sketch-index="11">
+        <article class="sketch-card" data-sketch-index="13">
           <div class="sketch-card-media" tabindex="0" role="button" aria-label="Zoom Scheme 02 Backlit Perforated Screen">
             <img src="assets/Light Sketches/IMG_0353.jpeg" alt="Children's Museum Facade Lighting Scheme 02" loading="lazy">
             <span class="sketch-zoom-badge"><span>⤢</span> Zoom</span>
@@ -488,39 +494,51 @@
           desc: 'Initial gestural exploration mapping human sightlines, luminous densities, and primary circulation vectors connecting public hubs to seminar wings.'
         },
         {
+          src: 'assets/Light Sketches/Senior Design/2nd floor.jpg',
+          title: 'Level 02 Daylight Penetration Study',
+          chip: 'Senior Design · Study 02.01',
+          desc: 'Direct sunlight penetration mapping across three key daylight intervals: 8:30 AM (morning low sun), 12:30 PM (solar noon, darker blue saturation), and 4:30 PM (late afternoon sun angle).'
+        },
+        {
+          src: 'assets/Light Sketches/Senior Design/2nd floor.png',
+          title: 'Level 02 Supplemental 2700K Interior Plan',
+          chip: 'Senior Design · Study 02.02',
+          desc: 'Supplemental interior electric lighting layout with 2700K warm LED fixtures designed to fill lighting voids and balance natural sunlight throughout the Level 02 floor plate.'
+        },
+        {
           src: 'assets/Light Sketches/Senior Design/Exterior.jpg',
           title: 'Nocturnal Approach & Timber Undercroft Uplight',
-          chip: 'Senior Design · Study 02.01',
+          chip: 'Senior Design · Study 02.03',
           desc: 'Exterior nocturnal perspective highlighting warm timber soffit grazing, illuminated structural columns, and low-glare pedestrian approach pathways designed for IDA Dark-Sky compliance.'
         },
         {
           src: 'assets/Light Sketches/Senior Design/2nd floor lobby.jpg',
           title: 'Biophilic Gathering Lobby & Arboreal Column Uplight',
-          chip: 'Senior Design · Study 02.02',
+          chip: 'Senior Design · Study 02.04',
           desc: 'Multi-level gathering lobby with warm trunk and branch uplighting on organic timber columns, complemented by soft clerestory ambient wash creating dappled, tree-canopy light.'
         },
         {
           src: 'assets/Light Sketches/Senior Design/West hallway.png',
           title: 'West Hallway Linear Grazing & Wayfinding',
-          chip: 'Senior Design · Study 02.03',
+          chip: 'Senior Design · Study 02.05',
           desc: 'Continuous recessed linear wall-grazing luminaire wash enhancing vertical wall plane brightness, accentuating architectural texture while guiding pedestrian circulation.'
         },
         {
           src: 'assets/Light Sketches/Senior Design/site-pathway.png',
           title: 'Terraced Site Seating & Pathway Illumination',
-          chip: 'Senior Design · Study 02.04',
+          chip: 'Senior Design · Study 02.06',
           desc: 'Landscape plan featuring integrated bench underglow, soft turf washes, and low-level pathway bollards preserving night-sky darkness while ensuring nighttime safety.'
         },
         {
           src: 'assets/Light Sketches/Senior Design/1st floor.png',
           title: 'Level 01 Lighting Strategy · Classrooms & Commons',
-          chip: 'Senior Design · Study 02.05',
+          chip: 'Senior Design · Study 02.07',
           desc: 'Integrated ceiling coves, direct/indirect linear pendants, and zoned task lighting configured for multi-purpose educational classrooms and public lecture halls.'
         },
         {
           src: 'assets/Light Sketches/Senior Design/3rd floor.png',
           title: 'Level 03 Lighting Strategy · Workstations & Boardroom',
-          chip: 'Senior Design · Study 02.06',
+          chip: 'Senior Design · Study 02.08',
           desc: 'Circadian-tuned perimeter cove lighting paired with glare-controlled downlights for collaborative workstations, private conference suites, and boardroom pods.'
         },
         {
@@ -559,7 +577,6 @@
 
       // 3. Interactive Daylight vs Electric Split Slider
       const stage = document.getElementById('compare-stage');
-      const elecLayer = document.getElementById('compare-layer-electric');
       const handle = document.getElementById('compare-handle');
       const btnSplit = document.getElementById('btn-mode-split');
       const btnDay = document.getElementById('btn-mode-day');
@@ -569,63 +586,61 @@
 
       function updateSplit(pct) {
         pct = Math.max(0, Math.min(100, pct));
-        elecLayer.style.width = pct + '%';
-        handle.style.left = pct + '%';
+        stage.style.setProperty('--split-pos', pct + '%');
         handle.setAttribute('aria-valuenow', Math.round(pct));
+      }
+
+      function activateSplitMode() {
+        btnSplit.classList.add('active');
+        btnDay.classList.remove('active');
+        btnElec.classList.remove('active');
+        handle.style.display = 'flex';
+      }
+
+      function getPctFromEvent(e) {
+        const rect = stage.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const offset = clientX - rect.left;
+        return (offset / rect.width) * 100;
+      }
+
+      function startDragging(e) {
+        isDragging = true;
+        handle.classList.add('dragging');
+        activateSplitMode();
+        updateSplit(getPctFromEvent(e));
+        if (e.cancelable && e.type !== 'touchstart') {
+          e.preventDefault();
+        }
       }
 
       function handleDrag(e) {
         if (!isDragging) return;
-        const rect = stage.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const offset = clientX - rect.left;
-        const pct = (offset / rect.width) * 100;
-        updateSplit(pct);
+        updateSplit(getPctFromEvent(e));
+      }
+
+      function stopDragging() {
+        if (isDragging) {
+          isDragging = false;
+          handle.classList.remove('dragging');
+        }
       }
 
       if (stage && handle) {
-        handle.addEventListener('mousedown', (e) => {
-          isDragging = true;
-          handle.classList.add('dragging');
-          e.preventDefault();
-        });
-
+        handle.addEventListener('mousedown', startDragging);
+        stage.addEventListener('mousedown', startDragging);
         window.addEventListener('mousemove', handleDrag);
-        window.addEventListener('mouseup', () => {
-          if (isDragging) {
-            isDragging = false;
-            handle.classList.remove('dragging');
-          }
-        });
+        window.addEventListener('mouseup', stopDragging);
 
         // Touch support
-        handle.addEventListener('touchstart', (e) => {
-          isDragging = true;
-          handle.classList.add('dragging');
-        }, { passive: true });
-
+        handle.addEventListener('touchstart', startDragging, { passive: true });
+        stage.addEventListener('touchstart', startDragging, { passive: true });
         window.addEventListener('touchmove', handleDrag, { passive: true });
-        window.addEventListener('touchend', () => {
-          if (isDragging) {
-            isDragging = false;
-            handle.classList.remove('dragging');
-          }
-        });
-
-        // Click anywhere on stage to position handle
-        stage.addEventListener('click', (e) => {
-          if (e.target.closest('#compare-handle')) return;
-          const rect = stage.getBoundingClientRect();
-          const offset = e.clientX - rect.left;
-          const pct = (offset / rect.width) * 100;
-          updateSplit(pct);
-        });
+        window.addEventListener('touchend', stopDragging);
 
         // Mode switch buttons
         btnSplit.addEventListener('click', () => {
-          [btnSplit, btnDay, btnElec].forEach(b => b.classList.remove('active'));
-          btnSplit.classList.add('active');
-          handle.style.display = 'flex';
+          activateSplitMode();
           updateSplit(50);
         });
 
@@ -633,14 +648,28 @@
           [btnSplit, btnDay, btnElec].forEach(b => b.classList.remove('active'));
           btnDay.classList.add('active');
           handle.style.display = 'none';
-          updateSplit(0); // Show only daylight
+          updateSplit(100); // 100% daylight visible
         });
 
         btnElec.addEventListener('click', () => {
           [btnSplit, btnDay, btnElec].forEach(b => b.classList.remove('active'));
           btnElec.classList.add('active');
           handle.style.display = 'none';
-          updateSplit(100); // Show only electric
+          updateSplit(0); // 100% electric visible
+        });
+
+        // Keyboard navigation
+        handle.addEventListener('keydown', (e) => {
+          const current = parseFloat(stage.style.getPropertyValue('--split-pos')) || 50;
+          if (e.key === 'ArrowLeft') {
+            activateSplitMode();
+            updateSplit(current - 5);
+            e.preventDefault();
+          } else if (e.key === 'ArrowRight') {
+            activateSplitMode();
+            updateSplit(current + 5);
+            e.preventDefault();
+          }
         });
       }
 

@@ -34,36 +34,17 @@ const projectDatabase = {
           {
             type: 'image',
             src: 'assets/projects/mountain-home.jpg',
-            caption: 'Exterior Perspective · Stepped Terraces & Glazing'
+            caption: 'Exterior Perspective · Stepped Terraces & Mountain Horizon Glazing'
           },
           {
-            type: 'placeholder',
-            tag: '+ Add Image / Diagram',
-            title: 'Solar & Daylight Path Diagram',
-            desc: 'Drop in sun angle studies, daylight autonomy heatmaps, or site section'
-          }
-        ]
-      },
-      {
-        title: 'Interior Daylighting & Spatial Sequence',
-        layout: 'duo',
-        items: [
-          {
-            type: 'placeholder',
-            tag: '+ Add Interior Render',
-            title: 'Main Living Pavilion & Natural Light',
-            desc: 'Drop in interior rendering showing morning/afternoon daylight qualities'
-          },
-          {
-            type: 'placeholder',
-            tag: '+ Add Floor Plan / Detail',
-            title: 'Architectural Floor Plan & Section',
-            desc: 'Drop in level plans, reflected ceiling plans, or custom glazing detail'
+            type: 'image',
+            src: 'assets/projects/mountain home/luxury home massing.png',
+            caption: 'Massing Diagram · Stepped Terracing & Calculated Daylight Penetration'
           }
         ]
       }
     ],
-    prevProject: { id: 'photo', name: 'Photography & Light Studies', url: 'photography.html' },
+    prevProject: { id: 'sketches', name: 'Lighting Sketches & Studies', url: 'sketches.html' },
     nextProject: { id: 'museum', name: "Children's Museum", url: 'project-museum.html' }
   },
 
@@ -74,9 +55,9 @@ const projectDatabase = {
     year: '2025',
     location: 'Boulder, Colorado',
     typology: 'Cultural & Community Hub',
-    scope: 'Architectural Design · Massing · Daylighting',
+    scope: 'Architectural Design · Massing · Daylighting · Facade Lighting',
     tools: 'Revit, Rhino, Enscape, ClimateStudio',
-    heroImage: 'assets/projects/childrens-museum.jpg',
+    heroImage: 'assets/projects/museum/museum-hero.png',
     lead: 'A dynamic cultural anchor on Boulder’s historic Pearl Street Mall, designed with interlocking geometric volumes that invite curiosity and civic engagement.',
     description: [
       'Located on the Pearl Street Pedestrian Mall, the Children’s Museum creates an inclusive third space for families while seamlessly integrating upper-level administrative and community workshop spaces.',
@@ -91,37 +72,50 @@ const projectDatabase = {
     ],
     visualSections: [
       {
-        title: 'Massing, Transparency & Context',
+        title: 'Massing Evolution & Circulation Systems',
         layout: 'duo',
         items: [
           {
             type: 'image',
-            src: 'assets/projects/childrens-museum.jpg',
-            caption: 'Street Elevation · Transparent Entrance Pavilion'
+            src: 'assets/projects/museum/massing-diagram.png',
+            caption: 'Massing Evolution · Carved Atrium & Southern Daylight Orientation'
           },
           {
-            type: 'placeholder',
-            tag: '+ Add Site Plan / Diagram',
-            title: 'Pearl Street Mall Urban Integration',
-            desc: 'Drop in pedestrian flow diagram, massing evolution, or street section'
+            type: 'image',
+            src: 'assets/projects/museum/circulation-diagram.png',
+            caption: 'Circulation Diagram · Multi-Tier Public Flow & Vertical Spine'
           }
         ]
       },
       {
-        title: 'Atrium & Exhibition Daylighting',
+        title: 'Architectural Elevation & Structural Section',
         layout: 'duo',
         items: [
           {
-            type: 'placeholder',
-            tag: '+ Add Interior Gallery Render',
-            title: 'Main Exhibition Hall & Light Well',
-            desc: 'Drop in perspective showing diffused natural light on interactive exhibits'
+            type: 'image',
+            src: 'assets/projects/museum/elevation-study.png',
+            caption: 'Street Elevation & Axonometric Massing Study'
           },
           {
-            type: 'placeholder',
-            tag: '+ Add Program Axonometric',
-            title: 'Exploded Program Axonometric',
-            desc: 'Drop in 3D axon showing museum circulation, offices, and discovery zones'
+            type: 'image',
+            src: 'assets/projects/museum/building-sections.png',
+            caption: 'Longitudinal Building Section · Atrium Daylight Wells'
+          }
+        ]
+      },
+      {
+        title: 'Nocturnal Facade Illumination Studies',
+        layout: 'duo',
+        items: [
+          {
+            type: 'image',
+            src: 'assets/Light Sketches/IMG_0334.jpeg',
+            caption: 'Scheme 01 · Geometric Luminous Strands & Arched Entry Portal'
+          },
+          {
+            type: 'image',
+            src: 'assets/Light Sketches/IMG_0353.jpeg',
+            caption: 'Scheme 02 · Backlit Perforated Screen & Vertical Light Slots'
           }
         ]
       }
@@ -139,7 +133,7 @@ const projectDatabase = {
     typology: 'Academic & Civic Atrium',
     scope: 'Lighting Design · Facade & Interior Illumination',
     tools: 'AGi32, Revit, AutoCAD, Photometric Studies',
-    heroImage: 'assets/projects/central-lobby.jpg',
+    heroImage: 'assets/projects/central loby/suspended shapes1.jpg',
     lead: 'An illuminated five-story vertical commons unifying multi-disciplinary students, designed to serve as both an interior beacon and an urban lantern.',
     description: [
       'Serving as the primary circulation spine across five academic floors, the University Central Lobby lighting scheme was developed through close iteration between the architectural and lighting design teams.',
@@ -154,37 +148,34 @@ const projectDatabase = {
     ],
     visualSections: [
       {
-        title: 'Atmospheric Lighting & Facade Presence',
+        title: 'Atmospheric Lighting & Suspended Sculptures',
         layout: 'duo',
         items: [
           {
             type: 'image',
-            src: 'assets/projects/central-lobby.jpg',
-            caption: 'Illuminated Night Elevation · Multi-Tier Atrium'
+            src: 'assets/projects/central loby/suspended shapes1.jpg',
+            caption: 'Illuminated Atrium · Suspended Sculptural Pendants & Warm Floor Reflection'
           },
           {
-            type: 'placeholder',
-            tag: '+ Add Photometric Study / Heatmap',
-            title: 'AGi32 / Dialux Illuminance Calculation',
-            desc: 'Drop in false-color photometric analysis, foot-candle grid, or daylight study'
+            type: 'image',
+            src: 'assets/projects/central loby/suspended shapes.jpg',
+            caption: 'Overhead Luminaire Geometry · Dispersed Canopy Reflection'
           }
         ]
       },
       {
-        title: 'Luminaire Detailing & Reflected Ceiling Plan',
+        title: 'Linear Wall Grazing & Downlight Studies',
         layout: 'duo',
         items: [
           {
-            type: 'placeholder',
-            tag: '+ Add Reflected Ceiling Plan (RCP)',
-            title: 'RCP & Fixture Layout',
-            desc: 'Drop in reflected ceiling plan showing luminaire placement and zoning'
+            type: 'image',
+            src: 'assets/projects/central loby/downlight2.jpg',
+            caption: 'Linear Ceiling Downlights & Uniform Perimeter Wall Wash'
           },
           {
-            type: 'placeholder',
-            tag: '+ Add Fixture / Mounting Detail',
-            title: 'Cove & Grazer Architectural Detail',
-            desc: 'Drop in architectural mounting detail showing fixture integration with structure'
+            type: 'image',
+            src: 'assets/projects/central loby/linear ww opposite side.jpg',
+            caption: 'Opposite Wall Graze Study · Textured Surface Illuminance'
           }
         ]
       }
@@ -201,59 +192,56 @@ const projectDatabase = {
     location: 'Urban Park / Public Realm',
     typology: 'Public Realm Research',
     scope: 'Lighting Design · 1:1 Physical Mockups · Optics',
-    tools: 'Physical Mockups, Dialux, Luminaire Testing, Photography',
-    heroImage: 'assets/projects/bench-study.jpg',
+    tools: 'Physical Mockups, Procreate, Fresco, Dialux, Photography',
+    heroImage: 'assets/projects/bench study/bench-study.jpg',
     lead: 'Transforming a public park bench into a contemplative evening centerpiece through iterative optical mockups and water-surface light play.',
     description: [
-      'This research project re-imagined the exterior bench not merely as street furniture, but as a nocturnal focal point within a park setting. Three distinct water-inspired lighting schemes were developed and evaluated through rigorous 1:1 scale physical mockups.',
+      'This research project re-imagined the exterior bench not merely as street furniture, but as a nocturnal focal point within a park setting. Three distinct water-inspired lighting schemes were developed and evaluated through rigorous 1:1 scale physical mockups and digital ideation.',
       'The testing process investigated grazing angles, luminaire shielding, water refraction, and material reflectivity to eliminate stray light and glare while creating an inviting, organic glow along the pedestrian pathway.'
     ],
     highlightsTitle: 'Research & Mockup Focus',
     highlights: [
-      'Evaluation of three distinct optical schemes via physical testing',
+      'Evaluation of distinct optical schemes via physical & digital testing',
       'Water surface reflection & luminous refraction behavior',
       'Shielded source integration to ensure zero upward light trespass (Dark Sky)',
       'Selection of durable, low-voltage IP-rated exterior linear optics'
     ],
     visualSections: [
       {
-        title: 'Optical Mockups & Night Studies',
+        title: 'Plan Ideation · Style 1 vs. Style 2',
         layout: 'duo',
         items: [
           {
             type: 'image',
-            src: 'assets/projects/bench-study.jpg',
-            caption: 'Selected Scheme · Surface Grazing & Reflection Study'
+            src: 'assets/projects/bench study/bench-plan-style1.png',
+            caption: 'Style 1 Garden Plan · Cyan & Amber Accent Washes'
           },
           {
-            type: 'placeholder',
-            tag: '+ Add Scheme Comparison',
-            title: 'Comparison of 3 Tested Schemes',
-            desc: 'Drop in side-by-side photos of the three evaluated lighting directions'
+            type: 'image',
+            src: 'assets/projects/bench study/bench-plan-style2.png',
+            caption: 'Style 2 Garden Plan · Continuous Luminous Ribbon Along Pedestrian Spine'
           }
         ]
       },
       {
-        title: 'Fabrication, Detailing & Photometrics',
+        title: 'Perspective Illumination & Tiered Step Grazing',
         layout: 'duo',
         items: [
           {
-            type: 'placeholder',
-            tag: '+ Add Construction Detail',
-            title: 'Bench Section & Luminaire Mounting',
-            desc: 'Drop in section drawing showing integrated LED channel, wire routing, and drainage'
+            type: 'image',
+            src: 'assets/projects/bench study/bench-persp-style1.png',
+            caption: 'Style 1 Perspective · Warm Amber Step Grazing & Accent Canopy Uplight'
           },
           {
-            type: 'placeholder',
-            tag: '+ Add Physical Testing Photo',
-            title: 'Physical Mockup Laboratory Setup',
-            desc: 'Drop in photograph of the 1:1 prototype testing in darkroom conditions'
+            type: 'image',
+            src: 'assets/projects/bench study/bench-persp-style2.png',
+            caption: 'Style 2 Perspective · Dual Tier Cyan/Amber Underglow & Tree Sculpture Uplighting'
           }
         ]
       }
     ],
     prevProject: { id: 'lobby', name: 'University Central Lobby', url: 'project-lobby.html' },
-    nextProject: { id: 'photo', name: 'Photography & Light Studies', url: 'photography.html' }
+    nextProject: { id: 'sketches', name: 'Lighting Sketches & Studies', url: 'sketches.html' }
   }
 };
 
@@ -310,6 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <a class="monogram" href="index.html" aria-label="Julian Kotara home">JK<span>.</span></a>
       <nav aria-label="Main navigation">
         <a href="work.html" class="active">Work</a>
+        <a href="sketches.html">Sketches</a>
         <a href="photography.html">Photography</a>
         <a href="about.html">About</a>
       </nav>

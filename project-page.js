@@ -44,7 +44,7 @@ const projectDatabase = {
         ]
       }
     ],
-    prevProject: { id: 'sketches', name: 'Lighting Sketches & Studies', url: 'sketches.html' },
+    prevProject: { id: 'bench', name: 'Exterior Bench Lighting Study', url: 'project-bench.html' },
     nextProject: { id: 'museum', name: "Children's Museum", url: 'project-museum.html' }
   },
 
@@ -55,7 +55,7 @@ const projectDatabase = {
     year: '2025',
     location: 'Boulder, Colorado',
     typology: 'Cultural & Community Hub',
-    scope: 'Architectural Design · Massing · Daylighting · Facade Lighting',
+    scope: 'Architectural Design · Massing Evolution · Daylighting Studies',
     tools: 'Revit, Rhino, Enscape, ClimateStudio',
     heroImage: 'assets/projects/museum/museum-hero.png',
     lead: 'A dynamic cultural anchor on Boulder’s historic Pearl Street Mall, designed with interlocking geometric volumes that invite curiosity and civic engagement.',
@@ -88,34 +88,13 @@ const projectDatabase = {
         ]
       },
       {
-        title: 'Architectural Elevation & Structural Section',
-        layout: 'duo',
+        title: 'Architectural Street Elevation Study',
+        layout: 'full',
         items: [
           {
             type: 'image',
             src: 'assets/projects/museum/elevation-study.png',
-            caption: 'Street Elevation & Axonometric Massing Study'
-          },
-          {
-            type: 'image',
-            src: 'assets/projects/museum/building-sections.png',
-            caption: 'Longitudinal Building Section · Atrium Daylight Wells'
-          }
-        ]
-      },
-      {
-        title: 'Nocturnal Facade Illumination Studies',
-        layout: 'duo',
-        items: [
-          {
-            type: 'image',
-            src: 'assets/Light Sketches/IMG_0334.jpeg',
-            caption: 'Scheme 01 · Geometric Luminous Strands & Arched Entry Portal'
-          },
-          {
-            type: 'image',
-            src: 'assets/Light Sketches/IMG_0353.jpeg',
-            caption: 'Scheme 02 · Backlit Perforated Screen & Vertical Light Slots'
+            caption: 'Street Elevation & Axonometric Massing Study · Pearl Street Mall Frontage'
           }
         ]
       }
@@ -178,6 +157,17 @@ const projectDatabase = {
             caption: 'Opposite Wall Graze Study · Textured Surface Illuminance'
           }
         ]
+      },
+      {
+        title: 'From Concept to Built Reality · Reflected Ceiling Plan & Luminaire Specification Strategy',
+        layout: 'full',
+        items: [
+          {
+            type: 'image',
+            src: 'assets/projects/central loby/Screenshot 2025-08-15 173126.png',
+            caption: 'Technical Specification Slide · Level 2–5 Commons Reflected Ceiling Plan, Fixture Schedule & Photometric Visualizations'
+          }
+        ]
       }
     ],
     prevProject: { id: 'museum', name: "Children's Museum", url: 'project-museum.html' },
@@ -193,7 +183,7 @@ const projectDatabase = {
     typology: 'Public Realm Research',
     scope: 'Lighting Design · 1:1 Physical Mockups · Optics',
     tools: 'Physical Mockups, Procreate, Fresco, Dialux, Photography',
-    heroImage: 'assets/projects/bench study/bench-study.jpg',
+    heroImage: 'assets/projects/bench study/bench-persp-style1.png',
     lead: 'Transforming a public park bench into a contemplative evening centerpiece through iterative optical mockups and water-surface light play.',
     description: [
       'This research project re-imagined the exterior bench not merely as street furniture, but as a nocturnal focal point within a park setting. Three distinct water-inspired lighting schemes were developed and evaluated through rigorous 1:1 scale physical mockups and digital ideation.',
@@ -208,7 +198,7 @@ const projectDatabase = {
     ],
     visualSections: [
       {
-        title: 'Plan Ideation · Style 1 vs. Style 2',
+        title: 'Plan Ideation · Style 1 vs. Style 2 Garden Layouts',
         layout: 'duo',
         items: [
           {
@@ -238,10 +228,21 @@ const projectDatabase = {
             caption: 'Style 2 Perspective · Dual Tier Cyan/Amber Underglow & Tree Sculpture Uplighting'
           }
         ]
+      },
+      {
+        title: 'Style 1 vs. Style 2 Comparative Evaluation Matrix',
+        layout: 'full',
+        items: [
+          {
+            type: 'image',
+            src: 'assets/projects/bench study/bench-study.jpg',
+            caption: 'Six-Scheme Comparative Matrix · Optical Grazing, Refraction & Step Shielding Analysis'
+          }
+        ]
       }
     ],
     prevProject: { id: 'lobby', name: 'University Central Lobby', url: 'project-lobby.html' },
-    nextProject: { id: 'sketches', name: 'Lighting Sketches & Studies', url: 'sketches.html' }
+    nextProject: { id: 'mountain', name: 'Luxury Mountain Home', url: 'project-mountain.html' }
   }
 };
 

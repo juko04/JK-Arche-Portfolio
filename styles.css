@@ -825,9 +825,11 @@ em {
 
 .figure-full img {
   width: 100%;
-  max-height: 70vh;
-  object-fit: cover;
+  height: auto;
+  max-height: 75vh;
+  object-fit: contain;
   border-radius: var(--radius-sm);
+  display: block;
 }
 
 .figure-caption {
@@ -854,9 +856,11 @@ em {
 
 .figure-item img {
   width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
   border-radius: var(--radius-sm);
+  display: block;
 }
 
 /* Three-Column Details Grid */
@@ -869,9 +873,11 @@ em {
 
 .figure-trio img {
   width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
+  height: auto;
+  max-height: 50vh;
+  object-fit: contain;
   border-radius: var(--radius-sm);
+  display: block;
 }
 
 /* Upload / Image Placeholder Block (Clean Architectural Slot) */
@@ -2041,7 +2047,9 @@ em {
   }
 
   .figure-item img {
-    max-height: 42vh;
+    height: auto;
+    max-height: 60vh;
+    object-fit: contain;
   }
 
   .figure-placeholder {

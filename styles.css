@@ -158,11 +158,17 @@ em {
   color: var(--solar-nav-ink, var(--ink));
   padding: 6px 0;
   position: relative;
-  transition: opacity 0.2s ease, color 0.4s ease, border-color 0.4s ease;
+  display: inline-block;
+  transition: opacity 0.2s ease, color 0.4s ease, border-color 0.4s ease, transform 100ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-nav nav a:hover {
   opacity: 0.65;
+}
+
+.glass-nav nav a:active {
+  transform: scale(0.96);
+  transition-duration: 60ms;
 }
 
 .glass-nav nav a.active {
@@ -293,6 +299,16 @@ em {
   letter-spacing: 0.06em;
   text-decoration: none;
   padding-bottom: 2px;
+  transition: opacity 150ms ease, transform 100ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.explore:hover {
+  opacity: 0.8;
+}
+
+.explore:active {
+  transform: scale(0.96);
+  transition-duration: 60ms;
 }
 
 .explore span {
@@ -361,13 +377,21 @@ em {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, transform 100ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .rail-button:hover {
   background: var(--ink);
   color: var(--paper);
   border-color: var(--ink);
+  transform: scale(1.05);
+}
+
+.rail-button:active {
+  transform: scale(0.92);
+  transition-duration: 60ms;
 }
 
 .project-rail {
@@ -396,6 +420,17 @@ em {
   color: #ffffff;
   display: block;
   background: #2a2c26;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: transform 120ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms ease;
+}
+
+.project-card:hover {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.project-card:active {
+  transform: scale(0.982);
+  transition-duration: 60ms;
 }
 
 .project-card.wide {
@@ -576,7 +611,7 @@ em {
   gap: 20px;
   padding: 18px 0;
   border-bottom: 1px solid var(--line);
-  transition: background-color 0.2s ease, padding-left 0.2s ease;
+  transition: background-color 150ms ease, padding-left 150ms cubic-bezier(0.16, 1, 0.3, 1), transform 100ms cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
   color: var(--ink);
 }
@@ -584,6 +619,11 @@ em {
 .work-list-item:hover {
   padding-left: 10px;
   background: rgba(31, 35, 27, 0.035);
+}
+
+.work-list-item:active {
+  transform: scale(0.99);
+  transition-duration: 60ms;
 }
 
 .work-list-item .item-num {
@@ -937,6 +977,12 @@ em {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  transition: transform 100ms cubic-bezier(0.16, 1, 0.3, 1), opacity 150ms ease;
+}
+
+.page-nav-link:active {
+  transform: scale(0.98);
+  transition-duration: 60ms;
 }
 
 .page-nav-link .nav-direction {
@@ -1213,7 +1259,7 @@ em {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 100ms cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
 }
 
@@ -1221,6 +1267,12 @@ em {
   background: rgba(255, 255, 255, 0.18);
   border-color: rgba(255, 255, 255, 0.35);
   color: #ffffff;
+  transform: scale(1.02);
+}
+
+.photo-filter-btn:active {
+  transform: scale(0.95);
+  transition-duration: 60ms;
 }
 
 .photo-filter-btn.active {
@@ -1228,6 +1280,7 @@ em {
   color: #161a12;
   border-color: var(--field);
   font-weight: 600;
+  box-shadow: 0 2px 8px rgba(186, 196, 154, 0.3);
 }
 
 .photo-counter-badge {
@@ -3484,12 +3537,17 @@ body.is-scrubbing *::after {
   width: fit-content;
   white-space: nowrap;
   box-sizing: border-box;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 100ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .solar-widget-collapsed-pill:hover {
   background: rgba(30, 34, 25, 0.18);
   border-color: var(--solar-hero-ink, rgba(0, 0, 0, 0.3));
+}
+
+.solar-widget-collapsed-pill:active {
+  transform: scale(0.96);
+  transition-duration: 60ms;
 }
 
 .solar-pill-toggle {
@@ -3591,12 +3649,17 @@ body.is-scrubbing *::after {
   cursor: pointer;
   line-height: 1.2;
   white-space: nowrap;
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 100ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .solar-quick-btn:hover {
   background: var(--solar-btn-hover, rgba(30, 34, 25, 0.16));
   border-color: var(--solar-hero-ink, rgba(0, 0, 0, 0.3));
+}
+
+.solar-quick-btn:active {
+  transform: scale(0.92);
+  transition-duration: 60ms;
 }
 
 .solar-live-toggle {
@@ -3611,7 +3674,12 @@ body.is-scrubbing *::after {
   cursor: pointer;
   line-height: 1.2;
   white-space: nowrap;
-  transition: all 0.15s ease;
+  transition: all 0.15s ease, transform 100ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.solar-live-toggle:active {
+  transform: scale(0.92);
+  transition-duration: 60ms;
 }
 
 .solar-live-toggle.is-live {
@@ -3635,12 +3703,17 @@ body.is-scrubbing *::after {
   padding: 1px 4px;
   border-radius: 3px;
   line-height: 1;
-  transition: color 0.15s ease, background-color 0.15s ease;
+  transition: color 0.15s ease, background-color 0.15s ease, transform 100ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .solar-minimize-btn:hover {
   color: var(--solar-hero-ink, var(--ink));
   background: var(--solar-btn-hover, rgba(30, 34, 25, 0.12));
+}
+
+.solar-minimize-btn:active {
+  transform: scale(0.85);
+  transition-duration: 60ms;
 }
 
 /* Slider Controls */
@@ -3825,13 +3898,20 @@ body.is-scrubbing *::after {
   border-radius: 999px;
   padding: 6px 14px;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 100ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 150ms ease;
+  user-select: none;
 }
 
 .sketch-filter-btn:hover {
   background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
   border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.02);
+}
+
+.sketch-filter-btn:active {
+  transform: scale(0.95);
+  transition-duration: 60ms;
 }
 
 .sketch-filter-btn.active {
@@ -3839,6 +3919,7 @@ body.is-scrubbing *::after {
   color: #12140e;
   border-color: #d1a868;
   font-weight: 600;
+  box-shadow: 0 2px 8px rgba(209, 168, 104, 0.35);
 }
 
 /* Chapter Sections */
@@ -4040,15 +4121,20 @@ body.is-scrubbing *::after {
   display: flex;
   flex-direction: column;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.35s ease,
-              box-shadow 0.35s ease;
+  transition: transform 140ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 160ms ease,
+              box-shadow 160ms ease;
 }
 
 .sketch-card:hover {
   transform: translateY(-4px);
   border-color: rgba(209, 168, 104, 0.4);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.sketch-card:active {
+  transform: scale(0.985);
+  transition-duration: 60ms;
 }
 
 .sketch-card-media {

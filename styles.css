@@ -1312,7 +1312,6 @@ em {
   background: #151812;
   cursor: pointer;
   border-radius: 2px;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
 }
 
 .collage-item.is-tall {

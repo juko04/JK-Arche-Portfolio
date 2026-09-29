@@ -1376,7 +1376,7 @@
           </div>
           <div class="print-narrative-col">
             <div>
-              <p class="print-narrative-lead">"An illuminated five-story vertical commons unifying multi-disciplinary students, designed to serve as both an interior beacon and an urban lantern."</p>
+              <p class="print-narrative-lead">"A five-story vertical commons designed as a warm interior beacon by day and an illuminated lantern for the campus at night."</p>
               <p class="print-narrative-text">Serving as the primary circulation spine across five academic floors, the lighting scheme focuses on dual perception: a vibrant, human-scale daytime gathering space, transitioning into a luminous evening beacon visible from the campus quad.</p>
             </div>
             <div class="print-highlights-box">
@@ -1410,7 +1410,7 @@
           </div>
           <div class="print-narrative-col">
             <div>
-              <p class="print-narrative-lead">"Investigating low-glare grazing optics and material reflectance to redefine human-scale nighttime seating in civic landscapes."</p>
+              <p class="print-narrative-lead">"Exploring hidden landscape illumination, grazing angles, and glare shielding through iterative 1:1 scale physical optical mockups."</p>
               <p class="print-narrative-text">Through physical 1:1 scale mockups and custom photometric testing, this study analyzed how grazing light interactively accentuates wooden slats and concrete plinths without creating direct visual glare for seated pedestrians.</p>
             </div>
             <div class="print-highlights-box">
@@ -1436,7 +1436,7 @@
             <h2>Luxury Mountain Home</h2>
             <p style="font-size: 1.1vw; font-weight: 500; margin: 0.3vw 0 0; color: var(--ink); opacity: 0.85;">Custom Residential Architecture</p>
           </div>
-          <p class="print-meta">Western North Carolina<br>Rhino · V-Ray · Solar Massing Analysis</p>
+          <p class="print-meta">Western North Carolina<br>Rhino · Twinmotion · Solar Massing Analysis</p>
         </div>
         <div class="print-project-grid">
           <div class="print-media-col">
@@ -1444,7 +1444,7 @@
           </div>
           <div class="print-narrative-col">
             <div>
-              <p class="print-narrative-lead">"Sculpted to echo the rolling contours of the Blue Ridge Mountains, integrating stepped outdoor terraces and calculated daylight apertures."</p>
+              <p class="print-narrative-lead">"Carved into the sloping ridgeline to balance deep natural daylight penetration with passive solar shading and sweeping mountain sightlines."</p>
               <p class="print-narrative-text">Nestled into a sloping ridgeline, custom angular glazing mirrors the mountain silhouette, pulling natural southern daylight deep into the main living volumes while framing expansive panoramic views.</p>
             </div>
             <div class="print-highlights-box">

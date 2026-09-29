@@ -1,0 +1,27 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2870
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 ESP32 Capacitive Touch RGB Slider\
+link to youtube: https://youtu.be/h2SzQLWgKIQ \
+\
+This is an interactive slider that shows how the reg, blue, and green channels of an LED combine into different colors of light at different intensities. Using an ESP32 and DIY capacitance sliders made from aluminum foil, the fairly straightforward Arduino code runs mapping, averaging, and recalibration calculations on the hardware with little requirement for computer interaction. \
+\
+AI Use;\
+Since I\'92m only somewhat familiar with coding, I used Antigravity to help code this project. My main use was using it as a compiler as it is much faster than the Arduino IDE and allowed me to find my issues much more easily since I was often messing up syntax. In cases where I couldn't figure out more difficult aspect of code, like the auto-calibration feature at the beginning, I would give Antigravity my code and quick pseudo code of my goal for that snippet, and then have it explain to me my issues and provide helpful framework such as syntax or useful suggestions to help me add to the code. It also provided feedback on the smoothing and averaging functions I should look into for the inputs.\
+\
+Features/Setup\
+Startup Auto Calibration:\
+When first booting, the system takes 3 seconds to measure the untouched baseline capacitance of the sliders to account for any setup or environmental changes. After 3 seconds, the led light will blink green indication calibration has been achieve or red to indicated calibration has been interrupted by something touching the sliders. If failure occurs 5 times, the system will ask the use (through the serial monitor) if they would like to lower the calibration limit. This was implemented to insure that calibration could eventually be reached if the system changed largely from initial construction. \
+\
+General running state:\
+During the general running state, the sliders intensity, red, green, blue sliders react to human touch. The red, green, and blue sliders control the individual colored LEDs to give a visual approximation of how much each color of light is contributing and then all of their values are combined into the RGB led. The intensity slider only control the RGB Led to show how different intensities of RGB appear at different brightnesses. LEDs will stay at the brightness they were left at until the slider is touched again. \
+\
+Input Signal Processing:\
+In multiple attempts to reduce stuttering of LEDs, every 5 input signals are averaged into a single value to begin to smooth out the values. Then, after researching different smoothing functions, the exponential moving average was used with a 92/8 weighting to further eliminate jitter and noise. These values can easily be increased with by a single value in the code to create an even smoother experience. \
+\
+Running Calibration:\
+Auto-ranging will increase the range of sensing values when it detects a lower capacitance than it has seen previously, extending the range of the slider to match the existing conditions. Currently, these ranges can only be reset with a reset of the Arduino, however future expansion would include a fully dynamic range that can adapt to changing conditions.}

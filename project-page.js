@@ -12,9 +12,9 @@ const projectDatabase = {
     location: 'Western North Carolina',
     typology: 'Custom Residential',
     scope: 'Architectural Design · Daylighting Studies',
-    tools: 'Rhino, V-Ray, AutoCAD, Solar Analysis',
+    tools: 'Rhino, Twinmotion, AutoCAD, Solar Analysis',
     heroImage: 'assets/projects/mountain-home.jpg',
-    lead: 'Sculpted to echo the rolling contours of the Blue Ridge Mountains, integrating stepped outdoor terraces and calculated daylight apertures.',
+    lead: 'Carved into the sloping ridgeline to balance deep natural daylight penetration with passive solar shading and sweeping mountain sightlines.',
     description: [
       'Nestled into a sloping ridgeline in western North Carolina, this residence was conceived as a direct dialogue with its mountainous terrain. Custom angular glazing mirrors the mountain silhouette, pulling natural southern daylight deep into the main living volumes while framing expansive panoramic views.',
       'The stepped massing strategy balances private retreat zones with shared communal gathering terraces. By staggering the upper level, the design preserves natural ground permeability and creates shaded microclimates for year-round indoor-outdoor living.'
@@ -58,7 +58,7 @@ const projectDatabase = {
     scope: 'Architectural Design · Massing Evolution · Daylighting Studies',
     tools: 'Revit, Rhino, Enscape, ClimateStudio',
     heroImage: 'assets/projects/museum/museum-hero.png',
-    lead: 'A dynamic cultural anchor on Boulder’s historic Pearl Street Mall, designed with interlocking geometric volumes that invite curiosity and civic engagement.',
+    lead: 'An open civic anchor on Pearl Street, utilizing carved massing voids and clerestory daylighting to connect public street life with hands-on discovery.',
     description: [
       'Located on the Pearl Street Pedestrian Mall, the Children’s Museum creates an inclusive third space for families while seamlessly integrating upper-level administrative and community workshop spaces.',
       'The architecture employs interlocking geometric masses and floor-to-ceiling transparent glazed facades, dissolving the threshold between the vibrant pedestrian street and the hands-on exhibition galleries within.'
@@ -113,7 +113,7 @@ const projectDatabase = {
     scope: 'Lighting Design · Facade & Interior Illumination',
     tools: 'AGi32, Revit, AutoCAD, Photometric Studies',
     heroImage: 'assets/projects/central loby/suspended shapes1.jpg',
-    lead: 'An illuminated five-story vertical commons unifying multi-disciplinary students, designed to serve as both an interior beacon and an urban lantern.',
+    lead: 'A five-story vertical commons designed as a warm interior beacon by day and an illuminated lantern for the campus at night.',
     description: [
       'Serving as the primary circulation spine across five academic floors, the University Central Lobby lighting scheme was developed through close iteration between the architectural and lighting design teams.',
       'The concept focuses on dual perception: a vibrant, human-scale daytime gathering space, transitioning into a luminous evening beacon visible from the campus quad. Layered direct and indirect illumination highlights textured wall surfaces while controlling glare across multiple vantage points.'
@@ -182,9 +182,9 @@ const projectDatabase = {
     location: 'Urban Park / Public Realm',
     typology: 'Public Realm Research',
     scope: 'Lighting Design · 1:1 Physical Mockups · Optics',
-    tools: 'Physical Mockups, Procreate, Fresco, Dialux, Photography',
+    tools: 'Physical Mockups, Procreate, Fresco, AGi32, Photography',
     heroImage: 'assets/projects/bench study/bench-persp-style1.png',
-    lead: 'Transforming a public park bench into a contemplative evening centerpiece through iterative optical mockups and water-surface light play.',
+    lead: 'Exploring hidden landscape illumination, grazing angles, and glare shielding through iterative 1:1 scale physical optical mockups.',
     description: [
       'This research project re-imagined the exterior bench not merely as street furniture, but as a nocturnal focal point within a park setting. Three distinct water-inspired lighting schemes were developed and evaluated through rigorous 1:1 scale physical mockups and digital ideation.',
       'The testing process investigated grazing angles, luminaire shielding, water refraction, and material reflectivity to eliminate stray light and glare while creating an inviting, organic glow along the pedestrian pathway.'

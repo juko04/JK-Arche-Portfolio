@@ -541,11 +541,88 @@
 
 
   // ==========================================================================
-  // 8. Lifecycle Initialization
+  // 8. Choreographed Monograph Page Load (GSAP Powered)
+  // ==========================================================================
+  function initMonographEntrance() {
+    if (typeof gsap === 'undefined') return;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    // Homepage entrance
+    const heroTitle = document.querySelector('.hero-title');
+    if (heroTitle) {
+      const tl = gsap.timeline({
+        defaults: { ease: 'power3.out' }
+      });
+
+      tl.fromTo('.glass-nav',
+        { autoAlpha: 0, y: -14 },
+        { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out' }
+      )
+      .fromTo('.geo-circle',
+        { autoAlpha: 0, scale: 0.95 },
+        { autoAlpha: 1, scale: 1, duration: 0.7, stagger: 0.08 },
+        '-=0.3'
+      )
+      .fromTo('.hero-kicker',
+        { autoAlpha: 0, y: 14 },
+        { autoAlpha: 1, y: 0, duration: 0.5 },
+        '-=0.55'
+      )
+      .fromTo('.hero-title',
+        { autoAlpha: 0, y: 18 },
+        { autoAlpha: 1, y: 0, duration: 0.6 },
+        '-=0.4'
+      )
+      .fromTo('.intro-body',
+        { autoAlpha: 0, y: 16 },
+        { autoAlpha: 1, y: 0, duration: 0.55 },
+        '-=0.45'
+      )
+      .fromTo('.intro-bottom',
+        { autoAlpha: 0, y: 12 },
+        { autoAlpha: 1, y: 0, duration: 0.5 },
+        '-=0.4'
+      )
+      .fromTo('.project-card',
+        { autoAlpha: 0, x: 24 },
+        { autoAlpha: 1, x: 0, duration: 0.6, stagger: 0.05 },
+        '-=0.4'
+      );
+    }
+
+    // Work page entrance
+    const workHero = document.querySelector('.subpage .sub-hero');
+    if (workHero) {
+      const tl = gsap.timeline({
+        defaults: { ease: 'power3.out' }
+      });
+
+      tl.fromTo('.glass-nav',
+        { autoAlpha: 0, y: -14 },
+        { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out' }
+      )
+      .fromTo('.sub-hero > *',
+        { autoAlpha: 0, y: 16 },
+        { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.06 },
+        '-=0.3'
+      )
+      .fromTo('.work-list-item',
+        { autoAlpha: 0, y: 18 },
+        { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.04 },
+        '-=0.35'
+      );
+    }
+  }
+
+
+  // ==========================================================================
+  // 9. Lifecycle Initialization
   // ==========================================================================
   function init() {
     initGlobalNavShading();
     initSolarWidget();
+    initMonographEntrance();
   }
 
   if (document.readyState === 'loading') {

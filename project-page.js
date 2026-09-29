@@ -374,6 +374,64 @@ document.addEventListener('DOMContentLoaded', () => {
     </main>
   `;
 
+  // Register GSAP ScrollTrigger if available
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!prefersReducedMotion) {
+      // Parallax on hero image
+      const heroImg = document.querySelector('.project-hero-media img');
+      if (heroImg) {
+        gsap.fromTo(heroImg, 
+          { yPercent: -4, scale: 1.06 },
+          {
+            yPercent: 6,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '.project-hero-media',
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 0.8
+            }
+          }
+        );
+      }
+
+      // Fast-facts editorial stagger
+      gsap.fromTo('.project-facts-bar .fact-item',
+        { autoAlpha: 0, y: 14 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.45,
+          stagger: 0.04,
+          ease: 'power3.out',
+          delay: 0.05
+        }
+      );
+
+      // Visual section reveals on scroll
+      const visualSections = document.querySelectorAll('.visual-section');
+      visualSections.forEach(sec => {
+        gsap.fromTo(sec,
+          { autoAlpha: 0, y: 28 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: sec,
+              start: 'top 88%',
+              once: true
+            }
+          }
+        );
+      });
+    }
+  }
+
   // Dynamically attach lighting effects & editor tools
   const fxScript = document.createElement('script');
   fxScript.src = 'lighting-fx.js';

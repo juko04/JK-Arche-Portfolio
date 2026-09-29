@@ -596,7 +596,7 @@
         });
       });
 
-      // 3. Interactive Daylight vs Electric Split Slider
+      // 3. Interactive Daylight vs Electric Split Slider (GSAP & Spring Physics)
       const stage = document.getElementById('compare-stage');
       const handle = document.getElementById('compare-handle');
       const btnSplit = document.getElementById('btn-mode-split');
@@ -604,11 +604,36 @@
       const btnElec = document.getElementById('btn-mode-elec');
 
       let isDragging = false;
+      let currentPct = 50;
+      let splitTween = null;
 
       function updateSplit(pct) {
         pct = Math.max(0, Math.min(100, pct));
+        currentPct = pct;
         stage.style.setProperty('--split-pos', pct + '%');
         handle.setAttribute('aria-valuenow', Math.round(pct));
+      }
+
+      function animateSplitTo(targetPct, onComplete) {
+        if (splitTween) splitTween.kill();
+        if (typeof gsap !== 'undefined') {
+          const obj = { val: currentPct };
+          splitTween = gsap.to(obj, {
+            val: targetPct,
+            duration: 0.45,
+            ease: "power3.out",
+            onUpdate: () => {
+              updateSplit(obj.val);
+            },
+            onComplete: () => {
+              splitTween = null;
+              if (onComplete) onComplete();
+            }
+          });
+        } else {
+          updateSplit(targetPct);
+          if (onComplete) onComplete();
+        }
       }
 
       function activateSplitMode() {
@@ -626,6 +651,7 @@
       }
 
       function startDragging(e) {
+        if (splitTween) splitTween.kill();
         isDragging = true;
         handle.classList.add('dragging');
         activateSplitMode();
@@ -659,36 +685,38 @@
         window.addEventListener('touchmove', handleDrag, { passive: true });
         window.addEventListener('touchend', stopDragging);
 
-        // Mode switch buttons
+        // Mode switch buttons with smooth GSAP easing
         btnSplit.addEventListener('click', () => {
           activateSplitMode();
-          updateSplit(50);
+          animateSplitTo(50);
         });
 
         btnDay.addEventListener('click', () => {
           [btnSplit, btnDay, btnElec].forEach(b => b.classList.remove('active'));
           btnDay.classList.add('active');
-          handle.style.display = 'none';
-          updateSplit(100); // 100% daylight visible
+          animateSplitTo(100, () => {
+            handle.style.display = 'none';
+          });
         });
 
         btnElec.addEventListener('click', () => {
           [btnSplit, btnDay, btnElec].forEach(b => b.classList.remove('active'));
           btnElec.classList.add('active');
-          handle.style.display = 'none';
-          updateSplit(0); // 100% electric visible
+          animateSplitTo(0, () => {
+            handle.style.display = 'none';
+          });
         });
 
         // Keyboard navigation
         handle.addEventListener('keydown', (e) => {
-          const current = parseFloat(stage.style.getPropertyValue('--split-pos')) || 50;
+          const current = currentPct;
           if (e.key === 'ArrowLeft') {
             activateSplitMode();
-            updateSplit(current - 5);
+            animateSplitTo(current - 10);
             e.preventDefault();
           } else if (e.key === 'ArrowRight') {
             activateSplitMode();
-            updateSplit(current + 5);
+            animateSplitTo(current + 10);
             e.preventDefault();
           }
         });

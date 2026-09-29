@@ -1956,9 +1956,25 @@
   function createEditorToolbar() {
     if (document.querySelector('.editor-toolbar')) return;
 
+    // Check if editor should be visible (Hidden by default for presentations & portfolio showcase)
+    // Can be revealed with URL query `?edit` or by pressing Cmd/Ctrl + Shift + E
+    const urlParams = new URLSearchParams(window.location.search);
+    const isExplicitlyEnabled = urlParams.has('edit') || localStorage.getItem('jk_show_editor') === 'true';
+
     const toolbar = document.createElement('div');
     toolbar.className = 'editor-toolbar';
     toolbar.id = 'editor-toolbar';
+    toolbar.style.display = isExplicitlyEnabled ? 'flex' : 'none';
+
+    // Global Hotkey (Cmd+Shift+E or Ctrl+Shift+E) to toggle editor visibility without visible UI
+    window.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'e') {
+        e.preventDefault();
+        const isCurrentlyHidden = toolbar.style.display === 'none' || getComputedStyle(toolbar).display === 'none';
+        toolbar.style.display = isCurrentlyHidden ? 'flex' : 'none';
+        localStorage.setItem('jk_show_editor', isCurrentlyHidden ? 'true' : 'false');
+      }
+    });
 
     const currentHue = state.globalTheme?.hue || 75;
 

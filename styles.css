@@ -2314,7 +2314,7 @@ body.is-transforming img {
 }
 
 
-/* Floating Customizer Toolbar */
+/* Floating Customizer Toolbar (Hidden for public/presentation mode) */
 .editor-toolbar {
   position: fixed;
   bottom: 24px;
@@ -2327,7 +2327,7 @@ body.is-transforming img {
   -webkit-backdrop-filter: blur(20px);
   padding: 8px 18px;
   border-radius: 40px;
-  display: flex;
+  display: none; /* Hidden by default for presentations & portfolio display */
   align-items: center;
   gap: 16px;
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);

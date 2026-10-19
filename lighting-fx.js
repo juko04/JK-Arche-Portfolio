@@ -489,7 +489,7 @@
     }
 
     function startEntranceShadowSweep() {
-      killEntranceAnim();
+      if (entranceAnim) return;
       if (typeof gsap === 'undefined' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         updateWidget(targetSolar);
         return;
@@ -500,7 +500,6 @@
       entranceAnim = gsap.to(animState, {
         hour: targetHour,
         duration: 2.2,
-        delay: 0.05,
         ease: 'power2.out',
         onUpdate: () => {
           const s = computeSolar(liveDate, animState.hour, timeMode === 'colorado');
@@ -684,7 +683,18 @@
       )
       .fromTo('.hero-title',
         { autoAlpha: 0, y: 14 },
-        { autoAlpha: 1, y: 0, duration: 0.45 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.45,
+          ease: 'power2.out',
+          onStart: () => {
+            // Start shadow sweep simultaneously as text begins fading in (erring slightly before rather than any pause)
+            if (triggerEntranceSweep) {
+              triggerEntranceSweep();
+            }
+          }
+        },
         '-=0.35'
       )
       .fromTo('#solar-time-widget',
@@ -693,14 +703,9 @@
           autoAlpha: 1,
           y: 0,
           duration: 0.4,
-          ease: 'power2.out',
-          onComplete: () => {
-            if (triggerEntranceSweep) {
-              triggerEntranceSweep();
-            }
-          }
+          ease: 'power2.out'
         },
-        '-=0.2'
+        '-=0.35'
       )
       .fromTo('.intro-body',
         { autoAlpha: 0, y: 16 },

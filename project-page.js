@@ -228,6 +228,22 @@ const projectDatabase = {
             caption: 'Style 2 Perspective · First Layer Illuminated by Concealed Lip Fixtures for an Island in the Water Effect'
           }
         ]
+      },
+      {
+        title: '1:1 Scale Physical Mockups · Concealed Optics & Beam Projection',
+        layout: 'duo',
+        items: [
+          {
+            type: 'image',
+            src: 'assets/projects/bench study/501E5B77-E78B-42EB-AD4E-263A4B2C80BA_1_105_c.jpeg',
+            caption: '1:1 Scale Physical Mockup · Warm Beam Projection from Concealed Rock Fissure'
+          },
+          {
+            type: 'image',
+            src: 'assets/projects/bench study/5D897BF8-2A0A-4FEF-9826-3B49DA8441C5_1_105_c.jpeg',
+            caption: 'Optical Color Iteration · Cyan Water-Inspired Beam Emanating Between Volumes'
+          }
+        ]
       }
     ],
     prevProject: { id: 'mountain', name: 'Luxury Mountain Home', url: 'project-mountain.html' },

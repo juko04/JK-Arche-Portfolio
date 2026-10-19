@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!rail) return;
 
+  // Ensure initial rail position aligns with the layout margin
+  rail.scrollLeft = 0;
+
   // Horizontal scroll buttons
   if (nextBtn) {
     nextBtn.addEventListener('click', () => {

@@ -457,26 +457,25 @@
       applyNavShading(targetSolar.daylightFactor);
       applyCanvasDimming(targetSolar.daylightFactor);
 
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (typeof gsap === 'undefined' || prefersReducedMotion) {
+      if (typeof gsap === 'undefined') {
         updateWidget(targetSolar);
         return;
       }
 
       // 2. Determine initial start hour to animate towards the current time
-      // If opened in morning -> start from late afternoon (~4:45 PM / 16.75)
-      // If opened in afternoon -> start from early morning (~7:45 AM / 7.75)
+      // If opened in morning -> start from late afternoon (~5:00 PM / 17.0)
+      // If opened in afternoon -> start from early morning (~7:30 AM / 7.5)
       // If opened at night -> start within night hours to avoid any day/night canvas flip
-      let startHour = 16.75;
+      let startHour = 17.0;
       if (targetHour < 12.0 && targetSolar.altitude > -2) {
         // Morning -> animate from late afternoon
-        startHour = 16.75;
+        startHour = 17.0;
       } else if (targetHour >= 12.0 && targetSolar.altitude > -2) {
         // Afternoon -> animate from early morning
-        startHour = 7.75;
+        startHour = 7.5;
       } else {
         // Nocturnal -> stay strictly within night hours
-        startHour = targetHour >= 20.0 ? 20.5 : 23.5;
+        startHour = targetHour >= 20.0 ? 20.0 : 23.5;
       }
 
       const animState = { hour: startHour };
@@ -491,9 +490,9 @@
 
       entranceAnim = gsap.to(animState, {
         hour: targetHour,
-        duration: 1.8,
-        delay: 0.15,
-        ease: 'power3.out',
+        duration: 2.2,
+        delay: 0.25,
+        ease: 'power2.out',
         onUpdate: () => {
           const s = computeSolar(liveDate, animState.hour, timeMode === 'colorado');
           applyHeroLighting(s, targetSolar.daylightFactor);
@@ -654,8 +653,8 @@
         '-=0.55'
       )
       .fromTo('.hero-title',
-        { autoAlpha: 0, y: 18 },
-        { autoAlpha: 1, y: 0, duration: 0.6 },
+        { autoAlpha: 0, y: 14 },
+        { autoAlpha: 1, y: 0, duration: 0.45 },
         '-=0.4'
       )
       .fromTo('.intro-body',
@@ -669,8 +668,8 @@
         '-=0.4'
       )
       .fromTo('.project-card',
-        { autoAlpha: 0, x: 24 },
-        { autoAlpha: 1, x: 0, duration: 0.6, stagger: 0.05 },
+        { autoAlpha: 0, y: 16 },
+        { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.05 },
         '-=0.4'
       );
     }

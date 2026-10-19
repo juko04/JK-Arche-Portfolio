@@ -243,7 +243,7 @@ em {
   letter-spacing: -0.07em;
   margin: 16px 0 0;
   color: var(--solar-title-color, var(--ink));
-  transition: text-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s ease;
+  transition: color 0.4s ease;
 }
 
 .intro-body {
@@ -399,6 +399,8 @@ em {
   gap: 24px;
   overflow-x: auto;
   padding: 0 var(--site-padding) 24px;
+  scroll-padding-left: var(--site-padding);
+  scroll-padding-inline: var(--site-padding);
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
@@ -1809,9 +1811,10 @@ em {
   }
 
   .project-rail {
-    padding: 0 16px 20px;
+    padding: 0 var(--site-padding) 20px;
     gap: 14px;
-    scroll-padding-left: 16px;
+    scroll-padding-left: var(--site-padding);
+    scroll-padding-inline: var(--site-padding);
   }
 
   .project-card, .project-card.wide {
@@ -3491,6 +3494,10 @@ body.is-editing .active-selected {
 
 /* Hero Title Solar Lighting Transition */
 #hero-title {
+  transition: color 0.4s ease;
+}
+
+#hero-title.has-smooth-shadow {
   transition: text-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s ease;
 }
 
@@ -4632,6 +4639,8 @@ body.is-scrubbing *::after {
   line-height: 1.5;
   color: rgba(237, 234, 226, 0.8);
   max-width: 900px;
+  text-wrap: pretty;
+  text-wrap: balance;
 }
 
 .lightbox-counter {

@@ -113,7 +113,7 @@ const projectDatabase = {
     scope: 'Lighting Design · Facade & Interior Illumination',
     tools: '3ds Max, AGi32, Photometric Studies',
     heroImage: 'assets/projects/central loby/suspended shapes1.jpg',
-    lead: 'Spanning five floors with a single-story lobby and alternating two-story atriums unified by consistent illumination, the final design focuses on washing light across the continuous wood ceiling plane from fixtures placed along the windows.',
+    lead: 'Spanning five floors with 3 lobby spaces, the final design focuses on washing light across the continuous wood ceiling plane from fixtures placed along the windows.',
     description: [
       'Serving as the primary circulation spine across five academic floors, the University Central Lobby lighting scheme was developed through close iteration between the architectural and lighting design teams.',
       'The concept focuses on dual perception: a vibrant, human-scale daytime gathering space, transitioning into a luminous evening beacon visible from the campus quad. Layered direct and indirect illumination highlights textured wall surfaces while controlling glare across multiple vantage points.'

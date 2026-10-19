@@ -1376,7 +1376,7 @@
           </div>
           <div class="print-narrative-col">
             <div>
-              <p class="print-narrative-lead">"Spanning five floors with a single-story lobby and alternating two-story atriums unified by consistent illumination, the final design focuses on washing light across the continuous wood ceiling plane from fixtures placed along the windows."</p>
+              <p class="print-narrative-lead">"Spanning five floors with 3 lobby spaces, the final design focuses on washing light across the continuous wood ceiling plane from fixtures placed along the windows."</p>
               <p class="print-narrative-text">Serving as the primary circulation spine across five academic floors, the lighting scheme focuses on dual perception: a vibrant, human-scale daytime gathering space, transitioning into a luminous evening beacon visible from the campus quad.</p>
             </div>
             <div class="print-highlights-box">

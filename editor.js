@@ -1334,7 +1334,7 @@
             <h2>Children’s Museum</h2>
             <p style="font-size: 1.1vw; font-weight: 500; margin: 0.3vw 0 0; color: var(--ink); opacity: 0.85;">Cultural &amp; Community Architecture</p>
           </div>
-          <p class="print-meta">Pearl Street Mall · Boulder, Colorado<br>Revit · Rhino · Enscape · Daylighting</p>
+          <p class="print-meta">Pearl Street Mall · Boulder, Colorado<br>Revit · Twinmotion · Illustrator · Climate Studio</p>
         </div>
         <div class="print-project-grid">
           <div class="print-media-col">
@@ -1368,7 +1368,7 @@
             <h2>University Central Lobby</h2>
             <p style="font-size: 1.1vw; font-weight: 500; margin: 0.3vw 0 0; color: var(--ink); opacity: 0.85;">Architectural Lighting Design</p>
           </div>
-          <p class="print-meta">Higher Education Campus<br>AGi32 · Revit · Photometric Analysis</p>
+          <p class="print-meta">Higher Education Campus<br>3ds Max · AGi32 · Photometric Studies</p>
         </div>
         <div class="print-project-grid">
           <div class="print-media-col">
@@ -1376,15 +1376,16 @@
           </div>
           <div class="print-narrative-col">
             <div>
-              <p class="print-narrative-lead">"A five-story vertical commons designed as a warm interior beacon by day and an illuminated lantern for the campus at night."</p>
+              <p class="print-narrative-lead">"Spanning five floors with a single-story lobby and alternating two-story atriums unified by consistent illumination, the final design focuses on washing light across the continuous wood ceiling plane from fixtures placed along the windows."</p>
               <p class="print-narrative-text">Serving as the primary circulation spine across five academic floors, the lighting scheme focuses on dual perception: a vibrant, human-scale daytime gathering space, transitioning into a luminous evening beacon visible from the campus quad.</p>
             </div>
             <div class="print-highlights-box">
               <h4>Lighting Strategy</h4>
               <ul>
-                <li>Layered vertical illuminance to emphasize five-story volume</li>
-                <li>Integrated linear facade grazers for nighttime campus presence</li>
-                <li>Circadian-aware color temperature tuning (3000K–4000K)</li>
+                <li>Iterative design studies coordinating architectural volumes and photometric requirements</li>
+                <li>Material-focused illumination highlighting the wood wall and ceiling canopy</li>
+                <li>Appropriate target lighting levels delivered effectively from double-height ceiling volumes</li>
+                <li>Discrete and concealed luminaire integration to preserve architectural sightlines</li>
               </ul>
             </div>
           </div>
@@ -1402,7 +1403,7 @@
             <h2>Exterior Bench Lighting Study</h2>
             <p style="font-size: 1.1vw; font-weight: 500; margin: 0.3vw 0 0; color: var(--ink); opacity: 0.85;">Research &amp; Optical Mockups</p>
           </div>
-          <p class="print-meta">Pedestrian Luminaire Design<br>Optics · CNC Fabrication · Testing</p>
+          <p class="print-meta">Pedestrian Luminaire Design<br>Physical Mockups · Fresco · 3ds Max · Photography</p>
         </div>
         <div class="print-project-grid">
           <div class="print-media-col">
@@ -1436,7 +1437,7 @@
             <h2>Luxury Mountain Home</h2>
             <p style="font-size: 1.1vw; font-weight: 500; margin: 0.3vw 0 0; color: var(--ink); opacity: 0.85;">Custom Residential Architecture</p>
           </div>
-          <p class="print-meta">Western North Carolina<br>Rhino · Twinmotion · Solar Massing Analysis</p>
+          <p class="print-meta">Western North Carolina<br>Revit · Enscape · Illustrator</p>
         </div>
         <div class="print-project-grid">
           <div class="print-media-col">
@@ -1445,7 +1446,7 @@
           <div class="print-narrative-col">
             <div>
               <p class="print-narrative-lead">"Carved into the sloping ridgeline to balance deep natural daylight penetration with passive solar shading and sweeping mountain sightlines."</p>
-              <p class="print-narrative-text">Nestled into a sloping ridgeline, custom angular glazing mirrors the mountain silhouette, pulling natural southern daylight deep into the main living volumes while framing expansive panoramic views.</p>
+              <p class="print-narrative-text">Nestled into a sloping ridgeline, custom angular glazing mimics the mountain silhouette, pulling southern daylight deep into the main living areas while framing panoramic views.</p>
             </div>
             <div class="print-highlights-box">
               <h4>Design Highlights</h4>

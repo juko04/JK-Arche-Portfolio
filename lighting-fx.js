@@ -389,7 +389,7 @@
     const tickSunrise = widget.querySelector('#tick-sunrise');
     const tickSunset = widget.querySelector('#tick-sunset');
 
-    function updateWidget(solar) {
+    function updateWidgetDisplay(solar) {
       const tzLabel = getTimezoneAbbreviation(timeMode);
       const timeStr = formatTime(solar.decimalHour);
 
@@ -408,8 +408,13 @@
         tickSunset.textContent = `Set ${formatTime(solar.sunsetHour).replace(' ', '')}`;
       }
 
+      rangeInput.value = solar.decimalHour;
+    }
+
+    function updateWidget(solar) {
+      updateWidgetDisplay(solar);
+
       if (isLive) {
-        rangeInput.value = solar.decimalHour;
         if (timeMode === 'local') {
           liveToggle.classList.add('is-live');
           coToggle.classList.remove('is-active');
@@ -432,6 +437,78 @@
       applyHeroLighting(solar, solar.daylightFactor);
     }
 
+    let entranceAnim = null;
+
+    function killEntranceAnim() {
+      if (entranceAnim) {
+        entranceAnim.kill();
+        entranceAnim = null;
+        if (heroTitle) heroTitle.style.transition = '';
+      }
+    }
+
+    function startEntranceShadowSweep() {
+      const liveDate = getLiveDate(timeMode);
+      const targetHour = liveDate.getHours() + liveDate.getMinutes() / 60 + liveDate.getSeconds() / 3600;
+      currentDecimalHour = targetHour;
+      const targetSolar = computeSolar(liveDate, targetHour, timeMode === 'colorado');
+
+      // 1. Set ambient canvas & top nav shading immediately to live target time (no flashing or night/day flip)
+      applyNavShading(targetSolar.daylightFactor);
+      applyCanvasDimming(targetSolar.daylightFactor);
+
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (typeof gsap === 'undefined' || prefersReducedMotion) {
+        updateWidget(targetSolar);
+        return;
+      }
+
+      // 2. Determine initial start hour to animate towards the current time
+      // If opened in morning -> start from late afternoon (~4:45 PM / 16.75)
+      // If opened in afternoon -> start from early morning (~7:45 AM / 7.75)
+      // If opened at night -> start within night hours to avoid any day/night canvas flip
+      let startHour = 16.75;
+      if (targetHour < 12.0 && targetSolar.altitude > -2) {
+        // Morning -> animate from late afternoon
+        startHour = 16.75;
+      } else if (targetHour >= 12.0 && targetSolar.altitude > -2) {
+        // Afternoon -> animate from early morning
+        startHour = 7.75;
+      } else {
+        // Nocturnal -> stay strictly within night hours
+        startHour = targetHour >= 20.0 ? 20.5 : 23.5;
+      }
+
+      const animState = { hour: startHour };
+      const startSolar = computeSolar(liveDate, startHour, timeMode === 'colorado');
+
+      if (heroTitle) heroTitle.style.transition = 'none';
+
+      // Initialize shadow at start hour, holding the current time's ambient daylight factor
+      applyHeroLighting(startSolar, targetSolar.daylightFactor);
+      updateWidgetDisplay(startSolar);
+      liveToggle.classList.add('is-live');
+
+      entranceAnim = gsap.to(animState, {
+        hour: targetHour,
+        duration: 1.8,
+        delay: 0.15,
+        ease: 'power3.out',
+        onUpdate: () => {
+          const s = computeSolar(liveDate, animState.hour, timeMode === 'colorado');
+          applyHeroLighting(s, targetSolar.daylightFactor);
+          updateWidgetDisplay(s);
+        },
+        onComplete: () => {
+          entranceAnim = null;
+          if (heroTitle) heroTitle.style.transition = '';
+          currentDecimalHour = targetHour;
+          isLive = true;
+          syncLive();
+        }
+      });
+    }
+
     function syncLive() {
       if (!isLive) return;
       const liveDate = getLiveDate(timeMode);
@@ -442,6 +519,7 @@
     }
 
     function onManualScrub(hour) {
+      killEntranceAnim();
       isLive = false;
       currentDecimalHour = parseFloat(hour);
       rangeInput.value = currentDecimalHour;
@@ -454,6 +532,7 @@
     let scrubRafId = null;
 
     function handleScrub(val) {
+      killEntranceAnim();
       document.body.classList.add('is-scrubbing');
       if (scrubRafId) cancelAnimationFrame(scrubRafId);
       scrubRafId = requestAnimationFrame(() => {
@@ -467,9 +546,11 @@
     }
 
     rangeInput.addEventListener('pointerdown', () => {
+      killEntranceAnim();
       document.body.classList.add('is-scrubbing');
     });
     rangeInput.addEventListener('touchstart', () => {
+      killEntranceAnim();
       document.body.classList.add('is-scrubbing');
     }, { passive: true });
 
@@ -488,18 +569,21 @@
 
     widget.querySelectorAll('.solar-quick-btn:not(.solar-co-toggle)').forEach((btn) => {
       btn.addEventListener('click', () => {
+        killEntranceAnim();
         const targetHour = parseFloat(btn.dataset.hour);
         onManualScrub(targetHour);
       });
     });
 
     liveToggle.addEventListener('click', () => {
+      killEntranceAnim();
       timeMode = 'local';
       isLive = true;
       syncLive();
     });
 
     coToggle.addEventListener('click', () => {
+      killEntranceAnim();
       timeMode = 'colorado';
       isLive = true;
       syncLive();
@@ -516,7 +600,7 @@
       syncWidgetWidth();
     });
 
-    syncLive();
+    startEntranceShadowSweep();
     setInterval(syncLive, 10000);
   }
 

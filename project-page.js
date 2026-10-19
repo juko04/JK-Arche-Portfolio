@@ -5,18 +5,18 @@
 
 const projectDatabase = {
   mountain: {
-    id: '01',
+    id: '03',
     title: 'Luxury Mountain Home',
     category: 'Residential Architecture',
     year: '2025',
     location: 'Western North Carolina',
     typology: 'Custom Residential',
     scope: 'Architectural Design · Daylighting Studies',
-    tools: 'Rhino, Twinmotion, AutoCAD, Solar Analysis',
+    tools: 'Revit, Enscape, Illustrator',
     heroImage: 'assets/projects/mountain-home.jpg',
     lead: 'Carved into the sloping ridgeline to balance deep natural daylight penetration with passive solar shading and sweeping mountain sightlines.',
     description: [
-      'Nestled into a sloping ridgeline in western North Carolina, this residence was conceived as a direct dialogue with its mountainous terrain. Custom angular glazing mirrors the mountain silhouette, pulling natural southern daylight deep into the main living volumes while framing expansive panoramic views.',
+      'Nestled into a sloping ridgeline in western North Carolina, this residence was conceived as a direct dialogue with its mountainous terrain. Custom angular glazing mimics the mountain silhouette, pulling southern daylight deep into the main living areas while framing panoramic views.',
       'The stepped massing strategy balances private retreat zones with shared communal gathering terraces. By staggering the upper level, the design preserves natural ground permeability and creates shaded microclimates for year-round indoor-outdoor living.'
     ],
     highlightsTitle: 'Design Highlights',
@@ -44,19 +44,19 @@ const projectDatabase = {
         ]
       }
     ],
-    prevProject: { id: 'bench', name: 'Exterior Bench Lighting Study', url: 'project-bench.html' },
-    nextProject: { id: 'museum', name: "Children's Museum", url: 'project-museum.html' }
+    prevProject: { id: 'lobby', name: 'University Central Lobby', url: 'project-lobby.html' },
+    nextProject: { id: 'bench', name: 'Exterior Bench Lighting Study', url: 'project-bench.html' }
   },
 
   museum: {
-    id: '02',
+    id: '01',
     title: "Children's Museum",
     category: 'Cultural & Community Architecture',
     year: '2025',
     location: 'Boulder, Colorado',
     typology: 'Cultural & Community Hub',
     scope: 'Architectural Design · Massing Evolution · Daylighting Studies',
-    tools: 'Revit, Rhino, Enscape, ClimateStudio',
+    tools: 'Revit, Twinmotion, Illustrator, Climate Studio',
     heroImage: 'assets/projects/museum/museum-hero.png',
     lead: 'An open civic anchor on Pearl Street, utilizing carved massing voids and clerestory daylighting to connect public street life with hands-on discovery.',
     description: [
@@ -99,31 +99,31 @@ const projectDatabase = {
         ]
       }
     ],
-    prevProject: { id: 'mountain', name: 'Luxury Mountain Home', url: 'project-mountain.html' },
+    prevProject: { id: 'bench', name: 'Exterior Bench Lighting Study', url: 'project-bench.html' },
     nextProject: { id: 'lobby', name: 'University Central Lobby', url: 'project-lobby.html' }
   },
 
   lobby: {
-    id: '03',
+    id: '02',
     title: 'University Central Lobby',
     category: 'Architectural Lighting Design',
     year: '2025',
     location: 'Higher Education Campus',
     typology: 'Academic & Civic Atrium',
     scope: 'Lighting Design · Facade & Interior Illumination',
-    tools: 'AGi32, Revit, AutoCAD, Photometric Studies',
+    tools: '3ds Max, AGi32, Photometric Studies',
     heroImage: 'assets/projects/central loby/suspended shapes1.jpg',
-    lead: 'A five-story vertical commons designed as a warm interior beacon by day and an illuminated lantern for the campus at night.',
+    lead: 'Spanning five floors with a single-story lobby and alternating two-story atriums unified by consistent illumination, the final design focuses on washing light across the continuous wood ceiling plane from fixtures placed along the windows.',
     description: [
       'Serving as the primary circulation spine across five academic floors, the University Central Lobby lighting scheme was developed through close iteration between the architectural and lighting design teams.',
       'The concept focuses on dual perception: a vibrant, human-scale daytime gathering space, transitioning into a luminous evening beacon visible from the campus quad. Layered direct and indirect illumination highlights textured wall surfaces while controlling glare across multiple vantage points.'
     ],
     highlightsTitle: 'Lighting Strategy',
     highlights: [
-      'Layered vertical illuminance to emphasize five-story volume',
-      'Integrated linear facade grazers for nighttime presence',
-      'Circadian-aware color temperature tuning (3000K–4000K)',
-      'Low-glare luminaire selection for multi-tier viewing angles'
+      'Iterative design studies coordinating architectural volumes and photometric requirements',
+      'Material-focused illumination highlighting the wood wall and ceiling canopy',
+      'Appropriate target lighting levels delivered effectively from double-height ceiling volumes',
+      'Discrete and concealed luminaire integration to preserve architectural sightlines'
     ],
     visualSections: [
       {
@@ -133,12 +133,12 @@ const projectDatabase = {
           {
             type: 'image',
             src: 'assets/projects/central loby/suspended shapes1.jpg',
-            caption: 'Illuminated Atrium · Suspended Sculptural Pendants & Warm Floor Reflection'
+            caption: 'Illuminated Atrium · Suspended Sculptural Pendants'
           },
           {
             type: 'image',
             src: 'assets/projects/central loby/suspended shapes.jpg',
-            caption: 'Overhead Luminaire Geometry · Dispersed Canopy Reflection'
+            caption: 'Overhead Luminaire Geometry'
           }
         ]
       },
@@ -171,7 +171,7 @@ const projectDatabase = {
       }
     ],
     prevProject: { id: 'museum', name: "Children's Museum", url: 'project-museum.html' },
-    nextProject: { id: 'bench', name: 'Exterior Bench Lighting Study', url: 'project-bench.html' }
+    nextProject: { id: 'mountain', name: 'Luxury Mountain Home', url: 'project-mountain.html' }
   },
 
   bench: {
@@ -182,11 +182,11 @@ const projectDatabase = {
     location: 'Urban Park / Public Realm',
     typology: 'Public Realm Research',
     scope: 'Lighting Design · 1:1 Physical Mockups · Optics',
-    tools: 'Physical Mockups, Procreate, Fresco, AGi32, Photography',
+    tools: 'Physical Mockups, Fresco, 3ds Max, Photography',
     heroImage: 'assets/projects/bench study/bench-persp-style1.png',
     lead: 'Exploring hidden landscape illumination, grazing angles, and glare shielding through iterative 1:1 scale physical optical mockups.',
     description: [
-      'This research project re-imagined the exterior bench not merely as street furniture, but as a nocturnal focal point within a park setting. Three distinct water-inspired lighting schemes were developed and evaluated through rigorous 1:1 scale physical mockups and digital ideation.',
+      'This research project re-imagined the exterior bench not merely as street furniture, but as a nocturnal focal point within a park setting. Three distinct water-inspired lighting schemes were developed and evaluated through 1:1 scale physical mockups and digital ideation.',
       'The testing process investigated grazing angles, luminaire shielding, water refraction, and material reflectivity to eliminate stray light and glare while creating an inviting, organic glow along the pedestrian pathway.'
     ],
     highlightsTitle: 'Research & Mockup Focus',
@@ -198,18 +198,18 @@ const projectDatabase = {
     ],
     visualSections: [
       {
-        title: 'Plan Ideation · Style 1 vs. Style 2 Garden Layouts',
+        title: 'Plan Ideation · Style 1 vs. Style 2 Park Layouts',
         layout: 'duo',
         items: [
           {
             type: 'image',
             src: 'assets/projects/bench study/bench-plan-style1.png',
-            caption: 'Style 1 Garden Plan · Cyan & Amber Accent Washes'
+            caption: 'Style 1 Park Plan · Light Emanating from Rocks Like a Hidden Submerged Light Source'
           },
           {
             type: 'image',
             src: 'assets/projects/bench study/bench-plan-style2.png',
-            caption: 'Style 2 Garden Plan · Continuous Luminous Ribbon Along Pedestrian Spine'
+            caption: 'Style 2 Park Plan · Concealed Lip Illumination Creating an Island in Water Effect'
           }
         ]
       },
@@ -220,29 +220,18 @@ const projectDatabase = {
           {
             type: 'image',
             src: 'assets/projects/bench study/bench-persp-style1.png',
-            caption: 'Style 1 Perspective · Warm Amber Step Grazing & Accent Canopy Uplight'
+            caption: 'Style 1 Perspective · Light Emanating from the Rocks Like a Hidden Light Source Under Water'
           },
           {
             type: 'image',
             src: 'assets/projects/bench study/bench-persp-style2.png',
-            caption: 'Style 2 Perspective · Dual Tier Cyan/Amber Underglow & Tree Sculpture Uplighting'
-          }
-        ]
-      },
-      {
-        title: 'Style 1 vs. Style 2 Comparative Evaluation Matrix',
-        layout: 'full',
-        items: [
-          {
-            type: 'image',
-            src: 'assets/projects/bench study/bench-study.jpg',
-            caption: 'Six-Scheme Comparative Matrix · Optical Grazing, Refraction & Step Shielding Analysis'
+            caption: 'Style 2 Perspective · First Layer Illuminated by Concealed Lip Fixtures for an Island in the Water Effect'
           }
         ]
       }
     ],
-    prevProject: { id: 'lobby', name: 'University Central Lobby', url: 'project-lobby.html' },
-    nextProject: { id: 'mountain', name: 'Luxury Mountain Home', url: 'project-mountain.html' }
+    prevProject: { id: 'mountain', name: 'Luxury Mountain Home', url: 'project-mountain.html' },
+    nextProject: { id: 'museum', name: "Children's Museum", url: 'project-museum.html' }
   }
 };
 

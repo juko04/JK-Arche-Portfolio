@@ -3521,6 +3521,8 @@ body.is-scrubbing *::after {
   pointer-events: auto;
   user-select: none;
   -webkit-user-select: none;
+  opacity: 0;
+  visibility: hidden;
 }
 
 /* Collapsed: Subtle thin inline timestamp */

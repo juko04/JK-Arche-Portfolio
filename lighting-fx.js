@@ -17,6 +17,9 @@
 (function () {
   'use strict';
 
+  // Global reference for orchestrating entrance shadow sweep with monograph entrance
+  let triggerEntranceSweep = null;
+
   // Remove any legacy spotlight element from DOM
   const existingSpot = document.querySelector('#ambient-spotlight-layer');
   if (existingSpot) existingSpot.remove();
@@ -349,8 +352,15 @@
       } else {
         heroSection.appendChild(widget);
       }
+
+      if (typeof gsap !== 'undefined') {
+        gsap.set(widget, { autoAlpha: 0, y: 8 });
+      }
     } else if (heroTitle && widget.previousElementSibling !== heroTitle) {
       heroTitle.parentNode.insertBefore(widget, heroTitle.nextElementSibling);
+      if (typeof gsap !== 'undefined') {
+        gsap.set(widget, { autoAlpha: 0, y: 8 });
+      }
     }
 
     // Dynamic width alignment: match exact length of last name "Kotara", ending cleanly at the 'a'
@@ -437,6 +447,37 @@
       applyHeroLighting(solar, solar.daylightFactor);
     }
 
+    // 1. Set ambient canvas & top nav shading immediately to live target time (no flashing or night/day flip)
+    const liveDate = getLiveDate(timeMode);
+    const targetHour = liveDate.getHours() + liveDate.getMinutes() / 60 + liveDate.getSeconds() / 3600;
+    currentDecimalHour = targetHour;
+    const targetSolar = computeSolar(liveDate, targetHour, timeMode === 'colorado');
+
+    applyNavShading(targetSolar.daylightFactor);
+    applyCanvasDimming(targetSolar.daylightFactor);
+
+    // 2. Determine initial start hour to animate towards the current time
+    // If opened in morning -> start from late afternoon (~5:00 PM / 17.0)
+    // If opened in afternoon -> start from early morning (~7:30 AM / 7.5)
+    // If opened at night -> start within night hours to avoid any day/night canvas flip
+    let startHour = 17.0;
+    if (targetHour < 12.0 && targetSolar.altitude > -2) {
+      startHour = 17.0;
+    } else if (targetHour >= 12.0 && targetSolar.altitude > -2) {
+      startHour = 7.5;
+    } else {
+      startHour = targetHour >= 20.0 ? 20.0 : 23.5;
+    }
+
+    const startSolar = computeSolar(liveDate, startHour, timeMode === 'colorado');
+
+    if (heroTitle) heroTitle.style.transition = 'none';
+
+    // Initialize shadow and widget text at startHour, holding target daylight factor
+    applyHeroLighting(startSolar, targetSolar.daylightFactor);
+    updateWidgetDisplay(startSolar);
+    liveToggle.classList.add('is-live');
+
     let entranceAnim = null;
 
     function killEntranceAnim() {
@@ -448,50 +489,18 @@
     }
 
     function startEntranceShadowSweep() {
-      const liveDate = getLiveDate(timeMode);
-      const targetHour = liveDate.getHours() + liveDate.getMinutes() / 60 + liveDate.getSeconds() / 3600;
-      currentDecimalHour = targetHour;
-      const targetSolar = computeSolar(liveDate, targetHour, timeMode === 'colorado');
-
-      // 1. Set ambient canvas & top nav shading immediately to live target time (no flashing or night/day flip)
-      applyNavShading(targetSolar.daylightFactor);
-      applyCanvasDimming(targetSolar.daylightFactor);
-
-      if (typeof gsap === 'undefined') {
+      killEntranceAnim();
+      if (typeof gsap === 'undefined' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         updateWidget(targetSolar);
         return;
       }
 
-      // 2. Determine initial start hour to animate towards the current time
-      // If opened in morning -> start from late afternoon (~5:00 PM / 17.0)
-      // If opened in afternoon -> start from early morning (~7:30 AM / 7.5)
-      // If opened at night -> start within night hours to avoid any day/night canvas flip
-      let startHour = 17.0;
-      if (targetHour < 12.0 && targetSolar.altitude > -2) {
-        // Morning -> animate from late afternoon
-        startHour = 17.0;
-      } else if (targetHour >= 12.0 && targetSolar.altitude > -2) {
-        // Afternoon -> animate from early morning
-        startHour = 7.5;
-      } else {
-        // Nocturnal -> stay strictly within night hours
-        startHour = targetHour >= 20.0 ? 20.0 : 23.5;
-      }
-
       const animState = { hour: startHour };
-      const startSolar = computeSolar(liveDate, startHour, timeMode === 'colorado');
-
-      if (heroTitle) heroTitle.style.transition = 'none';
-
-      // Initialize shadow at start hour, holding the current time's ambient daylight factor
-      applyHeroLighting(startSolar, targetSolar.daylightFactor);
-      updateWidgetDisplay(startSolar);
-      liveToggle.classList.add('is-live');
 
       entranceAnim = gsap.to(animState, {
         hour: targetHour,
         duration: 2.2,
-        delay: 0.25,
+        delay: 0.05,
         ease: 'power2.out',
         onUpdate: () => {
           const s = computeSolar(liveDate, animState.hour, timeMode === 'colorado');
@@ -507,6 +516,8 @@
         }
       });
     }
+
+    triggerEntranceSweep = startEntranceShadowSweep;
 
     function syncLive() {
       if (!isLive) return;
@@ -599,7 +610,26 @@
       syncWidgetWidth();
     });
 
-    startEntranceShadowSweep();
+    // Reduced motion or GSAP absent fallback: make visible immediately
+    if (typeof gsap === 'undefined' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (widget) {
+        widget.style.opacity = '1';
+        widget.style.visibility = 'visible';
+      }
+      updateWidget(targetSolar);
+    }
+
+    // Safety fallback: ensure sweep triggers if intro entrance timeline is not executed within 1.5s
+    setTimeout(() => {
+      if (!entranceAnim && isLive && currentDecimalHour !== targetHour) {
+        if (widget) {
+          widget.style.opacity = '1';
+          widget.style.visibility = 'visible';
+        }
+        if (triggerEntranceSweep) triggerEntranceSweep();
+      }
+    }, 1500);
+
     setInterval(syncLive, 10000);
   }
 
@@ -649,28 +679,43 @@
       )
       .fromTo('.hero-kicker',
         { autoAlpha: 0, y: 14 },
-        { autoAlpha: 1, y: 0, duration: 0.5 },
+        { autoAlpha: 1, y: 0, duration: 0.45 },
         '-=0.55'
       )
       .fromTo('.hero-title',
         { autoAlpha: 0, y: 14 },
         { autoAlpha: 1, y: 0, duration: 0.45 },
-        '-=0.4'
+        '-=0.35'
+      )
+      .fromTo('#solar-time-widget',
+        { autoAlpha: 0, y: 8 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.4,
+          ease: 'power2.out',
+          onComplete: () => {
+            if (triggerEntranceSweep) {
+              triggerEntranceSweep();
+            }
+          }
+        },
+        '-=0.2'
       )
       .fromTo('.intro-body',
         { autoAlpha: 0, y: 16 },
-        { autoAlpha: 1, y: 0, duration: 0.55 },
-        '-=0.45'
+        { autoAlpha: 1, y: 0, duration: 0.5 },
+        '-=0.25'
       )
       .fromTo('.intro-bottom',
         { autoAlpha: 0, y: 12 },
-        { autoAlpha: 1, y: 0, duration: 0.5 },
-        '-=0.4'
+        { autoAlpha: 1, y: 0, duration: 0.45 },
+        '-=0.35'
       )
       .fromTo('.project-card',
         { autoAlpha: 0, y: 16 },
-        { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.05 },
-        '-=0.4'
+        { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.05 },
+        '-=0.35'
       );
     }
 

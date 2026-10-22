@@ -1385,7 +1385,7 @@
                 <li>Iterative design studies coordinating architectural volumes and photometric requirements</li>
                 <li>Material-focused illumination highlighting the wood wall and ceiling canopy</li>
                 <li>Appropriate target lighting levels delivered effectively from double-height ceiling volumes</li>
-                <li>Discrete and concealed luminaire integration to preserve architectural sightlines</li>
+                <li>Discreet and concealed luminaire integration to preserve architectural sightlines</li>
               </ul>
             </div>
           </div>

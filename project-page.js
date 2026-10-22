@@ -123,7 +123,7 @@ const projectDatabase = {
       'Iterative design studies coordinating architectural volumes and photometric requirements',
       'Material-focused illumination highlighting the wood wall and ceiling canopy',
       'Appropriate target lighting levels delivered effectively from double-height ceiling volumes',
-      'Discrete and concealed luminaire integration to preserve architectural sightlines'
+      'Discreet and concealed luminaire integration to preserve architectural sightlines'
     ],
     visualSections: [
       {

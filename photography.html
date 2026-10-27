@@ -312,13 +312,31 @@
   </main>
 
   <!-- Lightbox Modal -->
-  <div class="photo-lightbox" id="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="photo-lightbox" id="lightbox" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1">
     <button class="lightbox-close" id="lightbox-close" aria-label="Close image">✕</button>
+
+    <!-- Subtle Modern Navigation Arrows -->
+    <button class="lightbox-nav lightbox-nav--prev" id="lightbox-prev" aria-label="Previous photograph" title="Previous (Left Arrow)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+    <button class="lightbox-nav lightbox-nav--next" id="lightbox-next" aria-label="Next photograph" title="Next (Right Arrow)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+
     <div class="lightbox-content">
-      <img class="lightbox-img" id="lightbox-img" src="" alt="Enlarged view">
-      <div class="lightbox-caption">
+      <div class="lightbox-media-wrap">
+        <img class="lightbox-img" id="lightbox-img" src="" alt="Enlarged view">
+      </div>
+      <div class="lightbox-caption" id="lightbox-caption">
+        <div class="lightbox-caption-meta">
+          <span class="lightbox-counter" id="lightbox-counter">01 / 06</span>
+          <p id="lightbox-meta"></p>
+        </div>
         <h3 id="lightbox-title"></h3>
-        <p id="lightbox-meta"></p>
       </div>
     </div>
   </div>
@@ -423,40 +441,188 @@
       interleaveItems();
 
 
-      // Lightbox functionality
+      // Lightbox functionality & Visual Order Carousel
       const lightbox = document.getElementById('lightbox');
       const lightboxImg = document.getElementById('lightbox-img');
       const lightboxTitle = document.getElementById('lightbox-title');
       const lightboxMeta = document.getElementById('lightbox-meta');
+      const lightboxCaption = document.getElementById('lightbox-caption');
+      const lightboxCounter = document.getElementById('lightbox-counter');
       const lightboxClose = document.getElementById('lightbox-close');
+      const lightboxPrev = document.getElementById('lightbox-prev');
+      const lightboxNext = document.getElementById('lightbox-next');
 
-      items.forEach(item => {
-        item.addEventListener('click', () => {
-          const img = item.querySelector('img');
-          lightboxImg.src = img.src;
-          lightboxTitle.textContent = item.dataset.title;
-          lightboxMeta.textContent = `${item.dataset.tag} · ${item.dataset.meta}`;
-          lightbox.classList.add('active');
-          lightbox.setAttribute('aria-hidden', 'false');
+      let currentLightboxIndex = 0;
+      let isNavigating = false;
+
+      // Returns currently visible items strictly sorted in visual reading order:
+      // Top-to-bottom by row band, then left-to-right within each row.
+      function getVisibleItemsInVisualOrder() {
+        const visible = items.filter(el => !el.classList.contains('is-hidden'));
+        return visible.sort((a, b) => {
+          const boxA = a.getBoundingClientRect();
+          const boxB = b.getBoundingClientRect();
+          const topA = boxA.top + window.scrollY;
+          const topB = boxB.top + window.scrollY;
+
+          // Band threshold of 24px groups cards sharing the same row
+          if (Math.abs(topA - topB) > 24) {
+            return topA - topB;
+          }
+          return boxA.left - boxB.left;
         });
-      });
+      }
 
+      function updateLightboxContent(item, index, total) {
+        const img = item.querySelector('img');
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt || item.dataset.title || 'Visual Study';
+        lightboxTitle.textContent = item.dataset.title;
+        lightboxMeta.textContent = `${item.dataset.tag} · ${item.dataset.meta}`;
+        if (lightboxCounter) {
+          const padIdx = String(index + 1).padStart(2, '0');
+          const padTot = String(total).padStart(2, '0');
+          lightboxCounter.textContent = `${padIdx} / ${padTot}`;
+        }
+      }
+
+      function openLightbox(item) {
+        const visibleItems = getVisibleItemsInVisualOrder();
+        const foundIdx = visibleItems.indexOf(item);
+        currentLightboxIndex = foundIdx >= 0 ? foundIdx : 0;
+
+        updateLightboxContent(item, currentLightboxIndex, visibleItems.length);
+
+        if (typeof gsap !== 'undefined') {
+          gsap.killTweensOf([lightboxImg, lightboxCaption]);
+          gsap.set(lightboxImg, { x: 0, autoAlpha: 1 });
+          gsap.set(lightboxCaption, { autoAlpha: 1 });
+        }
+
+        document.body.style.overflow = 'hidden';
+        lightbox.classList.add('active');
+        lightbox.setAttribute('aria-hidden', 'false');
+      }
 
       function closeLightbox() {
+        document.body.style.overflow = '';
         lightbox.classList.remove('active');
         lightbox.setAttribute('aria-hidden', 'true');
       }
 
+      function navigateLightbox(direction) {
+        const visibleItems = getVisibleItemsInVisualOrder();
+        const total = visibleItems.length;
+        if (total <= 1) return;
+
+        // Wrap around cyclically
+        currentLightboxIndex = (currentLightboxIndex + direction + total) % total;
+        const targetItem = visibleItems[currentLightboxIndex];
+
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReduced || typeof gsap === 'undefined') {
+          updateLightboxContent(targetItem, currentLightboxIndex, total);
+          return;
+        }
+
+        if (isNavigating) {
+          gsap.killTweensOf([lightboxImg, lightboxCaption]);
+        }
+        isNavigating = true;
+
+        const slideOut = -28 * direction;
+        const slideIn = 28 * direction;
+
+        // Emil Kowalski craft: Directional easing (fast ease-in exit, graceful ease-out entry)
+        gsap.to(lightboxImg, {
+          x: slideOut,
+          autoAlpha: 0,
+          duration: 0.12,
+          ease: "power2.in",
+          force3D: true,
+          onComplete: () => {
+            updateLightboxContent(targetItem, currentLightboxIndex, total);
+
+            gsap.fromTo(lightboxImg, 
+              { x: slideIn, autoAlpha: 0 },
+              {
+                x: 0,
+                autoAlpha: 1,
+                duration: 0.22,
+                ease: "power3.out",
+                force3D: true,
+                onComplete: () => {
+                  isNavigating = false;
+                }
+              }
+            );
+          }
+        });
+
+        gsap.fromTo(lightboxCaption,
+          { autoAlpha: 0.4 },
+          { autoAlpha: 1, duration: 0.2, ease: "power3.out" }
+        );
+      }
+
+      // Attach click to collage items
+      items.forEach(item => {
+        item.addEventListener('click', () => {
+          openLightbox(item);
+        });
+      });
+
+      // Controls
       lightboxClose.addEventListener('click', closeLightbox);
+      lightboxPrev.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navigateLightbox(-1);
+      });
+      lightboxNext.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navigateLightbox(1);
+      });
+
       lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox) closeLightbox();
       });
 
+      // Keyboard navigation
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+        if (!lightbox.classList.contains('active')) return;
+        if (e.key === 'Escape') {
           closeLightbox();
+        } else if (e.key === 'ArrowRight') {
+          navigateLightbox(1);
+        } else if (e.key === 'ArrowLeft') {
+          navigateLightbox(-1);
         }
       });
+
+      // Mobile Touch Swipe navigation
+      let touchStartX = 0;
+      let touchStartY = 0;
+
+      lightbox.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+        }
+      }, { passive: true });
+
+      lightbox.addEventListener('touchend', (e) => {
+        if (e.changedTouches.length === 1) {
+          const diffX = e.changedTouches[0].clientX - touchStartX;
+          const diffY = e.changedTouches[0].clientY - touchStartY;
+          if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY)) {
+            if (diffX < 0) {
+              navigateLightbox(1); // Swipe left -> next
+            } else {
+              navigateLightbox(-1); // Swipe right -> prev
+            }
+          }
+        }
+      }, { passive: true });
     });
   </script>
   <script src="lighting-fx.js"></script>

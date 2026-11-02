@@ -3,165 +3,327 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Julian Kotara — Architectural & Lighting Design</title>
+  <title>Julian Kotara — Architectural & Lighting Design (CAD Blueprint)</title>
   
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="styles-blueprint.css">
-  
-  <!-- GSAP 3 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body>
 
-  <!-- Navigation -->
-  <header class="glass-nav">
-    <a class="monogram" href="index.html" aria-label="Julian Kotara home">JK<span>.</span></a>
-    <nav aria-label="Main navigation">
-      <a href="work.html">Work</a>
-      <a href="sketches.html">Sketches</a>
-      <a href="photography.html">Photography</a>
-      <a href="about.html">About</a>
-    </nav>
-  </header>
-
-  <!-- Main Content -->
-  <main id="top">
-    <!-- Hero / Intro -->
-    <section class="intro">
-      <div class="geo-circle geo-circle-top-left" id="geo-circle-top-left" aria-hidden="true"></div>
-      <div class="geo-circle geo-circle-bottom-right" id="geo-circle-bottom-right" aria-hidden="true"></div>
-
-      <p class="kicker hero-kicker" id="hero-kicker" data-custom-id="hero-kicker">Architectural Engineering · Lighting Design</p>
-      <h1 class="hero-title" id="hero-title" data-custom-id="hero-title">Julian<br><span id="hero-last-name">Kotara</span></h1>
-
-      <div class="intro-body" id="hero-body" data-custom-id="hero-body">
-        <p class="role" id="hero-role" data-custom-id="hero-role">Architectural Engineering Graduate Student · Lighting Design &amp; Daylighting</p>
-        <p class="intro-copy" id="hero-copy" data-custom-id="hero-copy">
-          I study how daylight and electric light shape human biology, mood, and spatial perception. By balancing computational analysis with an appreciation for shadow and texture, I design environments that feel natural, comfortable, and intentional.
-        </p>
+  <!-- FIXED CAD SIDEBAR SPINE -->
+  <aside class="cad-sidebar">
+    <div>
+      <div class="cad-sidebar-header">
+        <span class="cad-stamp">DWG // 2026-REV4</span>
+        <a class="cad-brand" href="index.html">
+          <h1>JULIAN KOTARA</h1>
+          <span>ARCHITECTURAL ENGINEERING · LIGHTING</span>
+        </a>
       </div>
 
+      <nav class="cad-nav" aria-label="Drawing Sheets">
+        <span class="cad-nav-label">INDEX / DRAWINGS</span>
+        <a href="index.html" class="active">
+          <span>00 // OVERVIEW</span>
+          <span class="layer-num">SHEET A-00</span>
+        </a>
+        <a href="work.html">
+          <span>01 // SELECTED WORK</span>
+          <span class="layer-num">SHEET A-10</span>
+        </a>
+        <a href="sketches.html">
+          <span>02 // LIGHT SKETCHES</span>
+          <span class="layer-num">SHEET A-20</span>
+        </a>
+        <a href="photography.html">
+          <span>03 // PHOTOGRAPHY</span>
+          <span class="layer-num">SHEET A-30</span>
+        </a>
+        <a href="about.html">
+          <span>04 // SPECIFICATIONS</span>
+          <span class="layer-num">SHEET A-40</span>
+        </a>
+      </nav>
+    </div>
 
-      <div class="intro-bottom">
-        <a class="explore" href="#work">Explore selected work <span>↓</span></a>
-        <span class="intro-meta">CU Boulder · Portfolio 2026</span>
+    <div class="cad-sidebar-footer">
+      <div class="cad-meta-row">
+        <span><span class="cad-status-dot"></span>SYS STATUS</span>
+        <span>ONLINE (CU BOULDER)</span>
+      </div>
+      <div class="cad-meta-row">
+        <span>COORDINATES</span>
+        <span>40°00'N 105°16'W</span>
+      </div>
+      <div class="cad-meta-row">
+        <span>SCALE</span>
+        <span>1:1 METRIC</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN VIEWPORT -->
+  <div class="cad-main-viewport">
+    
+    <!-- TOP TOOLBAR -->
+    <header class="cad-topbar">
+      <div class="cad-topbar-left">
+        <span class="cad-badge">PROJECT ARCHIVE 2026</span>
+        <span>DISCIPLINE: ARCHITECTURAL LIGHTING DESIGN &amp; DAYLIGHTING</span>
+      </div>
+      <div class="cad-topbar-right">
+        <span>LOCATION: BOULDER, CO</span>
+        <span class="cad-badge">GRID: 10mm</span>
+      </div>
+    </header>
+
+    <!-- SECTION 00: HERO DRAFTING BOARD -->
+    <section class="cad-hero-section">
+      <div class="cad-hero-grid">
+        
+        <!-- Left: Engineering Title Block -->
+        <div class="cad-title-block">
+          <div>
+            <div class="cad-title-block-header">
+              <p class="cad-kicker">Architectural Engineering · Lighting Design</p>
+              <span class="cad-badge">STATUS: COMPLETED</span>
+            </div>
+
+            <h1 class="cad-hero-name">
+              JULIAN<br>
+              <span>KOTARA</span>
+            </h1>
+
+            <p class="cad-hero-role">
+              Architectural Engineering Graduate Student · Lighting Design &amp; Daylighting
+            </p>
+
+            <div class="cad-dim-bar">
+              <span>DESIGN PHILOSOPHY &amp; QUANTITATIVE METRICS</span>
+            </div>
+
+            <p class="cad-hero-desc">
+              I study how daylight and electric light shape human biology, mood, and spatial perception. By balancing computational analysis with an appreciation for shadow and texture, I design environments that feel natural, comfortable, and intentional.
+            </p>
+          </div>
+
+          <div class="cad-hero-actions">
+            <a class="cad-btn-primary" href="#work">
+              VIEW DRAWING SET ↓
+            </a>
+            <span style="font-family: var(--font-mono); font-size: 10px; color: var(--bp-blue-mid); letter-spacing: 0.1em;">
+              CU Boulder · Portfolio 2026
+            </span>
+          </div>
+        </div>
+
+        <!-- Right: Schematic CAD Preview -->
+        <div class="cad-schematic-view">
+          <div class="cad-viewport-bar">
+            <span>VIEWPORT 01 // AXONOMETRIC HERO</span>
+            <span>SCALE: N.T.S.</span>
+          </div>
+          <div class="cad-preview-frame">
+            <img src="assets/projects/museum/museum-hero.png" alt="Children's Museum architectural design">
+            <div class="cad-crosshairs"></div>
+            <div class="cad-callout">
+              REF 01 // MASSING &amp; SOLAR ENVELOPE
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
-    <!-- Selected Work Horizontal Rail -->
-    <section class="work-section" id="work">
-      <div class="work-head">
-        <div class="work-head-text">
-          <p class="kicker">Selected Projects</p>
-          <h2>Move <em>through</em> the work.</h2>
-          <p>Scroll sideways or use controls</p>
+    <!-- SECTION 01: SELECTED PROJECTS DRAWING SET -->
+    <section class="cad-section" id="work">
+      <div class="cad-section-head">
+        <div>
+          <p class="cad-kicker" style="margin-bottom: 8px;">Section 01 // Drawing Archive</p>
+          <h2 class="cad-section-title">Selected <span>Projects</span></h2>
         </div>
-        <div class="rail-controls">
-          <button class="rail-button" id="previous" aria-label="Previous project">←</button>
-          <button class="rail-button" id="next" aria-label="Next project">→</button>
-        </div>
+        <p class="cad-section-meta">
+          Move through the work · Drawings A-101 through A-106
+        </p>
       </div>
 
-      <div class="project-rail" id="project-rail" tabindex="0" aria-label="Selected projects gallery">
+      <div class="cad-sheet-grid">
+        
         <!-- 01 Children's Museum -->
-        <a class="project-card" href="project-museum.html" data-project="museum">
-          <img src="assets/projects/museum/museum-hero.png" alt="Children's Museum architectural design" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">01</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Children's<br>Museum</strong>
-            <small>Cultural · Massing & Transparency / 2025</small>
-          </span>
+        <a class="cad-sheet-card" href="project-museum.html">
+          <div class="cad-sheet-card-top">
+            <span>DWG A-101</span>
+            <span>2025</span>
+          </div>
+          <div class="cad-sheet-thumb">
+            <img src="assets/projects/museum/museum-hero.png" alt="Children's Museum">
+          </div>
+          <div class="cad-sheet-body">
+            <div>
+              <h3 class="cad-sheet-title">Children's Museum</h3>
+              <p class="cad-sheet-sub">Cultural · Massing &amp; Transparency</p>
+            </div>
+            <div class="cad-sheet-specs">
+              <span>SCOPE: ARCHITECTURE</span>
+              <span>METRIC: DAYLIGHT</span>
+            </div>
+          </div>
         </a>
 
         <!-- 02 Central Lobby -->
-        <a class="project-card" href="project-lobby.html" data-project="lobby">
-          <img src="assets/projects/central loby/suspended shapes1.jpg" alt="University Central Lobby lighting design" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">02</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>University<br>Central Lobby</strong>
-            <small>Lighting Design · Interior & Facade / 2025</small>
-          </span>
+        <a class="cad-sheet-card" href="project-lobby.html">
+          <div class="cad-sheet-card-top">
+            <span>DWG A-102</span>
+            <span>2025</span>
+          </div>
+          <div class="cad-sheet-thumb">
+            <img src="assets/projects/central loby/suspended shapes1.jpg" alt="University Central Lobby">
+          </div>
+          <div class="cad-sheet-body">
+            <div>
+              <h3 class="cad-sheet-title">University Central Lobby</h3>
+              <p class="cad-sheet-sub">Lighting Design · Interior &amp; Facade</p>
+            </div>
+            <div class="cad-sheet-specs">
+              <span>SCOPE: LIGHTING</span>
+              <span>METRIC: CIRCLUX</span>
+            </div>
+          </div>
         </a>
 
         <!-- 03 Mountain Home -->
-        <a class="project-card" href="project-mountain.html" data-project="mountain">
-          <img src="assets/projects/mountain-home.jpg" alt="Luxury Mountain Home rendering" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">03</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Luxury<br>Mountain Home</strong>
-            <small>Residential · Daylight Studies / 2025</small>
-          </span>
+        <a class="cad-sheet-card" href="project-mountain.html">
+          <div class="cad-sheet-card-top">
+            <span>DWG A-103</span>
+            <span>2025</span>
+          </div>
+          <div class="cad-sheet-thumb">
+            <img src="assets/projects/mountain-home.jpg" alt="Luxury Mountain Home">
+          </div>
+          <div class="cad-sheet-body">
+            <div>
+              <h3 class="cad-sheet-title">Luxury Mountain Home</h3>
+              <p class="cad-sheet-sub">Residential · Daylight Studies</p>
+            </div>
+            <div class="cad-sheet-specs">
+              <span>SCOPE: SOLAR HARVEST</span>
+              <span>METRIC: sDA / ASE</span>
+            </div>
+          </div>
         </a>
 
         <!-- 04 Bench Study -->
-        <a class="project-card wide" href="project-bench.html" data-project="bench">
-          <img src="assets/projects/bench study/bench-persp-style1.png" alt="Exterior Bench Lighting Studies" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">04</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Exterior Bench<br>Lighting Study</strong>
-            <small>Lighting Research · Mockups & Optics / 2025</small>
-          </span>
+        <a class="cad-sheet-card" href="project-bench.html">
+          <div class="cad-sheet-card-top">
+            <span>DWG A-104</span>
+            <span>2025</span>
+          </div>
+          <div class="cad-sheet-thumb">
+            <img src="assets/projects/bench study/bench-persp-style1.png" alt="Exterior Bench Lighting Study">
+          </div>
+          <div class="cad-sheet-body">
+            <div>
+              <h3 class="cad-sheet-title">Exterior Bench Lighting Study</h3>
+              <p class="cad-sheet-sub">Lighting Research · Mockups &amp; Optics</p>
+            </div>
+            <div class="cad-sheet-specs">
+              <span>SCOPE: OPTICAL TESTING</span>
+              <span>METRIC: PHOTOMETRICS</span>
+            </div>
+          </div>
         </a>
 
         <!-- 05 Photography -->
-        <a class="project-card" href="photography.html" data-project="photo">
-          <img src="assets/projects/photography.jpg" alt="Architectural photography study" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">05</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Photography &<br>Light Studies</strong>
-            <small>Visual Studies · Shadow & Geometry</small>
-          </span>
+        <a class="cad-sheet-card" href="photography.html">
+          <div class="cad-sheet-card-top">
+            <span>DWG A-105</span>
+            <span>ANALOG / DIGITAL</span>
+          </div>
+          <div class="cad-sheet-thumb">
+            <img src="assets/projects/photography.jpg" alt="Photography & Light Studies">
+          </div>
+          <div class="cad-sheet-body">
+            <div>
+              <h3 class="cad-sheet-title">Photography &amp; Light Studies</h3>
+              <p class="cad-sheet-sub">Visual Studies · Shadow &amp; Geometry</p>
+            </div>
+            <div class="cad-sheet-specs">
+              <span>SCOPE: 35MM FILM</span>
+              <span>STUDIES: 21 PLATES</span>
+            </div>
+          </div>
         </a>
 
         <!-- 06 Lighting Sketches -->
-        <a class="project-card" href="sketches.html" data-project="sketches">
-          <img src="assets/Light Sketches/Senior Design/Exterior.jpg" alt="Lighting Sketches and Visual Ideation" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">06</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Lighting Sketches<br>&amp; Ideation</strong>
-            <small>Hand Sketches · Daylight &amp; Nocturnal</small>
-          </span>
+        <a class="cad-sheet-card" href="sketches.html">
+          <div class="cad-sheet-card-top">
+            <span>DWG A-106</span>
+            <span>2026</span>
+          </div>
+          <div class="cad-sheet-thumb">
+            <img src="assets/Light Sketches/Senior Design/Exterior.jpg" alt="Lighting Sketches & Ideation">
+          </div>
+          <div class="cad-sheet-body">
+            <div>
+              <h3 class="cad-sheet-title">Lighting Sketches &amp; Ideation</h3>
+              <p class="cad-sheet-sub">Hand Sketches · Daylight &amp; Nocturnal</p>
+            </div>
+            <div class="cad-sheet-specs">
+              <span>SCOPE: CONCEPTUAL</span>
+              <span>CHAPTERS: 03</span>
+            </div>
+          </div>
         </a>
+
       </div>
     </section>
 
-    <!-- About / Contact Section -->
-    <section class="about" id="about">
-      <p class="kicker">About / Contact</p>
-      <h2>Designing for the interplay between daylight, shadow, and <em>circadian rhythm.</em></h2>
-      <div class="about-content">
-        <p>
-          Architectural Engineering graduate student at the University of Colorado Boulder with an emphasis on lighting design and circadian rhythm. Exploring the intersection of architectural form, illumination, and human perception.
+    <!-- SECTION 02: TECHNICAL SPECIFICATIONS (ABOUT / CONTACT) -->
+    <section class="cad-section" id="about">
+      <div class="cad-section-head">
+        <div>
+          <p class="cad-kicker" style="margin-bottom: 8px;">Specification Set 01-100</p>
+          <h2 class="cad-section-title">Technical <span>Specifications</span></h2>
+        </div>
+        <p class="cad-section-meta">
+          CSI Division 01 // General Requirements
         </p>
-        <a class="contact-link" href="mailto:julian.kotara@colorado.edu">
-          julian.kotara@colorado.edu <span>↗</span>
-        </a>
+      </div>
+
+      <div class="cad-spec-table">
+        <div class="cad-spec-row">
+          <div class="cad-spec-code">
+            01 11 00<br>
+            STATEMENT
+          </div>
+          <div class="cad-spec-content">
+            <h3>Designing for the interplay between daylight, shadow, and circadian rhythm.</h3>
+            <p>
+              Architectural Engineering graduate student at the University of Colorado Boulder with an emphasis on lighting design and circadian rhythm. Exploring the intersection of architectural form, illumination, and human perception.
+            </p>
+          </div>
+        </div>
+
+        <div class="cad-spec-row">
+          <div class="cad-spec-code">
+            01 12 00<br>
+            COMMUNICATIONS
+          </div>
+          <div class="cad-spec-content">
+            <p style="margin-bottom: 12px;">Direct contact for inquiries, drawings, and computational collaborations:</p>
+            <a class="cad-link" href="mailto:julian.kotara@colorado.edu">
+              julian.kotara@colorado.edu ↗
+            </a>
+          </div>
+        </div>
       </div>
     </section>
-  </main>
 
-  <script src="script.js"></script>
-  <script src="lighting-fx.js"></script>
-  <script src="editor.js"></script>
+  </div>
+
 </body>
 </html>
-
-
-

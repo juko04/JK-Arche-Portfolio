@@ -901,3 +901,276 @@ body {
     padding: 24px 16px;
   }
 }
+
+
+/* ===== BLUEPRINT OVERRIDES FOR PHOTOGRAPHY PAGE ===== */
+.photo-page .cad-main-viewport {
+  padding: 0 0 60px;
+}
+
+.photo-page .photo-container {
+  padding: 40px 48px;
+  max-width: 1400px;
+}
+
+.photo-page .photo-header {
+  border-bottom: 1.5px solid var(--bp-border-strong);
+  padding-bottom: 28px;
+  margin-bottom: 32px;
+}
+
+.photo-page .photo-header h1 {
+  font-family: var(--font-sans);
+  font-size: clamp(40px, 6vw, 76px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--bp-blue);
+  text-transform: uppercase;
+  line-height: 0.95;
+  margin-bottom: 16px;
+}
+.photo-page .photo-header h1 em {
+  color: var(--bp-blue-light);
+  font-style: normal;
+}
+
+.photo-page .photo-intro {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--bp-blue-mid);
+  max-width: 620px;
+}
+
+.photo-page .photo-filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.photo-page .photo-filter-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  background: var(--bp-white);
+  border: 1px solid var(--bp-border-strong);
+  color: var(--bp-blue);
+  cursor: pointer;
+  transition: all 120ms ease;
+  border-radius: 0;
+}
+.photo-page .photo-filter-btn:hover {
+  background: var(--bp-blue-wash);
+}
+.photo-page .photo-filter-btn.active {
+  background: var(--bp-blue);
+  color: var(--bp-white);
+  border-color: var(--bp-blue);
+}
+
+.photo-page .collage-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.photo-page .collage-item {
+  border: 1.5px solid var(--bp-border-strong);
+  background: var(--bp-white);
+  transition: all 140ms cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  position: relative;
+  border-radius: 0;
+  box-shadow: none;
+}
+.photo-page .collage-item:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 var(--bp-blue);
+}
+
+.photo-page .collage-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.7) contrast(1.05);
+  transition: filter 200ms ease, transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.photo-page .collage-item:hover img {
+  filter: saturate(1) contrast(1);
+  transform: scale(1.03);
+}
+
+.photo-page .collage-item-overlay {
+  background: linear-gradient(0deg, rgba(15, 45, 89, 0.92) 0%, transparent 60%);
+  padding: 16px;
+}
+.photo-page .collage-item-overlay strong {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--bp-white);
+}
+.photo-page .collage-item-overlay small {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--bp-blue-pale);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ===== BLUEPRINT OVERRIDES FOR SKETCHES PAGE ===== */
+.sketches-page .cad-main-viewport {
+  padding: 0 0 60px;
+}
+
+.sketches-page .sketches-container {
+  padding: 40px 48px;
+  max-width: 1400px;
+}
+
+.sketches-page .sketches-hero {
+  border-bottom: 1.5px solid var(--bp-border-strong);
+  padding-bottom: 28px;
+  margin-bottom: 32px;
+}
+
+.sketches-page .sketches-hero h1 {
+  font-family: var(--font-sans);
+  font-size: clamp(40px, 6vw, 76px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--bp-blue);
+  text-transform: uppercase;
+  line-height: 0.95;
+  margin-bottom: 16px;
+}
+.sketches-page .sketches-hero h1 em {
+  color: var(--bp-blue-light);
+  font-style: normal;
+}
+
+.sketches-page .sketches-hero-desc {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--bp-blue-mid);
+  max-width: 620px;
+}
+
+.sketches-page .sketches-filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 36px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sketches-page .sketches-filter-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bp-blue-mid);
+  margin-right: 6px;
+}
+
+.sketches-page .sketch-filter-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  background: var(--bp-white);
+  border: 1px solid var(--bp-border-strong);
+  color: var(--bp-blue);
+  cursor: pointer;
+  border-radius: 0;
+  transition: all 120ms ease;
+}
+.sketches-page .sketch-filter-btn:hover {
+  background: var(--bp-blue-wash);
+}
+.sketches-page .sketch-filter-btn.active {
+  background: var(--bp-blue);
+  color: var(--bp-white);
+  border-color: var(--bp-blue);
+}
+
+.sketches-page .sketch-chapter {
+  margin-bottom: 56px;
+  border: 1.5px solid var(--bp-border-strong);
+  background: var(--bp-white);
+  padding: 32px;
+  box-shadow: 6px 6px 0 var(--bp-blue);
+}
+
+.sketches-page .sketch-chapter-head {
+  border-bottom: 1px solid var(--bp-border);
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.sketches-page .chapter-tag {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bp-red);
+  font-weight: 700;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.sketches-page .sketch-chapter-head h2 {
+  font-family: var(--font-sans);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--bp-blue);
+}
+
+.sketches-page .sketch-chapter-intro {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--bp-blue-mid);
+  margin-bottom: 28px;
+  max-width: 680px;
+}
+
+.sketches-page .sketch-hero-card,
+.sketches-page .sketch-card {
+  border: 1px solid var(--bp-border-strong);
+  background: var(--bp-blue-wash);
+  border-radius: 0;
+  box-shadow: none;
+  transition: all 140ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sketches-page .sketch-hero-card:hover,
+.sketches-page .sketch-card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 4px 4px 0 var(--bp-blue);
+}
+
+.sketches-page .sketch-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.sketches-page .sketch-chip {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--bp-white);
+  border: 1px solid var(--bp-border);
+  color: var(--bp-blue);
+  padding: 3px 8px;
+  border-radius: 0;
+}

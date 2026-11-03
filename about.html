@@ -11,10 +11,14 @@
   
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="styles-nocturnal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body>
 
-  <!-- SLEEK MINIMAL MONOCHROME HEADER -->
+  <!-- AMBIENT LUMINAIRE SPOTLIGHT CURSOR FOLLOWER -->
+  <div class="mn-spotlight" id="spotlight"></div>
+
+  <!-- SLEEK MINIMAL OPTICAL HEADER -->
   <header class="mn-header">
     <a class="mn-brand" href="index.html">
       <span class="mn-brand-monogram">JK.</span>
@@ -33,10 +37,10 @@
   <main class="mn-main">
     <div class="mn-about-grid">
       
-      <!-- Left Profile Card -->
+      <!-- Left Profile Dossier Card -->
       <div class="mn-about-card">
         <span style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mn-muted); display: block; margin-bottom: 8px;">
-          About / Background
+          Dossier / Profile
         </span>
         <h1>Julian Kotara</h1>
         <p style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mn-white); margin-bottom: 24px;">
@@ -47,7 +51,7 @@
           <span style="font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mn-muted); display: block; margin-bottom: 8px;">
             Get in Touch
           </span>
-          <a class="mn-contact-link" href="mailto:julian.kotara@colorado.edu">
+          <a class="mn-contact-btn" href="mailto:julian.kotara@colorado.edu">
             julian.kotara@colorado.edu ↗
           </a>
           <p style="font-family: var(--font-mono); font-size: 9.5px; color: var(--mn-muted); text-transform: uppercase; margin-top: 14px;">
@@ -56,13 +60,13 @@
         </div>
       </div>
 
-      <!-- Right Narrative & Skills -->
+      <!-- Right Narrative & Competencies -->
       <div>
-        <div class="mn-statement-quote">
+        <div class="mn-quote-block">
           "Light is both a quantitative architectural material and a biological necessity. Good lighting doesn't just illuminate space—it shapes how we feel, focus, and move through it."
         </div>
 
-        <div class="mn-about-desc">
+        <div class="mn-about-text">
           <p style="margin-bottom: 18px;">
             I am an Architectural Engineering graduate student at the University of Colorado Boulder with a passion for architectural lighting design. My work bridges the analytical discipline of building engineering with spatial design and human perception.
           </p>
@@ -110,6 +114,22 @@
 
     </div>
   </main>
+
+  <!-- GSAP Luminaire Cursor Tracker -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const spotlight = document.getElementById('spotlight');
+      if (spotlight && window.matchMedia('(pointer: fine)').matches) {
+        const xTo = gsap.quickTo(spotlight, "left", { duration: 0.35, ease: "power3.out" });
+        const yTo = gsap.quickTo(spotlight, "top", { duration: 0.35, ease: "power3.out" });
+
+        window.addEventListener('pointermove', (e) => {
+          xTo(e.clientX);
+          yTo(e.clientY);
+        });
+      }
+    });
+  </script>
 
 </body>
 </html>

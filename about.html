@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About / Specifications — Julian Kotara</title>
+  <title>About — Julian Kotara</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   
+  <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="styles-blueprint.css">
 </head>
-<body>
+<body class="about-page-wrap">
 
-  <!-- FIXED CAD SIDEBAR SPINE -->
-    <!-- ARCHITECTURAL HEADER -->
+  <!-- ARCHITECTURAL HEADER -->
   <header class="at-header">
     <a class="at-brand" href="index.html">
       <span class="at-brand-title">JULIAN KOTARA</span>
@@ -23,113 +23,93 @@
 
     <nav class="at-nav" aria-label="Main Navigation">
       <a href="index.html">Overview</a>
-      <a href="work.html" >Work</a>
-      <a href="sketches.html" >Sketches</a>
-      <a href="photography.html" >Photography</a>
+      <a href="work.html">Work</a>
+      <a href="sketches.html">Sketches</a>
+      <a href="photography.html">Photography</a>
       <a href="about.html" class="active">About</a>
     </nav>
   </header>
 
-  <!-- MAIN VIEWPORT -->
-  <div class="cad-main-viewport">
-    
-    <header class="cad-topbar">
-      <div class="cad-topbar-left">
-        <span class="cad-badge">SHEET A-40 // SPECIFICATION DOSSIER</span>
-      </div>
-      <div class="cad-topbar-right">
-        <span>LOCATION: BOULDER, COLORADO</span>
-      </div>
-    </header>
+  <main class="at-main">
+    <div class="at-about-grid">
+      
+      <!-- Left Profile Card -->
+      <div class="at-about-card">
+        <span class="at-card-index">04 // Profile &amp; Background</span>
+        <h1>Julian Kotara</h1>
+        <p style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--at-ink); font-weight: 700; margin-bottom: 24px;">
+          Architectural Engineering<br>Focus in Lighting Design
+        </p>
 
-    <section class="cad-section">
-      <div class="cad-section-head">
-        <div>
-          <p class="cad-kicker" style="margin-bottom: 8px;">Dossier A-40 // Engineering Profile</p>
-          <h2 class="cad-section-title">Julian <span>Kotara</span></h2>
-          <p style="font-family: var(--font-mono); font-size: 11px; color: var(--bp-blue-mid); text-transform: uppercase; margin-top: 6px;">
-            Architectural Engineering · Focus in Lighting Design
+        <div style="border-top: 1px solid var(--at-border); padding-top: 24px; margin-top: 24px;">
+          <span style="font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--at-muted); display: block; margin-bottom: 8px;">
+            Get in Touch
+          </span>
+          <a href="mailto:julian.kotara@colorado.edu" style="display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 12px; color: var(--at-accent); text-decoration: none; font-weight: 700;">
+            julian.kotara@colorado.edu ↗
+          </a>
+          <p style="font-family: var(--font-mono); font-size: 9.5px; color: var(--at-muted); text-transform: uppercase; margin-top: 12px;">
+            Based in Boulder, Colorado
           </p>
         </div>
       </div>
 
-      <div class="cad-spec-table">
-        
-        <div class="cad-spec-row">
-          <div class="cad-spec-code">01 00 00<br>PHILOSOPHY</div>
-          <div class="cad-spec-content">
-            <h3 style="font-style: italic; font-weight: 500; font-size: 19px; line-height: 1.5;">
-              "Light is both a quantitative architectural material and a biological necessity. Good lighting doesn't just illuminate space—it shapes how we feel, focus, and move through it."
-            </h3>
-          </div>
+      <!-- Right Narrative & Skills -->
+      <div>
+        <div class="at-quote-box">
+          <p class="at-quote-text">
+            "Light is both a quantitative architectural material and a biological necessity. Good lighting doesn't just illuminate space—it shapes how we feel, focus, and move through it."
+          </p>
         </div>
 
-        <div class="cad-spec-row">
-          <div class="cad-spec-code">01 10 00<br>NARRATIVE</div>
-          <div class="cad-spec-content">
-            <p style="margin-bottom: 16px;">
-              I am an Architectural Engineering graduate student at the University of Colorado Boulder with a passion for architectural lighting design. My work bridges the analytical discipline of building engineering with spatial design and human perception.
-            </p>
-            <p>
-              Whether studying daylight harvesting and solar trajectories or sculpting nighttime identities through electric luminaire integration, I treat light as an active architectural material. My background in photography further sharpens my eye for contrast, shadow gradients, color temperature, and composition.
-            </p>
-          </div>
+        <div class="at-narrative">
+          <p>
+            I am an Architectural Engineering graduate student at the University of Colorado Boulder with a passion for architectural lighting design. My work bridges the analytical discipline of building engineering with spatial design and human perception.
+          </p>
+          <p>
+            Whether studying daylight harvesting and solar trajectories or sculpting nighttime identities through electric luminaire integration, I treat light as an active architectural material. My background in photography further sharpens my eye for contrast, shadow gradients, color temperature, and composition.
+          </p>
         </div>
 
-        <div class="cad-spec-row">
-          <div class="cad-spec-code">01 20 00<br>LIGHTING &amp; ANALYSIS</div>
-          <div class="cad-spec-content">
-            <ul style="list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; font-family: var(--font-mono); font-size: 11px;">
-              <li>→ Daylighting &amp; Solar Studies (ClimateStudio)</li>
-              <li>→ Photometric Analysis (AGi32)</li>
-              <li>→ Circadian Metrics (mEDI / EML)</li>
-              <li>→ Physical Mockups &amp; Optical Testing</li>
-              <li>→ Glare Control &amp; Daylight Metrics (sDA, ASE)</li>
+        <!-- Skills Grid -->
+        <div class="at-skills-grid">
+          <div class="at-skill-col">
+            <h4>Lighting &amp; Analysis</h4>
+            <ul>
+              <li>Daylighting &amp; Solar Studies (ClimateStudio)</li>
+              <li>Photometric Analysis (AGi32)</li>
+              <li>Circadian Metrics (mEDI / EML)</li>
+              <li>Physical Mockups &amp; Optical Testing</li>
+              <li>Glare Control &amp; Daylight Metrics (sDA, ASE)</li>
             </ul>
           </div>
-        </div>
 
-        <div class="cad-spec-row">
-          <div class="cad-spec-code">01 30 00<br>3D &amp; ARCHITECTURE</div>
-          <div class="cad-spec-content">
-            <ul style="list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; font-family: var(--font-mono); font-size: 11px;">
-              <li>→ Revit / BIM Modeling</li>
-              <li>→ Rhino &amp; Grasshopper</li>
-              <li>→ AutoCAD Drafting</li>
-              <li>→ Enscape &amp; Twinmotion Rendering</li>
-              <li>→ Parametric &amp; Spatial Modeling</li>
+          <div class="at-skill-col">
+            <h4>3D &amp; Architecture</h4>
+            <ul>
+              <li>Revit / BIM Modeling</li>
+              <li>Rhino &amp; Grasshopper</li>
+              <li>AutoCAD Drafting</li>
+              <li>Enscape &amp; Twinmotion Rendering</li>
+              <li>Parametric &amp; Spatial Modeling</li>
             </ul>
           </div>
-        </div>
 
-        <div class="cad-spec-row">
-          <div class="cad-spec-code">01 40 00<br>VISUAL &amp; CREATIVE</div>
-          <div class="cad-spec-content">
-            <ul style="list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; font-family: var(--font-mono); font-size: 11px;">
-              <li>→ Architectural Photography (35mm &amp; Digital)</li>
-              <li>→ Adobe Photoshop &amp; Lightroom</li>
-              <li>→ Adobe InDesign &amp; Illustrator</li>
-              <li>→ Spatial Composition &amp; Framing</li>
+          <div class="at-skill-col">
+            <h4>Visual &amp; Creative</h4>
+            <ul>
+              <li>Architectural Photography (35mm &amp; Digital)</li>
+              <li>Adobe Photoshop &amp; Lightroom</li>
+              <li>Adobe InDesign &amp; Illustrator</li>
+              <li>Spatial Composition &amp; Framing</li>
             </ul>
-          </div>
-        </div>
-
-        <div class="cad-spec-row">
-          <div class="cad-spec-code">01 50 00<br>COMMUNICATIONS</div>
-          <div class="cad-spec-content">
-            <a class="cad-link" href="mailto:julian.kotara@colorado.edu">
-              julian.kotara@colorado.edu ↗
-            </a>
-            <p style="font-family: var(--font-mono); font-size: 10px; color: var(--bp-blue-mid); text-transform: uppercase; margin-top: 8px;">
-              Based in Boulder, Colorado
-            </p>
           </div>
         </div>
 
       </div>
-    </section>
 
-  </div>
+    </div>
+  </main>
 
 </body>
 </html>

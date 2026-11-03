@@ -7,21 +7,21 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="styles-blueprint.css">
 </head>
-<body class="about-page-wrap">
+<body>
 
-  <!-- ARCHITECTURAL HEADER -->
-  <header class="at-header">
-    <a class="at-brand" href="index.html">
-      <span class="at-brand-title">JULIAN KOTARA</span>
-      <span class="at-brand-tag">ARCHITECTURAL ENGINEERING · LIGHTING</span>
+  <!-- ARCHITECTURAL STRUCTURAL HEADER -->
+  <header class="sw-header">
+    <a class="sw-brand" href="index.html">
+      <span class="sw-brand-title">JULIAN KOTARA</span>
+      <span class="sw-brand-tag">ARCHITECTURAL ENGINEERING · LIGHTING</span>
     </a>
 
-    <nav class="at-nav" aria-label="Main Navigation">
+    <nav class="sw-nav" aria-label="Main Navigation">
       <a href="index.html">Overview</a>
       <a href="work.html">Work</a>
       <a href="sketches.html">Sketches</a>
@@ -30,40 +30,40 @@
     </nav>
   </header>
 
-  <main class="at-main">
-    <div class="at-about-grid">
+  <main class="sw-main">
+    <div class="sw-about-grid">
       
-      <!-- Left Profile Card -->
-      <div class="at-about-card">
-        <span class="at-card-index">04 // Profile &amp; Background</span>
+      <!-- Left Profile Dossier Card -->
+      <div class="sw-about-card">
+        <span style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sw-muted); display: block; margin-bottom: 8px;">
+          About / Background
+        </span>
         <h1>Julian Kotara</h1>
-        <p style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--at-ink); font-weight: 700; margin-bottom: 24px;">
+        <p class="sw-role">
           Architectural Engineering<br>Focus in Lighting Design
         </p>
 
-        <div style="border-top: 1px solid var(--at-border); padding-top: 24px; margin-top: 24px;">
-          <span style="font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--at-muted); display: block; margin-bottom: 8px;">
+        <div style="border-top: 1px solid var(--sw-line); padding-top: 24px; margin-top: 24px;">
+          <span style="font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sw-muted); display: block; margin-bottom: 8px;">
             Get in Touch
           </span>
-          <a href="mailto:julian.kotara@colorado.edu" style="display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 12px; color: var(--at-accent); text-decoration: none; font-weight: 700;">
+          <a class="sw-contact-link" href="mailto:julian.kotara@colorado.edu">
             julian.kotara@colorado.edu ↗
           </a>
-          <p style="font-family: var(--font-mono); font-size: 9.5px; color: var(--at-muted); text-transform: uppercase; margin-top: 12px;">
+          <p style="font-family: var(--font-mono); font-size: 9.5px; color: var(--sw-muted); text-transform: uppercase; margin-top: 14px;">
             Based in Boulder, Colorado
           </p>
         </div>
       </div>
 
-      <!-- Right Narrative & Skills -->
+      <!-- Right Narrative & Competencies -->
       <div>
-        <div class="at-quote-box">
-          <p class="at-quote-text">
-            "Light is both a quantitative architectural material and a biological necessity. Good lighting doesn't just illuminate space—it shapes how we feel, focus, and move through it."
-          </p>
+        <div class="sw-statement-quote">
+          "Light is both a quantitative architectural material and a biological necessity. Good lighting doesn't just illuminate space—it shapes how we feel, focus, and move through it."
         </div>
 
-        <div class="at-narrative">
-          <p>
+        <div style="font-size: 16px; line-height: 1.8; color: #3b3a36; margin-bottom: 24px;">
+          <p style="margin-bottom: 18px;">
             I am an Architectural Engineering graduate student at the University of Colorado Boulder with a passion for architectural lighting design. My work bridges the analytical discipline of building engineering with spatial design and human perception.
           </p>
           <p>
@@ -71,9 +71,13 @@
           </p>
         </div>
 
+        <div class="sw-divider">
+          <span>COMPETENCIES &amp; COMPUTATIONAL TOOLS</span>
+        </div>
+
         <!-- Skills Grid -->
-        <div class="at-skills-grid">
-          <div class="at-skill-col">
+        <div class="sw-skills-grid" style="margin-top: 20px; border-top: none; padding-top: 0;">
+          <div class="sw-skill-col">
             <h4>Lighting &amp; Analysis</h4>
             <ul>
               <li>Daylighting &amp; Solar Studies (ClimateStudio)</li>
@@ -84,7 +88,7 @@
             </ul>
           </div>
 
-          <div class="at-skill-col">
+          <div class="sw-skill-col">
             <h4>3D &amp; Architecture</h4>
             <ul>
               <li>Revit / BIM Modeling</li>
@@ -95,7 +99,7 @@
             </ul>
           </div>
 
-          <div class="at-skill-col">
+          <div class="sw-skill-col">
             <h4>Visual &amp; Creative</h4>
             <ul>
               <li>Architectural Photography (35mm &amp; Digital)</li>

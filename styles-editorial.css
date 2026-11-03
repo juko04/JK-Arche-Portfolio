@@ -17,6 +17,17 @@
   --gl-border-strong: #1a1917;
   --gl-accent: #9c5235;
 
+  /* Kill all legacy background colors completely */
+  --field: #f7f5f0 !important;
+  --field-light: #f7f5f0 !important;
+  --field-tint: #ffffff !important;
+  --paper: #f7f5f0 !important;
+  --paper-card: #ffffff !important;
+  --ink: #1a1917 !important;
+  --muted: #726f68 !important;
+  --line: #e6e3da !important;
+  --line-strong: #1a1917 !important;
+
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'DM Mono', monospace;
 
@@ -33,14 +44,19 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
-  background: var(--gl-bg);
-  color: var(--gl-ink);
+  background: var(--gl-bg) !important;
+  color: var(--gl-ink) !important;
 }
 
-body {
+body,
+.about-page-wrap,
+.subpage,
+.project-page,
+.photo-container,
+.sketches-container {
   font-family: var(--font-sans);
-  background: var(--gl-bg);
-  color: var(--gl-ink);
+  background: var(--gl-bg) !important;
+  color: var(--gl-ink) !important;
   font-weight: 300;
   line-height: 1.65;
   min-height: 100vh;
@@ -52,32 +68,36 @@ body {
   display: none !important;
 }
 
-/* ===== SLIM MINIMAL TOP HEADER (NO MASSIVE BANNER) ===== */
-.gl-header {
+/* ===== SLIM MINIMAL TOP HEADER (USED ON ALL PAGES) ===== */
+.gl-header,
+.glass-nav {
   position: sticky;
   top: 0;
   z-index: 500;
-  background: rgba(247, 245, 240, 0.94);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--gl-border);
-  padding: 0 var(--site-padding);
-  height: 54px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  background: rgba(247, 245, 240, 0.94) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid var(--gl-border) !important;
+  padding: 0 var(--site-padding) !important;
+  height: 54px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  box-shadow: none !important;
 }
 
-.gl-monogram {
-  font-family: var(--font-sans);
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--gl-ink);
-  text-decoration: none;
+.gl-monogram,
+.glass-nav .monogram {
+  font-family: var(--font-sans) !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  color: var(--gl-ink) !important;
+  text-decoration: none !important;
 }
-.gl-monogram span {
-  color: var(--gl-accent);
+.gl-monogram span,
+.glass-nav .monogram span {
+  color: var(--gl-accent) !important;
 }
 
 .gl-header-meta {
@@ -88,6 +108,25 @@ body {
   color: var(--gl-muted);
 }
 
+.glass-nav nav {
+  display: flex !important;
+  gap: 24px !important;
+}
+
+.glass-nav nav a {
+  text-decoration: none !important;
+  font-family: var(--font-mono) !important;
+  font-size: 10px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: var(--gl-muted) !important;
+  border: none !important;
+}
+.glass-nav nav a:hover,
+.glass-nav nav a.active {
+  color: var(--gl-ink) !important;
+}
+
 /* ===== THE BELOVED FLOATING BOTTOM CONTROL PILL ===== */
 .gl-bottom-dock {
   position: fixed;
@@ -95,7 +134,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
   z-index: 900;
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.92);
   border: 1px solid var(--gl-border);
   box-shadow: 0 12px 36px rgba(26, 25, 23, 0.1);
   backdrop-filter: blur(16px);
@@ -132,10 +171,15 @@ body {
 }
 
 /* ===== MAIN CONTAINER ===== */
-.gl-main {
-  max-width: var(--max-w);
-  margin: 0 auto;
-  padding: 48px var(--site-padding) 80px;
+.gl-main,
+.subpage-container,
+.sub-hero,
+.photo-container,
+.sketches-container,
+.about-page-wrap {
+  max-width: var(--max-w) !important;
+  margin: 0 auto !important;
+  padding: 48px var(--site-padding) 80px !important;
 }
 
 /* ===== HERO SECTION ===== */
@@ -154,14 +198,19 @@ body {
   display: block;
 }
 
-.gl-hero-title {
-  font-family: var(--font-sans);
-  font-size: clamp(48px, 8vw, 104px);
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 0.95;
-  color: var(--gl-ink);
-  margin-bottom: 32px;
+.gl-hero-title,
+.sub-hero h1 {
+  font-family: var(--font-sans) !important;
+  font-size: clamp(48px, 8vw, 104px) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 0.95 !important;
+  color: var(--gl-ink) !important;
+  margin-bottom: 28px !important;
+}
+.sub-hero h1 em {
+  font-style: normal !important;
+  color: var(--gl-accent) !important;
 }
 
 .gl-hero-grid {
@@ -215,9 +264,9 @@ body {
   color: var(--gl-muted);
 }
 
-/* ===== SELECTED WORK SECTION ===== */
+/* ===== SELECTED WORK SECTION & WORK.HTML ===== */
 .gl-section {
-  padding: 72px 0;
+  padding: 60px 0;
   border-bottom: 1px solid var(--gl-border);
 }
 
@@ -225,7 +274,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 44px;
+  margin-bottom: 40px;
 }
 
 .gl-section-title {
@@ -306,13 +355,79 @@ body {
   color: var(--gl-muted);
 }
 
-/* ===== PHOTOGRAPHY PAGE (SINGLE-COLOR IMAGE BORDER) ===== */
-.photo-page .photo-container {
-  max-width: var(--max-w);
-  margin: 0 auto;
-  padding: 48px var(--site-padding);
+/* ===== ABOUT PAGE (CONTEMPORARY GALLERY DOSSIER) ===== */
+.gl-about-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 64px;
+  align-items: start;
 }
 
+.gl-about-card {
+  border: 1px solid var(--gl-border);
+  background: var(--gl-surface);
+  padding: 36px 32px;
+}
+
+.gl-about-card h1 {
+  font-family: var(--font-sans);
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 12px 0 16px;
+}
+
+.gl-quote-box {
+  border-left: 2px solid var(--gl-accent);
+  padding-left: 24px;
+  margin-bottom: 36px;
+}
+
+.gl-quote-text {
+  font-size: 20px;
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--gl-ink);
+}
+
+.gl-narrative p {
+  font-size: 16px;
+  line-height: 1.85;
+  color: var(--gl-ink);
+  margin-bottom: 20px;
+}
+
+.gl-skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 40px;
+  border-top: 1px solid var(--gl-border);
+  padding-top: 36px;
+}
+
+.gl-skill-col h4 {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gl-muted);
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--gl-border);
+  padding-bottom: 8px;
+}
+
+.gl-skill-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--gl-ink);
+}
+
+/* ===== PHOTOGRAPHY PAGE (SINGLE-COLOR IMAGE BORDER) ===== */
 .photo-page .photo-header {
   border-bottom: 1px solid var(--gl-border);
   padding-bottom: 32px;
@@ -370,7 +485,6 @@ body {
   gap: 28px;
 }
 
-/* Single-color clean image border mat */
 .photo-page .collage-item {
   background: var(--gl-surface);
   border: 1px solid var(--gl-border);
@@ -414,13 +528,7 @@ body {
   color: var(--gl-muted);
 }
 
-/* ===== SKETCHES PAGE (CLEAN WARM PAPER CARDS) ===== */
-.sketches-page .sketches-container {
-  max-width: var(--max-w);
-  margin: 0 auto;
-  padding: 48px var(--site-padding);
-}
-
+/* ===== SKETCHES PAGE ===== */
 .sketches-page .sketches-hero {
   border-bottom: 1px solid var(--gl-border);
   padding-bottom: 32px;
@@ -548,56 +656,56 @@ body {
   border-radius: 12px;
 }
 
-/* ===== ABOUT PAGE ===== */
-.gl-about-grid {
-  display: grid;
-  grid-template-columns: 360px 1fr;
-  gap: 64px;
-  align-items: start;
-}
-
-.gl-about-card {
-  border: 1px solid var(--gl-border);
-  background: var(--gl-surface);
-  padding: 36px 32px;
-}
-
-.gl-about-card h1 {
-  font-family: var(--font-sans);
-  font-size: 44px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1;
-  margin: 12px 0 16px;
-}
-
-.gl-skills-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-top: 40px;
-  border-top: 1px solid var(--gl-border);
-  padding-top: 36px;
-}
-
-.gl-skill-col h4 {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--gl-muted);
-  margin-bottom: 14px;
+/* ===== DYNAMIC PROJECT DETAIL PAGES (PROJECT-*.HTML) ===== */
+.project-page .project-hero {
   border-bottom: 1px solid var(--gl-border);
-  padding-bottom: 8px;
+  background: var(--gl-surface);
 }
 
-.gl-skill-col ul {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 13.5px;
+.project-page .project-facts-bar {
+  background: var(--gl-surface);
+  border-bottom: 1px solid var(--gl-border);
   color: var(--gl-ink);
+}
+
+.project-page .fact-label {
+  color: var(--gl-muted) !important;
+  font-family: var(--font-mono) !important;
+}
+
+.project-page .fact-value {
+  color: var(--gl-ink) !important;
+  font-family: var(--font-sans) !important;
+  font-weight: 600 !important;
+}
+
+.project-page .project-story,
+.project-page .visual-sections {
+  background: var(--gl-bg) !important;
+  color: var(--gl-ink) !important;
+}
+
+.project-page .story-body p {
+  color: var(--gl-ink) !important;
+  font-size: 16px !important;
+  line-height: 1.8 !important;
+}
+
+.project-page .highlights-card {
+  background: var(--gl-surface) !important;
+  border: 1px solid var(--gl-border) !important;
+  color: var(--gl-ink) !important;
+}
+
+.project-page .gallery-figure {
+  border: 1px solid var(--gl-border) !important;
+  background: var(--gl-surface) !important;
+  padding: 12px !important;
+}
+
+.project-page .gallery-caption {
+  color: var(--gl-muted) !important;
+  font-family: var(--font-mono) !important;
 }
 
 /* ===== RESPONSIVE ===== */

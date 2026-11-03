@@ -3,206 +3,180 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Julian Kotara — Architectural & Lighting Design (Editorial Monograph)</title>
+  <title>Julian Kotara — Architectural & Lighting Design</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Libre+Franklin:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="styles-editorial.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body>
 
-  <!-- JOURNAL MASTHEAD -->
-  <header class="ed-masthead">
-    <div class="ed-masthead-top">
-      <span>VOL. 26 // ISSUE 01 · BOULDER, COLORADO</span>
-      <span>ARCHITECTURAL LIGHTING DESIGN &amp; DAYLIGHTING</span>
-      <span>PORTFOLIO 2026</span>
-    </div>
-
-    <h1 class="ed-masthead-title">
-      <a href="index.html">JULIAN KOTARA</a>
-    </h1>
-
-    <div class="ed-masthead-sub">
-      <span>UNIVERSITY OF COLORADO BOULDER</span>
-      <span>CIRCADIAN METRICS &amp; SPATIAL ILLUMINATION</span>
-      <span>INDEX 01—06</span>
-    </div>
+  <!-- SLIM MINIMAL TOP HEADER -->
+  <header class="gl-header">
+    <a class="gl-monogram" href="index.html">
+      JULIAN KOTARA<span>.</span>
+    </a>
+    <span class="gl-header-meta">ARCHITECTURAL ENGINEERING · LIGHTING DESIGN</span>
+    <span class="gl-header-meta">CU BOULDER · 2026</span>
   </header>
 
-  <!-- FLOATING BOTTOM CAPSULE DOCK -->
-  <nav class="ed-bottom-dock" aria-label="Monograph Index">
-    <a href="index.html" class="ed-dock-item active">00 // Cover</a>
-    <a href="work.html" class="ed-dock-item">01 // Selected Work</a>
-    <a href="sketches.html" class="ed-dock-item">02 // Sketches</a>
-    <a href="photography.html" class="ed-dock-item">03 // Photography</a>
-    <a href="about.html" class="ed-dock-item">04 // Profile &amp; Contact</a>
+  <!-- THE BELOVED FLOATING BOTTOM CONTROL PILL -->
+  <nav class="gl-bottom-dock" aria-label="Portfolio Navigation">
+    <a href="index.html" class="gl-dock-btn active">Overview</a>
+    <a href="work.html" class="gl-dock-btn">Work</a>
+    <a href="sketches.html" class="gl-dock-btn">Sketches</a>
+    <a href="photography.html" class="gl-dock-btn">Photography</a>
+    <a href="about.html" class="gl-dock-btn">About</a>
   </nav>
 
-  <!-- DOUBLE-PAGE MAGAZINE HERO SPREAD -->
-  <section class="ed-hero-spread">
-    <div class="ed-hero-left">
-      <span class="ed-kicker">Architectural Engineering · Lighting Design</span>
+  <main class="gl-main">
+
+    <!-- HERO SECTION -->
+    <section class="gl-hero">
+      <span class="gl-hero-kicker">Architectural Engineering · Lighting Design</span>
       
-      <h2 class="ed-hero-headline">
-        Architectural Engineering Graduate Student · Lighting Design &amp; Daylighting
-      </h2>
+      <h1 class="gl-hero-title">
+        Julian Kotara
+      </h1>
 
-      <p class="ed-hero-narrative">
-        I study how daylight and electric light shape human biology, mood, and spatial perception. By balancing computational analysis with an appreciation for shadow and texture, I design environments that feel natural, comfortable, and intentional.
-      </p>
+      <div class="gl-hero-grid">
+        <div>
+          <p class="gl-hero-role">
+            Architectural Engineering Graduate Student · Lighting Design &amp; Daylighting
+          </p>
 
-      <div class="ed-hero-meta">
-        <span>CU Boulder · Portfolio 2026 · Section 00</span>
-      </div>
-    </div>
+          <p class="gl-hero-desc">
+            I study how daylight and electric light shape human biology, mood, and spatial perception. By balancing computational analysis with an appreciation for shadow and texture, I design environments that feel natural, comfortable, and intentional.
+          </p>
 
-    <div class="ed-hero-right">
-      <div class="ed-plate-frame">
-        <img src="assets/projects/museum/museum-hero.png" alt="Children's Museum architectural design">
-        <div class="ed-plate-caption">
-          <strong>Plate I — Massing &amp; Transparency</strong>
-          <span>Cultural Study / 2025</span>
+          <div style="display: flex; gap: 16px; align-items: center; margin-top: 24px;">
+            <a href="#work" style="display: inline-flex; align-items: center; gap: 8px; background: var(--gl-ink); color: var(--gl-bg); padding: 12px 22px; font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; border-radius: 20px;">
+              Explore selected work ↓
+            </a>
+            <span style="font-family: var(--font-mono); font-size: 10px; color: var(--gl-muted); text-transform: uppercase;">
+              CU Boulder · Portfolio 2026
+            </span>
+          </div>
+        </div>
+
+        <div class="gl-hero-frame">
+          <img src="assets/projects/museum/museum-hero.png" alt="Children's Museum architectural design">
+          <div class="gl-hero-caption">
+            <span style="font-weight: 600; color: var(--gl-ink);">Children's Museum</span>
+            <span>Cultural · Massing &amp; Daylighting</span>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- SELECTED PROJECTS MONOGRAPH STORIES -->
-  <section class="ed-section" id="work">
-    <div class="ed-section-head">
-      <span class="ed-kicker">Section 01 // Selected Works</span>
-      <h2 class="ed-section-title">Move through the work.</h2>
-      <p style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ed-muted);">
-        A monograph of architectural concepts, daylighting studies, and luminaire research.
-      </p>
-    </div>
-
-    <!-- Chapter I: Children's Museum -->
-    <article class="ed-story-spread">
-      <div class="ed-story-media">
-        <a href="project-museum.html">
-          <img src="assets/projects/museum/museum-hero.png" alt="Children's Museum">
-        </a>
-      </div>
-      <div class="ed-story-content">
-        <span class="ed-chapter-num">I</span>
-        <h3 class="ed-story-title">
-          <a href="project-museum.html">Children's Museum</a>
-        </h3>
-        <p class="ed-story-sub">Cultural · Massing &amp; Transparency / 2025</p>
-        <p style="font-size: 15px; line-height: 1.8; color: var(--ed-ink); margin-bottom: 24px;">
-          An exploration of massing, transparency, and volumetric daylight entry. Sculpting public space where natural illumination drives spatial discovery.
-        </p>
-        <a class="ed-story-link" href="project-museum.html">Explore Monograph Plate ↗</a>
-      </div>
-    </article>
-
-    <!-- Chapter II: Central Lobby -->
-    <article class="ed-story-spread reverse">
-      <div class="ed-story-media">
-        <a href="project-lobby.html">
-          <img src="assets/projects/central loby/suspended shapes1.jpg" alt="University Central Lobby">
-        </a>
-      </div>
-      <div class="ed-story-content">
-        <span class="ed-chapter-num">II</span>
-        <h3 class="ed-story-title">
-          <a href="project-lobby.html">University Central Lobby</a>
-        </h3>
-        <p class="ed-story-sub">Lighting Design · Interior &amp; Facade / 2025</p>
-        <p style="font-size: 15px; line-height: 1.8; color: var(--ed-ink); margin-bottom: 24px;">
-          Integrated electric luminaires and suspended acoustic forms interacting with daytime skylights. Balancing circadian stimulus metrics with architectural identity.
-        </p>
-        <a class="ed-story-link" href="project-lobby.html">Explore Monograph Plate ↗</a>
-      </div>
-    </article>
-
-    <!-- Chapter III: Luxury Mountain Home -->
-    <article class="ed-story-spread">
-      <div class="ed-story-media">
-        <a href="project-mountain.html">
-          <img src="assets/projects/mountain-home.jpg" alt="Luxury Mountain Home">
-        </a>
-      </div>
-      <div class="ed-story-content">
-        <span class="ed-chapter-num">III</span>
-        <h3 class="ed-story-title">
-          <a href="project-mountain.html">Luxury Mountain Home</a>
-        </h3>
-        <p class="ed-story-sub">Residential · Daylight Studies / 2025</p>
-        <p style="font-size: 15px; line-height: 1.8; color: var(--ed-ink); margin-bottom: 24px;">
-          High-altitude solar trajectories and glazed cantilevers. Daylighting analysis tuned to circadian rest, thermal performance, and alpine panoramas.
-        </p>
-        <a class="ed-story-link" href="project-mountain.html">Explore Monograph Plate ↗</a>
-      </div>
-    </article>
-
-    <!-- Secondary Studies Triptych -->
-    <div style="border-top: 1px solid var(--ed-hairline); padding-top: 60px; margin-top: 60px;">
-      <div class="ed-triptych">
-        
-        <a class="ed-triptych-item" href="project-bench.html">
-          <div class="ed-triptych-thumb">
-            <img src="assets/projects/bench study/bench-persp-style1.png" alt="Exterior Bench Lighting Study">
-          </div>
-          <span class="ed-chapter-num" style="font-size: 24px;">IV</span>
-          <h4 class="ed-triptych-title">Exterior Bench Lighting Study</h4>
-          <span class="ed-triptych-sub">Lighting Research · Mockups &amp; Optics / 2025</span>
-        </a>
-
-        <a class="ed-triptych-item" href="photography.html">
-          <div class="ed-triptych-thumb">
-            <img src="assets/projects/photography.jpg" alt="Photography & Light Studies">
-          </div>
-          <span class="ed-chapter-num" style="font-size: 24px;">V</span>
-          <h4 class="ed-triptych-title">Photography &amp; Light Studies</h4>
-          <span class="ed-triptych-sub">Visual Studies · Shadow &amp; Geometry</span>
-        </a>
-
-        <a class="ed-triptych-item" href="sketches.html">
-          <div class="ed-triptych-thumb">
-            <img src="assets/Light Sketches/Senior Design/Exterior.jpg" alt="Lighting Sketches">
-          </div>
-          <span class="ed-chapter-num" style="font-size: 24px;">VI</span>
-          <h4 class="ed-triptych-title">Lighting Sketches &amp; Ideation</h4>
-          <span class="ed-triptych-sub">Hand Sketches · Daylight &amp; Nocturnal</span>
-        </a>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ESSAY / ABOUT SECTION -->
-  <section class="ed-section" id="about">
-    <div class="ed-about-grid">
-      <div>
-        <span class="ed-kicker">Colophon // Philosophy</span>
-        <blockquote class="ed-pullquote">
-          "Designing for the interplay between daylight, shadow, and circadian rhythm."
-        </blockquote>
-      </div>
-
-      <div class="ed-bio-col">
-        <p>
-          Architectural Engineering graduate student at the University of Colorado Boulder with an emphasis on lighting design and circadian rhythm. Exploring the intersection of architectural form, illumination, and human perception.
-        </p>
-
-        <div style="border-top: 1px solid var(--ed-hairline); padding-top: 24px; margin-top: 32px;">
-          <span class="ed-kicker">Direct Contact</span>
-          <a class="ed-story-link" href="mailto:julian.kotara@colorado.edu">
-            julian.kotara@colorado.edu ↗
-          </a>
-          <p style="font-family: var(--font-mono); font-size: 10px; color: var(--ed-muted); text-transform: uppercase; margin-top: 10px;">
-            Based in Boulder, Colorado · Master of Science in Architectural Engineering
+    <!-- SELECTED PROJECTS SECTION -->
+    <section class="gl-section" id="work">
+      <div class="gl-section-head">
+        <div>
+          <h2 class="gl-section-title">Selected Projects</h2>
+          <p style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gl-muted); margin-top: 6px;">
+            Move through the work · Scroll down or use bottom controls
           </p>
         </div>
       </div>
-    </div>
-  </section>
+
+      <div class="gl-project-grid">
+        
+        <!-- 01 Children's Museum -->
+        <a class="gl-project-card" href="project-museum.html">
+          <div class="gl-card-thumb">
+            <img src="assets/projects/museum/museum-hero.png" alt="Children's Museum">
+          </div>
+          <div class="gl-card-body">
+            <span class="gl-card-tag">01 / Cultural</span>
+            <h3 class="gl-card-title">Children's Museum</h3>
+            <span class="gl-card-sub">Cultural · Massing &amp; Transparency / 2025</span>
+          </div>
+        </a>
+
+        <!-- 02 Central Lobby -->
+        <a class="gl-project-card" href="project-lobby.html">
+          <div class="gl-card-thumb">
+            <img src="assets/projects/central loby/suspended shapes1.jpg" alt="University Central Lobby">
+          </div>
+          <div class="gl-card-body">
+            <span class="gl-card-tag">02 / Lighting Design</span>
+            <h3 class="gl-card-title">University Central Lobby</h3>
+            <span class="gl-card-sub">Lighting Design · Interior &amp; Facade / 2025</span>
+          </div>
+        </a>
+
+        <!-- 03 Mountain Home -->
+        <a class="gl-project-card" href="project-mountain.html">
+          <div class="gl-card-thumb">
+            <img src="assets/projects/mountain-home.jpg" alt="Luxury Mountain Home">
+          </div>
+          <div class="gl-card-body">
+            <span class="gl-card-tag">03 / Residential</span>
+            <h3 class="gl-card-title">Luxury Mountain Home</h3>
+            <span class="gl-card-sub">Residential · Daylight Studies / 2025</span>
+          </div>
+        </a>
+
+        <!-- 04 Bench Study -->
+        <a class="gl-project-card" href="project-bench.html">
+          <div class="gl-card-thumb">
+            <img src="assets/projects/bench study/bench-persp-style1.png" alt="Exterior Bench Lighting Study">
+          </div>
+          <div class="gl-card-body">
+            <span class="gl-card-tag">04 / Research</span>
+            <h3 class="gl-card-title">Exterior Bench Lighting Study</h3>
+            <span class="gl-card-sub">Lighting Research · Mockups &amp; Optics / 2025</span>
+          </div>
+        </a>
+
+        <!-- 05 Photography -->
+        <a class="gl-project-card" href="photography.html">
+          <div class="gl-card-thumb">
+            <img src="assets/projects/photography.jpg" alt="Photography & Light Studies">
+          </div>
+          <div class="gl-card-body">
+            <span class="gl-card-tag">05 / Visual Studies</span>
+            <h3 class="gl-card-title">Photography &amp; Light Studies</h3>
+            <span class="gl-card-sub">Visual Studies · Shadow &amp; Geometry</span>
+          </div>
+        </a>
+
+        <!-- 06 Lighting Sketches -->
+        <a class="gl-project-card" href="sketches.html">
+          <div class="gl-card-thumb">
+            <img src="assets/Light Sketches/Senior Design/Exterior.jpg" alt="Lighting Sketches">
+          </div>
+          <div class="gl-card-body">
+            <span class="gl-card-tag">06 / Ideation</span>
+            <h3 class="gl-card-title">Lighting Sketches &amp; Ideation</h3>
+            <span class="gl-card-sub">Hand Sketches · Daylight &amp; Nocturnal</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section class="gl-section" id="about">
+      <div style="max-width: 820px; margin: 40px auto; text-align: center;">
+        <span class="gl-hero-kicker" style="margin-bottom: 16px;">About / Philosophy</span>
+        <h2 style="font-family: var(--font-sans); font-size: clamp(28px, 4vw, 44px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.25; margin-bottom: 24px;">
+          Designing for the interplay between daylight, shadow, and circadian rhythm.
+        </h2>
+        <p style="font-size: 16px; line-height: 1.8; color: var(--gl-muted); margin-bottom: 32px;">
+          Architectural Engineering graduate student at the University of Colorado Boulder with an emphasis on lighting design and circadian rhythm. Exploring the intersection of architectural form, illumination, and human perception.
+        </p>
+        <a href="mailto:julian.kotara@colorado.edu" style="display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 13px; color: var(--gl-ink); text-decoration: none; font-weight: 600; border-bottom: 1.5px solid var(--gl-ink); padding-bottom: 3px;">
+          julian.kotara@colorado.edu ↗
+        </a>
+      </div>
+    </section>
+
+  </main>
 
 </body>
 </html>

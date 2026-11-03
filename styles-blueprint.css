@@ -1,36 +1,30 @@
 /* ==========================================================================
-   DESIGN A — BLUEPRINT TECHNICAL (AWWWARDS ARCHITECTURAL DOSSIER)
-   Full drafting-board interface: Fixed CAD spine sidebar, drawing title blocks,
-   millimeter graph coordinates, dimensional callouts, technical specification tables.
+   DESIGN 1 — ARCHITECTURAL ATELIER (MINIMALIST TECHNICAL)
+   Solid clean chalk white background (NO grid lines).
+   Architectural line breaks with text.
+   Crisp single-color borders, natural image presentation (NO black clash).
+   Simple, disciplined, Swiss-inspired architectural engineering aesthetic.
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
 
 :root {
-  --bp-blue: #0f2d59;
-  --bp-blue-mid: #1d4b8f;
-  --bp-blue-light: #3a75cc;
-  --bp-blue-pale: #e4edf8;
-  --bp-blue-wash: #f2f6fc;
-  --bp-bg: #f7f9fd;
-  --bp-white: #ffffff;
-  --bp-ink: #0f2d59;
-  --bp-grid-subtle: rgba(15, 45, 89, 0.05);
-  --bp-grid-major: rgba(15, 45, 89, 0.12);
-  --bp-border: rgba(15, 45, 89, 0.22);
-  --bp-border-strong: rgba(15, 45, 89, 0.85);
-  --bp-red: #d94826;     /* Drafting red pencil accent */
-  --bp-red-tint: rgba(217, 72, 38, 0.08);
-  --bp-cyan: #0da5c0;    /* CAD cyan dimension line */
+  --at-bg: #fbfbfa;
+  --at-surface: #ffffff;
+  --at-surface-tint: #f3f3f0;
+  --at-ink: #181816;
+  --at-muted: #6e6e68;
+  --at-border: #e2e2dc;
+  --at-border-strong: #181816;
+  --at-accent: #a6452c;     /* Subtle architectural terracotta for dimension lines */
 
+  --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'Space Mono', 'SFMono-Regular', Consolas, monospace;
-  --font-sans: 'Space Grotesk', -apple-system, sans-serif;
 
-  --sidebar-w: 260px;
-  --topbar-h: 40px;
+  --site-padding: clamp(24px, 5vw, 72px);
+  --max-w: 1320px;
 }
 
-/* RESET */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -38,1030 +32,448 @@
 }
 
 html {
-  font-size: 15px;
+  font-size: 15.5px;
   scroll-behavior: smooth;
-  background: var(--bp-bg);
-  color: var(--bp-ink);
+  background: var(--at-bg);
+  color: var(--at-ink);
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--bp-bg);
-  background-image:
-    linear-gradient(var(--bp-grid-subtle) 1px, transparent 1px),
-    linear-gradient(90deg, var(--bp-grid-subtle) 1px, transparent 1px),
-    linear-gradient(var(--bp-grid-major) 1px, transparent 1px),
-    linear-gradient(90deg, var(--bp-grid-major) 1px, transparent 1px);
-  background-size: 12px 12px, 12px 12px, 60px 60px, 60px 60px;
-  background-position: 0 0, 0 0, 0 0, 0 0;
-  color: var(--bp-ink);
-  line-height: 1.5;
+  background: var(--at-bg);
+  color: var(--at-ink);
+  line-height: 1.6;
   min-height: 100vh;
-  overflow-x: hidden;
 }
 
-/* Hide original site decorations/overlays that don't belong in CAD */
+/* Hide legacy elements */
 .geo-circle, .card-shade, #editor-panel {
   display: none !important;
 }
 
-/* ===== FIXED CAD SIDEBAR (LEFT SPINE) ===== */
-.cad-sidebar {
-  position: fixed;
+/* ===== ARCHITECTURAL HEADER ===== */
+.at-header {
+  position: sticky;
   top: 0;
-  left: 0;
-  bottom: 0;
-  width: var(--sidebar-w);
-  background: var(--bp-white);
-  border-right: 1.5px solid var(--bp-border-strong);
   z-index: 500;
+  background: rgba(251, 251, 250, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--at-border);
+  padding: 0 var(--site-padding);
+  height: 56px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: space-between;
-  padding: 0;
 }
 
-/* Sidebar Title Block */
-.cad-sidebar-header {
-  padding: 20px 18px 16px;
-  border-bottom: 1px solid var(--bp-border);
-  background: var(--bp-blue-wash);
-}
-
-.cad-stamp {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--bp-red);
-  border: 1px solid var(--bp-red);
-  padding: 2px 6px;
-  margin-bottom: 12px;
-  font-weight: 700;
-}
-
-.cad-brand {
-  display: block;
+.at-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   text-decoration: none;
-  color: var(--bp-blue);
+  color: var(--at-ink);
 }
 
-.cad-brand h1 {
-  font-family: var(--font-mono);
-  font-size: 18px;
+.at-brand-title {
+  font-family: var(--font-sans);
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  letter-spacing: -0.01em;
 }
 
-.cad-brand span {
-  display: block;
+.at-brand-tag {
   font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 0.12em;
-  color: var(--bp-blue-mid);
   text-transform: uppercase;
-  margin-top: 4px;
+  color: var(--at-muted);
+  border-left: 1px solid var(--at-border);
+  padding-left: 12px;
 }
 
-/* Sidebar Navigation */
-.cad-nav {
+.at-nav {
   display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  padding: 20px 0;
+  gap: 28px;
 }
 
-.cad-nav-label {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(15, 45, 89, 0.45);
-  padding: 0 18px 8px;
-}
-
-.cad-nav a {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 18px;
+.at-nav a {
   text-decoration: none;
   font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--bp-blue);
-  border-left: 3px solid transparent;
-  transition: all 120ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.cad-nav a span.layer-num {
-  font-size: 9px;
-  color: var(--bp-blue-light);
-  font-weight: 400;
-}
-
-.cad-nav a:hover {
-  background: var(--bp-blue-wash);
-  border-left-color: var(--bp-blue);
-  padding-left: 22px;
-}
-
-.cad-nav a.active {
-  background: var(--bp-blue);
-  color: var(--bp-white);
-  border-left-color: var(--bp-red);
-}
-
-.cad-nav a.active span.layer-num {
-  color: var(--bp-red);
-}
-
-/* Sidebar Footer Telemetry */
-.cad-sidebar-footer {
-  padding: 16px 18px;
-  border-top: 1px solid var(--bp-border);
-  font-family: var(--font-mono);
-  font-size: 9px;
-  line-height: 1.6;
-  color: var(--bp-blue-mid);
-  background: var(--bp-blue-wash);
-}
-
-.cad-meta-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.cad-meta-row:last-child {
-  margin-bottom: 0;
-}
-
-.cad-status-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  background: var(--bp-red);
-  border-radius: 50%;
-  margin-right: 4px;
-  animation: pulseDot 2s infinite ease-in-out;
-}
-
-@keyframes pulseDot {
-  0%, 100% { opacity: 0.3; transform: scale(0.9); }
-  50% { opacity: 1; transform: scale(1.1); }
-}
-
-/* ===== MAIN CONTENT WRAPPER ===== */
-.cad-main-viewport {
-  margin-left: var(--sidebar-w);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Top CAD Toolbar Bar */
-.cad-topbar {
-  height: var(--topbar-h);
-  background: var(--bp-white);
-  border-bottom: 1px solid var(--bp-border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 10.5px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--bp-blue-mid);
-  position: sticky;
-  top: 0;
-  z-index: 400;
-  backdrop-filter: blur(8px);
+  color: var(--at-muted);
+  transition: color 140ms ease;
+  position: relative;
+  padding: 6px 0;
 }
 
-.cad-topbar-left, .cad-topbar-right {
+.at-nav a:hover {
+  color: var(--at-ink);
+}
+
+.at-nav a.active {
+  color: var(--at-ink);
+  font-weight: 700;
+}
+.at-nav a.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: var(--at-accent);
+}
+
+/* ===== LINE BREAK WITH TEXT (ARCHITECTURAL DIMENSION DIVIDER) ===== */
+.at-divider-text {
   display: flex;
   align-items: center;
-  gap: 18px;
-}
-
-.cad-badge {
-  background: var(--bp-blue-wash);
-  border: 1px solid var(--bp-border);
-  padding: 2px 6px;
-  color: var(--bp-blue);
-  font-weight: 600;
-}
-
-/* ===== HERO DRAFTING BOARD ===== */
-.cad-hero-section {
-  padding: 40px 48px 60px;
-  border-bottom: 1.5px solid var(--bp-border-strong);
-  position: relative;
-}
-
-/* Corner registration marks */
-.cad-hero-section::before,
-.cad-hero-section::after {
-  content: '+';
-  position: absolute;
+  gap: 16px;
+  margin: 28px 0;
   font-family: var(--font-mono);
-  font-size: 14px;
-  color: var(--bp-blue-light);
-  line-height: 1;
-}
-.cad-hero-section::before { top: 12px; left: 16px; }
-.cad-hero-section::after  { bottom: 12px; right: 16px; }
-
-.cad-hero-grid {
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: 40px;
-  align-items: stretch;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--at-muted);
 }
 
-/* Left Hero Title Block */
-.cad-title-block {
-  border: 1.5px solid var(--bp-border-strong);
-  background: var(--bp-white);
-  padding: 32px 36px;
+.at-divider-text::before,
+.at-divider-text::after {
+  content: '';
+  flex-grow: 1;
+  height: 1px;
+  background: var(--at-border);
+}
+
+.at-divider-text span {
+  color: var(--at-accent);
+  font-weight: 700;
+}
+
+/* ===== MAIN CONTAINER ===== */
+.at-main {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 48px var(--site-padding) 100px;
+}
+
+/* ===== HERO SECTION ===== */
+.at-hero {
+  padding: 40px 0 60px;
+  border-bottom: 1px solid var(--at-border);
+}
+
+.at-hero-meta-top {
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
-  box-shadow: 6px 6px 0 var(--bp-blue);
-  position: relative;
-}
-
-.cad-title-block-header {
-  border-bottom: 1px solid var(--bp-border);
-  padding-bottom: 16px;
-  margin-bottom: 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.cad-kicker {
+  align-items: center;
   font-family: var(--font-mono);
   font-size: 10px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--bp-blue-mid);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.cad-kicker::before {
-  content: '';
-  width: 8px;
-  height: 8px;
-  background: var(--bp-red);
+  color: var(--at-muted);
+  margin-bottom: 24px;
 }
 
-.cad-hero-name {
+.at-hero-title {
   font-family: var(--font-sans);
-  font-size: clamp(48px, 6.5vw, 88px);
+  font-size: clamp(48px, 8vw, 108px);
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 0.95;
-  color: var(--bp-blue);
-  margin-bottom: 24px;
-  text-transform: uppercase;
+  color: var(--at-ink);
+  margin-bottom: 32px;
+}
+.at-hero-title span {
+  color: var(--at-muted);
 }
 
-.cad-hero-name span {
-  color: var(--bp-blue-light);
-  display: block;
+.at-hero-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 48px;
+  align-items: start;
 }
 
-.cad-hero-role {
+.at-hero-role {
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--bp-blue);
-  font-weight: 600;
+  color: var(--at-ink);
+  font-weight: 700;
   margin-bottom: 16px;
-  padding-left: 12px;
-  border-left: 2px solid var(--bp-red);
 }
 
-.cad-hero-desc {
-  font-size: 15px;
-  line-height: 1.7;
-  color: rgba(15, 45, 89, 0.85);
-  margin-bottom: 32px;
-  max-width: 540px;
+.at-hero-desc {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--at-ink);
+  margin-bottom: 28px;
+  max-width: 580px;
 }
 
-/* CAD Dimension Callout */
-.cad-dim-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--bp-red);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  margin-bottom: 24px;
-}
-.cad-dim-bar::before,
-.cad-dim-bar::after {
-  content: '';
-  flex-grow: 1;
-  height: 1px;
-  background: var(--bp-red);
+.at-hero-preview-frame {
+  border: 1px solid var(--at-border);
+  background: var(--at-surface);
+  padding: 12px;
 }
 
-.cad-hero-actions {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--bp-border);
+.at-hero-preview-frame img {
+  width: 100%;
+  aspect-ratio: 16/10;
+  object-fit: cover;
+  display: block;
 }
 
-.cad-btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--bp-blue);
-  color: var(--bp-white);
-  padding: 12px 20px;
-  text-decoration: none;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  border: 1px solid var(--bp-blue);
-  transition: all 120ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.cad-btn-primary:hover {
-  background: var(--bp-blue-mid);
-  transform: translateY(-2px);
-  box-shadow: 3px 3px 0 var(--bp-red);
-}
-.cad-btn-primary:active {
-  transform: translateY(0);
-}
-
-/* Right Schematic Viewport */
-.cad-schematic-view {
-  border: 1.5px solid var(--bp-border-strong);
-  background: var(--bp-white);
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 6px 6px 0 var(--bp-blue);
-  position: relative;
-}
-
-.cad-viewport-bar {
+.at-hero-preview-caption {
+  margin-top: 10px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--bp-blue-mid);
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--bp-border);
-  margin-bottom: 14px;
-}
-
-.cad-preview-frame {
-  position: relative;
-  overflow: hidden;
-  border: 1px solid var(--bp-border);
-  flex-grow: 1;
-  min-height: 280px;
-  background: #000;
-}
-
-.cad-preview-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: contrast(1.1) saturate(0.8);
-  opacity: 0.9;
-  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.cad-preview-frame:hover img {
-  transform: scale(1.03);
-}
-
-.cad-crosshairs {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 60px;
-  height: 60px;
-  pointer-events: none;
-}
-.cad-crosshairs::before,
-.cad-crosshairs::after {
-  content: '';
-  position: absolute;
-  background: var(--bp-red);
-}
-.cad-crosshairs::before { top: 0; bottom: 0; left: 50%; width: 1px; }
-.cad-crosshairs::after  { left: 0; right: 0; top: 50%; height: 1px; }
-
-.cad-callout {
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  background: rgba(15, 45, 89, 0.88);
-  color: var(--bp-white);
-  padding: 6px 10px;
   font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--at-muted);
 }
 
-/* ===== SECTION: DRAWING SET / SELECTED WORK ===== */
-.cad-section {
-  padding: 50px 48px 60px;
-  border-bottom: 1.5px solid var(--bp-border-strong);
+/* ===== SELECTED WORK SECTION ===== */
+.at-section {
+  padding: 72px 0;
+  border-bottom: 1px solid var(--at-border);
 }
 
-.cad-section-head {
+.at-section-head {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  border-bottom: 1.5px solid var(--bp-blue);
-  padding-bottom: 16px;
-  margin-bottom: 32px;
+  margin-bottom: 40px;
 }
 
-.cad-section-title {
+.at-section-title {
   font-family: var(--font-sans);
-  font-size: clamp(28px, 4vw, 44px);
+  font-size: clamp(32px, 4.5vw, 56px);
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: var(--bp-blue);
-  text-transform: uppercase;
-}
-.cad-section-title span {
-  color: var(--bp-blue-light);
+  color: var(--at-ink);
+  line-height: 1.05;
 }
 
-.cad-section-meta {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--bp-blue-mid);
-}
-
-/* Drawing Sheets Grid */
-.cad-sheet-grid {
+.at-project-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 28px;
 }
 
-.cad-sheet-card {
-  background: var(--bp-white);
-  border: 1.5px solid var(--bp-border-strong);
+.at-project-card {
+  border: 1px solid var(--at-border);
+  background: var(--at-surface);
   text-decoration: none;
-  color: var(--bp-blue);
+  color: var(--at-ink);
   display: flex;
   flex-direction: column;
-  transition: all 140ms cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
+  transition: transform 140ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 140ms ease;
+}
+.at-project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(24, 24, 22, 0.06);
+  border-color: var(--at-border-strong);
 }
 
-.cad-sheet-card:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 6px 6px 0 var(--bp-blue);
-}
-
-.cad-sheet-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--bp-border);
-  background: var(--bp-blue-wash);
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  font-weight: 700;
-  color: var(--bp-blue);
-}
-
-.cad-sheet-thumb {
-  height: 220px;
+.at-card-media {
+  aspect-ratio: 16/11;
   overflow: hidden;
-  position: relative;
-  background: #10141a;
-  border-bottom: 1px solid var(--bp-border);
+  background: var(--at-surface-tint);
+  border-bottom: 1px solid var(--at-border);
 }
 
-.cad-sheet-thumb img {
+.at-card-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: saturate(0.65) contrast(1.05);
-  transition: filter 200ms ease, transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.cad-sheet-card:hover .cad-sheet-thumb img {
-  filter: saturate(1) contrast(1);
-  transform: scale(1.04);
+.at-project-card:hover .at-card-media img {
+  transform: scale(1.03);
 }
 
-.cad-sheet-body {
-  padding: 16px 18px 20px;
+.at-card-body {
+  padding: 20px 22px 24px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   justify-content: space-between;
 }
 
-.cad-sheet-title {
+.at-card-index {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  color: var(--at-accent);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.at-card-title {
   font-family: var(--font-sans);
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.2;
   margin-bottom: 6px;
 }
 
-.cad-sheet-sub {
+.at-card-sub {
   font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--bp-blue-mid);
-  margin-bottom: 16px;
-}
-
-.cad-sheet-specs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  border-top: 1px dashed var(--bp-border);
-  padding-top: 10px;
-  font-family: var(--font-mono);
-  font-size: 8.5px;
-  color: var(--bp-blue-mid);
-  text-transform: uppercase;
-}
-
-/* ===== TECHNICAL SPECIFICATION SECTION (ABOUT/STATEMENT) ===== */
-.cad-spec-table {
-  border: 1.5px solid var(--bp-border-strong);
-  background: var(--bp-white);
-  box-shadow: 6px 6px 0 var(--bp-blue);
-}
-
-.cad-spec-row {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  border-bottom: 1px solid var(--bp-border);
-}
-.cad-spec-row:last-child {
-  border-bottom: none;
-}
-
-.cad-spec-code {
-  background: var(--bp-blue-wash);
-  border-right: 1px solid var(--bp-border);
-  padding: 20px 24px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  font-weight: 700;
-  color: var(--bp-blue);
-}
-
-.cad-spec-content {
-  padding: 20px 28px;
-  font-size: 14.5px;
-  line-height: 1.7;
-}
-
-.cad-spec-content h3 {
-  font-family: var(--font-sans);
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-bottom: 10px;
-  color: var(--bp-blue);
-}
-
-.cad-spec-content a.cad-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--bp-red);
-  text-decoration: none;
-  font-weight: 700;
-  border-bottom: 1px solid var(--bp-red);
-  padding-bottom: 2px;
-}
-.cad-spec-content a.cad-link:hover {
-  color: var(--bp-blue);
-  border-bottom-color: var(--bp-blue);
-}
-
-/* ===== PHOTOGRAPHY / INSPECTION SLIDE TABLE ===== */
-.cad-photo-controls {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-}
-
-.cad-filter-btn {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 8px 16px;
-  background: var(--bp-white);
-  border: 1px solid var(--bp-border-strong);
-  color: var(--bp-blue);
-  cursor: pointer;
-  transition: all 120ms ease;
-}
-.cad-filter-btn:hover {
-  background: var(--bp-blue-wash);
-}
-.cad-filter-btn.active {
-  background: var(--bp-blue);
-  color: var(--bp-white);
-  border-color: var(--bp-blue);
-}
-
-.cad-photo-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
-}
-
-.cad-photo-card {
-  border: 1.5px solid var(--bp-border-strong);
-  background: var(--bp-white);
-  display: flex;
-  flex-direction: column;
-  transition: transform 140ms ease, box-shadow 140ms ease;
-  cursor: pointer;
-}
-.cad-photo-card:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 6px 6px 0 var(--bp-blue);
-}
-
-.cad-photo-header {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 12px;
-  background: var(--bp-blue-wash);
-  border-bottom: 1px solid var(--bp-border);
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--bp-blue-mid);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.cad-photo-img-wrap {
-  aspect-ratio: 4/3;
-  overflow: hidden;
-  background: #000;
-  position: relative;
-}
-
-.cad-photo-img-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.cad-photo-card:hover .cad-photo-img-wrap img {
-  transform: scale(1.03);
-}
-
-.cad-photo-footer {
-  padding: 12px 14px;
-}
-.cad-photo-title {
-  font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 4px;
-  color: var(--bp-blue);
-}
-.cad-photo-sub {
-  font-family: var(--font-mono);
-  font-size: 8.5px;
+  font-size: 9.5px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--bp-blue-mid);
+  color: var(--at-muted);
 }
 
-/* ===== SKETCHES PIN-UP BOARD ===== */
-.cad-sketch-chapter {
-  margin-bottom: 48px;
-}
-.cad-chapter-bar {
-  border: 1.5px solid var(--bp-border-strong);
-  background: var(--bp-blue);
-  color: var(--bp-white);
-  padding: 12px 20px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-/* ===== LIGHTBOX OVERLAY ===== */
-.cad-lightbox {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 45, 89, 0.94);
-  z-index: 1000;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  backdrop-filter: blur(10px);
-}
-.cad-lightbox.active {
-  display: flex;
-}
-.cad-lightbox-inner {
-  max-width: 90vw;
-  max-height: 90vh;
-  background: var(--bp-white);
-  border: 2px solid var(--bp-white);
-  box-shadow: 10px 10px 0 var(--bp-red);
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-.cad-lightbox-inner img {
-  max-height: 75vh;
-  object-fit: contain;
-}
-.cad-lightbox-caption {
-  margin-top: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: var(--font-mono);
-  font-size: 11px;
-}
-.cad-lightbox-close {
-  position: absolute;
-  top: -18px;
-  right: -18px;
-  width: 36px;
-  height: 36px;
-  background: var(--bp-red);
-  color: var(--bp-white);
-  border: 2px solid var(--bp-white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 16px;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 1024px) {
-  :root { --sidebar-w: 0px; }
-  .cad-sidebar {
-    position: relative;
-    width: 100%;
-    height: auto;
-    border-right: none;
-    border-bottom: 1.5px solid var(--bp-border-strong);
-  }
-  .cad-nav {
-    flex-direction: row;
-    overflow-x: auto;
-    padding: 0;
-  }
-  .cad-nav a {
-    border-left: none;
-    border-bottom: 3px solid transparent;
-    white-space: nowrap;
-  }
-  .cad-nav a.active {
-    border-left: none;
-    border-bottom-color: var(--bp-red);
-  }
-  .cad-main-viewport {
-    margin-left: 0;
-  }
-  .cad-hero-grid {
-    grid-template-columns: 1fr;
-  }
-  .cad-sheet-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .cad-sheet-grid {
-    grid-template-columns: 1fr;
-  }
-  .cad-spec-row {
-    grid-template-columns: 1fr;
-  }
-  .cad-spec-code {
-    border-right: none;
-    border-bottom: 1px solid var(--bp-border);
-  }
-  .cad-hero-section, .cad-section {
-    padding: 24px 16px;
-  }
-}
-
-
-/* ===== BLUEPRINT OVERRIDES FOR PHOTOGRAPHY PAGE ===== */
-.photo-page .cad-main-viewport {
-  padding: 0 0 60px;
-}
-
+/* ===== PHOTOGRAPHY PAGE (CLEAN SINGLE-COLOR BORDER, NO CLASH) ===== */
 .photo-page .photo-container {
-  padding: 40px 48px;
-  max-width: 1400px;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 48px var(--site-padding);
 }
 
 .photo-page .photo-header {
-  border-bottom: 1.5px solid var(--bp-border-strong);
-  padding-bottom: 28px;
-  margin-bottom: 32px;
+  border-bottom: 1px solid var(--at-border);
+  padding-bottom: 32px;
+  margin-bottom: 36px;
 }
 
 .photo-page .photo-header h1 {
   font-family: var(--font-sans);
-  font-size: clamp(40px, 6vw, 76px);
+  font-size: clamp(40px, 6vw, 72px);
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: var(--bp-blue);
-  text-transform: uppercase;
-  line-height: 0.95;
-  margin-bottom: 16px;
-}
-.photo-page .photo-header h1 em {
-  color: var(--bp-blue-light);
-  font-style: normal;
+  margin-bottom: 14px;
 }
 
 .photo-page .photo-intro {
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--bp-blue-mid);
-  max-width: 620px;
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: var(--at-muted);
+  max-width: 600px;
 }
 
 .photo-page .photo-filter-bar {
   display: flex;
   gap: 8px;
-  margin-bottom: 32px;
+  margin-bottom: 36px;
   flex-wrap: wrap;
 }
 
 .photo-page .photo-filter-btn {
   font-family: var(--font-mono);
   font-size: 10px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 8px 16px;
-  background: var(--bp-white);
-  border: 1px solid var(--bp-border-strong);
-  color: var(--bp-blue);
+  background: var(--at-surface);
+  border: 1px solid var(--at-border);
+  color: var(--at-muted);
   cursor: pointer;
+  border-radius: 2px;
   transition: all 120ms ease;
-  border-radius: 0;
 }
 .photo-page .photo-filter-btn:hover {
-  background: var(--bp-blue-wash);
+  color: var(--at-ink);
+  border-color: var(--at-border-strong);
 }
 .photo-page .photo-filter-btn.active {
-  background: var(--bp-blue);
-  color: var(--bp-white);
-  border-color: var(--bp-blue);
+  background: var(--at-ink);
+  color: var(--at-bg);
+  border-color: var(--at-ink);
 }
 
 .photo-page .collage-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
+  gap: 28px;
 }
 
+/* Single-color clean border mat (NO black clash) */
 .photo-page .collage-item {
-  border: 1.5px solid var(--bp-border-strong);
-  background: var(--bp-white);
-  transition: all 140ms cubic-bezier(0.16, 1, 0.3, 1);
+  background: var(--at-surface);
+  border: 1px solid var(--at-border);
+  padding: 12px 12px 16px;
+  border-radius: 2px;
+  box-shadow: 0 4px 16px rgba(24, 24, 22, 0.03);
+  transition: all 160ms cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
   position: relative;
-  border-radius: 0;
-  box-shadow: none;
 }
 .photo-page .collage-item:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 6px 6px 0 var(--bp-blue);
+  border-color: var(--at-border-strong);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(24, 24, 22, 0.06);
 }
 
 .photo-page .collage-item img {
   width: 100%;
-  height: 100%;
+  aspect-ratio: 4/3;
   object-fit: cover;
-  filter: saturate(0.7) contrast(1.05);
-  transition: filter 200ms ease, transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.photo-page .collage-item:hover img {
-  filter: saturate(1) contrast(1);
-  transform: scale(1.03);
+  display: block;
 }
 
 .photo-page .collage-item-overlay {
-  background: linear-gradient(0deg, rgba(15, 45, 89, 0.92) 0%, transparent 60%);
-  padding: 16px;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 .photo-page .collage-item-overlay strong {
   font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--bp-white);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--at-ink);
 }
 .photo-page .collage-item-overlay small {
   font-family: var(--font-mono);
   font-size: 9px;
-  color: var(--bp-blue-pale);
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: var(--at-muted);
 }
 
-/* ===== BLUEPRINT OVERRIDES FOR SKETCHES PAGE ===== */
-.sketches-page .cad-main-viewport {
-  padding: 0 0 60px;
-}
-
+/* ===== SKETCHES PAGE (NO BLACK CLASH, CRISP WHITE CARDS) ===== */
 .sketches-page .sketches-container {
-  padding: 40px 48px;
-  max-width: 1400px;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 48px var(--site-padding);
 }
 
 .sketches-page .sketches-hero {
-  border-bottom: 1.5px solid var(--bp-border-strong);
-  padding-bottom: 28px;
-  margin-bottom: 32px;
+  border-bottom: 1px solid var(--at-border);
+  padding-bottom: 32px;
+  margin-bottom: 36px;
 }
 
 .sketches-page .sketches-hero h1 {
   font-family: var(--font-sans);
-  font-size: clamp(40px, 6vw, 76px);
+  font-size: clamp(40px, 6vw, 72px);
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: var(--bp-blue);
-  text-transform: uppercase;
-  line-height: 0.95;
-  margin-bottom: 16px;
-}
-.sketches-page .sketches-hero h1 em {
-  color: var(--bp-blue-light);
-  font-style: normal;
+  margin-bottom: 14px;
 }
 
 .sketches-page .sketches-hero-desc {
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--bp-blue-mid);
-  max-width: 620px;
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: var(--at-muted);
+  max-width: 600px;
 }
 
 .sketches-page .sketches-filter-bar {
   display: flex;
   gap: 8px;
-  margin-bottom: 36px;
+  margin-bottom: 40px;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -1069,91 +481,81 @@ body {
 .sketches-page .sketches-filter-label {
   font-family: var(--font-mono);
   font-size: 10px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--bp-blue-mid);
-  margin-right: 6px;
+  color: var(--at-muted);
 }
 
 .sketches-page .sketch-filter-btn {
   font-family: var(--font-mono);
   font-size: 10px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 8px 16px;
-  background: var(--bp-white);
-  border: 1px solid var(--bp-border-strong);
-  color: var(--bp-blue);
+  background: var(--at-surface);
+  border: 1px solid var(--at-border);
+  color: var(--at-muted);
   cursor: pointer;
-  border-radius: 0;
+  border-radius: 2px;
   transition: all 120ms ease;
 }
 .sketches-page .sketch-filter-btn:hover {
-  background: var(--bp-blue-wash);
+  color: var(--at-ink);
+  border-color: var(--at-border-strong);
 }
 .sketches-page .sketch-filter-btn.active {
-  background: var(--bp-blue);
-  color: var(--bp-white);
-  border-color: var(--bp-blue);
+  background: var(--at-ink);
+  color: var(--at-bg);
+  border-color: var(--at-ink);
 }
 
 .sketches-page .sketch-chapter {
-  margin-bottom: 56px;
-  border: 1.5px solid var(--bp-border-strong);
-  background: var(--bp-white);
-  padding: 32px;
-  box-shadow: 6px 6px 0 var(--bp-blue);
-}
-
-.sketches-page .sketch-chapter-head {
-  border-bottom: 1px solid var(--bp-border);
-  padding-bottom: 16px;
-  margin-bottom: 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  margin-bottom: 60px;
+  border-bottom: 1px solid var(--at-border);
+  padding-bottom: 48px;
 }
 
 .sketches-page .chapter-tag {
   font-family: var(--font-mono);
-  font-size: 9.5px;
-  letter-spacing: 0.16em;
+  font-size: 10px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--bp-red);
+  color: var(--at-accent);
   font-weight: 700;
-  display: block;
   margin-bottom: 6px;
+  display: block;
 }
 
 .sketches-page .sketch-chapter-head h2 {
   font-family: var(--font-sans);
-  font-size: 28px;
+  font-size: clamp(26px, 3.5vw, 42px);
   font-weight: 700;
   letter-spacing: -0.02em;
-  text-transform: uppercase;
-  color: var(--bp-blue);
+  margin-bottom: 12px;
 }
 
 .sketches-page .sketch-chapter-intro {
-  font-size: 14.5px;
-  line-height: 1.7;
-  color: var(--bp-blue-mid);
-  margin-bottom: 28px;
-  max-width: 680px;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--at-muted);
+  margin-bottom: 32px;
+  max-width: 640px;
 }
 
 .sketches-page .sketch-hero-card,
 .sketches-page .sketch-card {
-  border: 1px solid var(--bp-border-strong);
-  background: var(--bp-blue-wash);
-  border-radius: 0;
-  box-shadow: none;
-  transition: all 140ms cubic-bezier(0.16, 1, 0.3, 1);
+  background: var(--at-surface);
+  border: 1px solid var(--at-border);
+  padding: 14px 14px 20px;
+  border-radius: 2px;
+  box-shadow: 0 4px 16px rgba(24, 24, 22, 0.03);
+  transition: all 160ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .sketches-page .sketch-hero-card:hover,
 .sketches-page .sketch-card:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 4px 4px 0 var(--bp-blue);
+  border-color: var(--at-border-strong);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(24, 24, 22, 0.06);
 }
 
 .sketches-page .sketch-chips {
@@ -1165,12 +567,78 @@ body {
 
 .sketches-page .sketch-chip {
   font-family: var(--font-mono);
-  font-size: 8.5px;
+  font-size: 9px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  background: var(--bp-white);
-  border: 1px solid var(--bp-border);
-  color: var(--bp-blue);
+  background: var(--at-surface-tint);
+  border: 1px solid var(--at-border);
+  color: var(--at-ink);
   padding: 3px 8px;
-  border-radius: 0;
+  border-radius: 2px;
+}
+
+/* ===== ABOUT PAGE ===== */
+.at-about-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.at-about-card {
+  border: 1px solid var(--at-border);
+  background: var(--at-surface);
+  padding: 32px;
+}
+
+.at-about-card h1 {
+  font-family: var(--font-sans);
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 12px 0 16px;
+}
+
+.at-skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 40px;
+  border-top: 1px solid var(--at-border);
+  padding-top: 36px;
+}
+
+.at-skill-col h4 {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--at-muted);
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--at-border);
+  padding-bottom: 8px;
+}
+
+.at-skill-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--at-ink);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 960px) {
+  .at-hero-grid { grid-template-columns: 1fr; }
+  .at-project-grid { grid-template-columns: repeat(2, 1fr); }
+  .at-about-grid { grid-template-columns: 1fr; }
+  .at-skills-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .at-project-grid { grid-template-columns: 1fr; }
+  .at-nav { gap: 14px; }
+  .at-brand-tag { display: none; }
 }

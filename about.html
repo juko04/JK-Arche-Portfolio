@@ -16,15 +16,43 @@
 <body>
 
   <!-- Navigation -->
-  <header class="glass-nav">
-    <a class="monogram" href="index.html" aria-label="Julian Kotara home">JK<span>.</span></a>
-    <nav aria-label="Main navigation">
-      <a href="work.html">Work</a>
-      <a href="sketches.html">Sketches</a>
-      <a href="photography.html">Photography</a>
-      <a href="about.html" class="active">About</a>
-    </nav>
-  </header>
+    <!-- FOUR-CORNER VIEWFINDER HUD FRAME -->
+  <div class="hud-viewfinder" aria-hidden="true">
+    <div class="hud-corner hud-corner-tl"></div>
+    <div class="hud-corner hud-corner-tr"></div>
+    <div class="hud-corner hud-corner-bl"></div>
+    <div class="hud-corner hud-corner-br"></div>
+  </div>
+
+  <!-- TOP-LEFT HUD -->
+  <div class="hud-top-left">
+    <a class="hud-monogram" href="index.html">
+      JK<span>//</span>
+    </a>
+    <span>ARCHITECTURAL LIGHTING · 40.007°N 105.270°W</span>
+  </div>
+
+  <!-- TOP-RIGHT HUD (NAV) -->
+  <nav class="hud-top-right" aria-label="HUD Navigation">
+    <a href="index.html" class="hud-nav-link ">[ 00 // OVERVIEW ]</a>
+    <a href="work.html" class="hud-nav-link ">[ 01 // WORK ]</a>
+    <a href="sketches.html" class="hud-nav-link ">[ 02 // SKETCHES ]</a>
+    <a href="photography.html" class="hud-nav-link ">[ 03 // PHOTO ]</a>
+    <a href="about.html" class="hud-nav-link active">[ 04 // MANIFESTO ]</a>
+  </nav>
+
+  <!-- BOTTOM-LEFT HUD -->
+  <div class="hud-bottom-left">
+    <span class="hud-pulse"></span>
+    <span>EXP: BULB // NOCTURNAL MODE · CIRCADIAN RHYTHM</span>
+  </div>
+
+  <!-- BOTTOM-RIGHT HUD -->
+  <div class="hud-bottom-right">
+    <a class="hud-contact-trigger" href="mailto:julian.kotara@colorado.edu">
+      CONNECT: JULIAN.KOTARA@COLORADO.EDU ↗
+    </a>
+  </div>
 
   <div class="about-page-wrap">
     <main class="about-grid">

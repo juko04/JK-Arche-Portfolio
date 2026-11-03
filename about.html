@@ -7,37 +7,37 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="styles-editorial.css">
 </head>
 <body>
 
-  <!-- SLIM MINIMAL TOP HEADER -->
-  <header class="gl-header">
-    <a class="gl-monogram" href="index.html">
-      JULIAN KOTARA<span>.</span>
+  <!-- ASYMMETRICAL TOP MASTHEAD -->
+  <header class="gl-masthead">
+    <a class="gl-masthead-brand" href="index.html">
+      <span class="gl-masthead-title">Julian Kotara<span>.</span></span>
+      <span class="gl-masthead-tag">CU BOULDER · ARCHITECTURAL ENGINEERING</span>
     </a>
-    <span class="gl-header-meta">ARCHITECTURAL ENGINEERING · LIGHTING DESIGN</span>
-    <span class="gl-header-meta">CU BOULDER · 2026</span>
+    <span class="gl-masthead-tag">MONOGRAPH VOL. 2026</span>
   </header>
 
   <!-- THE BELOVED FLOATING BOTTOM CONTROL PILL -->
-  <nav class="gl-bottom-dock" aria-label="Portfolio Navigation">
-    <a href="index.html" class="gl-dock-btn">Overview</a>
-    <a href="work.html" class="gl-dock-btn">Work</a>
-    <a href="sketches.html" class="gl-dock-btn">Sketches</a>
-    <a href="photography.html" class="gl-dock-btn">Photography</a>
-    <a href="about.html" class="gl-dock-btn active">About</a>
+  <nav class="gl-dock" aria-label="Portfolio Navigation">
+    <a href="index.html" class="gl-dock-link">Overview</a>
+    <a href="work.html" class="gl-dock-link">Work</a>
+    <a href="sketches.html" class="gl-dock-link">Sketches</a>
+    <a href="photography.html" class="gl-dock-link">Photography</a>
+    <a href="about.html" class="gl-dock-link active">About</a>
   </nav>
 
   <main class="gl-main">
-    <div class="gl-about-grid">
+    <div class="gl-about-spread">
       
-      <!-- Left Card -->
-      <div class="gl-about-card">
-        <span class="gl-card-tag">About / Background</span>
+      <!-- Left Profile Dossier -->
+      <div class="gl-about-sidebar">
+        <span class="gl-hero-kicker" style="margin-bottom: 8px;">Dossier / Profile</span>
         <h1>Julian Kotara</h1>
         <p style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gl-ink); font-weight: 600; margin-bottom: 24px;">
           Architectural Engineering<br>Focus in Lighting Design
@@ -47,10 +47,10 @@
           <span style="font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gl-muted); display: block; margin-bottom: 8px;">
             Get in Touch
           </span>
-          <a href="mailto:julian.kotara@colorado.edu" style="display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 12px; color: var(--gl-accent); text-decoration: none; font-weight: 600;">
+          <a href="mailto:julian.kotara@colorado.edu" style="display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 12.5px; color: var(--gl-accent); text-decoration: none; font-weight: 600;">
             julian.kotara@colorado.edu ↗
           </a>
-          <p style="font-family: var(--font-mono); font-size: 9.5px; color: var(--gl-muted); text-transform: uppercase; margin-top: 12px;">
+          <p style="font-family: var(--font-mono); font-size: 9.5px; color: var(--gl-muted); text-transform: uppercase; margin-top: 14px;">
             Based in Boulder, Colorado
           </p>
         </div>
@@ -58,14 +58,12 @@
 
       <!-- Right Narrative & Skills -->
       <div>
-        <div class="gl-quote-box">
-          <p class="gl-quote-text">
-            "Light is both a quantitative architectural material and a biological necessity. Good lighting doesn't just illuminate space—it shapes how we feel, focus, and move through it."
-          </p>
+        <div class="gl-pullquote">
+          "Light is both a quantitative architectural material and a biological necessity. Good lighting doesn't just illuminate space—it shapes how we feel, focus, and move through it."
         </div>
 
-        <div class="gl-narrative">
-          <p>
+        <div class="gl-narrative-text">
+          <p style="margin-bottom: 18px;">
             I am an Architectural Engineering graduate student at the University of Colorado Boulder with a passion for architectural lighting design. My work bridges the analytical discipline of building engineering with spatial design and human perception.
           </p>
           <p>
@@ -73,9 +71,9 @@
           </p>
         </div>
 
-        <!-- Skills Grid -->
-        <div class="gl-skills-grid">
-          <div class="gl-skill-col">
+        <!-- Skills Columns -->
+        <div class="gl-skills-columns">
+          <div class="gl-skills-col">
             <h4>Lighting &amp; Analysis</h4>
             <ul>
               <li>Daylighting &amp; Solar Studies (ClimateStudio)</li>
@@ -86,7 +84,7 @@
             </ul>
           </div>
 
-          <div class="gl-skill-col">
+          <div class="gl-skills-col">
             <h4>3D &amp; Architecture</h4>
             <ul>
               <li>Revit / BIM Modeling</li>
@@ -97,7 +95,7 @@
             </ul>
           </div>
 
-          <div class="gl-skill-col">
+          <div class="gl-skills-col">
             <h4>Visual &amp; Creative</h4>
             <ul>
               <li>Architectural Photography (35mm &amp; Digital)</li>

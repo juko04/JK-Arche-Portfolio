@@ -299,20 +299,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Assemble Complete Page Markup
   document.body.innerHTML = `
-    <!-- Glass Navigation -->
-    <header class="glass-nav">
-      <a class="monogram" href="index.html" aria-label="Julian Kotara home">JK<span>.</span></a>
-      <nav aria-label="Main navigation">
-        <a href="work.html" class="active">Work</a>
-        <a href="sketches.html">Sketches</a>
-        <a href="photography.html">Photography</a>
-        <a href="about.html">About</a>
+    <!-- Haute Editorial Monograph Navigation -->
+    <header class="monograph-nav" role="banner">
+      <a class="monograph-brand" href="index.html" aria-label="Julian Kotara Monograph Home">
+        <span class="monogram-logo">JK<span>.</span></span>
+        <span class="monograph-volume-tag">VOL. III // RUNWAY EDITION</span>
+      </a>
+
+      <div class="nav-chapter-indicator" aria-live="polite">
+        <span class="chapter-pulse-dot" aria-hidden="true"></span>
+        <span>CHAPTER ${project.id} // ${project.title.toUpperCase()}</span>
+      </div>
+
+      <nav class="monograph-nav-links" aria-label="Monograph Navigation">
+        <a href="work.html" class="active">Index / Work</a>
+        <a href="sketches.html">Hand Sketches</a>
+        <a href="photography.html">35mm Studies</a>
+        <a href="about.html">About / Colophon</a>
+        <span class="nav-coords">40°00'N · 105°16'W</span>
       </nav>
     </header>
 
     <!-- Main Project Detail Container -->
     <main class="project-detail">
-      <a class="project-back-nav" href="work.html">← Back to All Work</a>
+      <a class="project-back-nav" href="work.html">← Back to Monograph Directory</a>
 
       <!-- Project Header -->
       <header class="project-header">

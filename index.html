@@ -3,164 +3,564 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Julian Kotara — Architectural & Lighting Design</title>
+  <title>Julian Kotara — Haute Editorial Architectural Monograph &amp; Kinematic Runway</title>
   
-  <!-- Fonts -->
+  <!-- Curatorial Typography: Playfair Display (Serif), Manrope (Grotesque), DM Mono (Technical Monospace) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="runway.css">
   
-  <!-- GSAP 3 -->
+  <!-- GSAP 3 & ScrollTrigger Plugin -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
-<body>
+<body class="kinematic-runway-edition">
 
-  <!-- Navigation -->
-  <header class="glass-nav">
-    <a class="monogram" href="index.html" aria-label="Julian Kotara home">JK<span>.</span></a>
-    <nav aria-label="Main navigation">
-      <a href="work.html">Work</a>
-      <a href="sketches.html">Sketches</a>
-      <a href="photography.html">Photography</a>
-      <a href="about.html">About</a>
+  <!-- ====================================================================
+       Haute Editorial Monograph Navigation Bar
+       ==================================================================== -->
+  <header class="monograph-nav" role="banner">
+    <a class="monograph-brand" href="index.html" aria-label="Julian Kotara Monograph Home">
+      <span class="monogram-logo">JK<span>.</span></span>
+      <span class="monograph-volume-tag">VOL. III // RUNWAY EDITION</span>
+    </a>
+
+    <!-- Dynamic Live Chapter Tracker -->
+    <div class="nav-chapter-indicator" aria-live="polite">
+      <span class="chapter-pulse-dot" aria-hidden="true"></span>
+      <span id="chapter-indicator-text">COVER // FRONTISPIECE</span>
+    </div>
+
+    <nav class="monograph-nav-links" aria-label="Monograph Navigation">
+      <a href="work.html">Index / Work</a>
+      <a href="sketches.html">Hand Sketches</a>
+      <a href="photography.html">35mm Studies</a>
+      <a href="about.html">About / Colophon</a>
+      <span class="nav-coords">40°00'N · 105°16'W</span>
     </nav>
   </header>
 
-  <!-- Main Content -->
-  <main id="top">
-    <!-- Hero / Intro -->
-    <section class="intro">
-      <div class="geo-circle geo-circle-top-left" id="geo-circle-top-left" aria-hidden="true"></div>
-      <div class="geo-circle geo-circle-bottom-right" id="geo-circle-bottom-right" aria-hidden="true"></div>
+  <!-- ====================================================================
+       The Kinematic Runway (Pinned Viewport & Multi-Plane Parallax Track)
+       ==================================================================== -->
+  <main class="runway-pin-wrapper" id="runway-pin-wrapper">
+    <div class="runway-track" id="runway-track">
 
-      <p class="kicker hero-kicker" id="hero-kicker" data-custom-id="hero-kicker">Architectural Engineering · Lighting Design</p>
-      <h1 class="hero-title" id="hero-title" data-custom-id="hero-title">Julian<br><span id="hero-last-name">Kotara</span></h1>
-
-      <div class="intro-body" id="hero-body" data-custom-id="hero-body">
-        <p class="role" id="hero-role" data-custom-id="hero-role">Architectural Engineering Graduate Student · Lighting Design &amp; Daylighting</p>
-        <p class="intro-copy" id="hero-copy" data-custom-id="hero-copy">
-          I study how daylight and electric light shape human biology, mood, and spatial perception. By balancing computational analysis with an appreciation for shadow and texture, I design environments that feel natural, comfortable, and intentional.
-        </p>
-      </div>
-
-
-      <div class="intro-bottom">
-        <a class="explore" href="#work">Explore selected work <span>↓</span></a>
-        <span class="intro-meta">CU Boulder · Portfolio 2026</span>
-      </div>
-    </section>
-
-    <!-- Selected Work Horizontal Rail -->
-    <section class="work-section" id="work">
-      <div class="work-head">
-        <div class="work-head-text">
-          <p class="kicker">Selected Projects</p>
-          <h2>Move <em>through</em> the work.</h2>
-          <p>Scroll sideways or use controls</p>
+      <!-- ----------------------------------------------------------------
+           Spread 00: Frontispiece & Volume Cover
+           ---------------------------------------------------------------- -->
+      <article class="runway-spread spread-frontispiece" id="spread-00" data-chapter="COVER // FRONTISPIECE">
+        <!-- Parallax Background Grid & Marks -->
+        <div class="parallax-bg" aria-hidden="true">
+          <div class="bg-grid-lines"></div>
+          <span class="registration-mark mark-tl">+ REG 00.1A</span>
+          <span class="registration-mark mark-tr">GRID 40°N +</span>
+          <span class="registration-mark mark-bl">FOLIO ED. III</span>
+          <span class="registration-mark mark-br">VELLUM REF +</span>
+          <span class="bg-ghost-numeral">III</span>
         </div>
-        <div class="rail-controls">
-          <button class="rail-button" id="previous" aria-label="Previous project">←</button>
-          <button class="rail-button" id="next" aria-label="Next project">→</button>
+
+        <div class="frontispiece-content">
+          <div class="monograph-kicker-bar">
+            <span class="monograph-kicker">Haute Architectural Monograph</span>
+            <span class="monograph-rule-tag" aria-hidden="true"></span>
+            <span class="monograph-issue-label">Issue № 003 · Folio Edition 2026</span>
+          </div>
+
+          <h1 class="monumental-headline">
+            LIGHT AS<br>
+            <em>MATERIAL</em><br>
+            &amp; DISCIPLINE.
+          </h1>
+
+          <div class="frontispiece-body">
+            <p class="frontispiece-abstract">
+              A kinematic monograph traversing the threshold of physical massing, daylight autonomy, and human circadian rhythm. Curating four pivotal architectural investigations, fourteen analog lighting studies, and twenty-one 35mm observations.
+            </p>
+
+            <div class="frontispiece-specs">
+              <div class="spec-entry">
+                <span class="spec-key">Practitioner</span>
+                <span class="spec-value">Julian Kotara</span>
+              </div>
+              <div class="spec-entry">
+                <span class="spec-key">Academic Base</span>
+                <span class="spec-value">CU Boulder Architectural Engineering</span>
+              </div>
+              <div class="spec-entry">
+                <span class="spec-key">Discipline</span>
+                <span class="spec-value">Daylighting &amp; Electric Luminaire Design</span>
+              </div>
+              <div class="spec-entry">
+                <span class="spec-key">Optical Toolkit</span>
+                <span class="spec-value">ClimateStudio · AGi32 · 1:1 Mockups</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="runway-scroll-hint">
+            <span>Vertical scroll drives kinematic runway</span>
+            <span class="hint-arrow" aria-hidden="true">→</span>
+          </div>
         </div>
-      </div>
+      </article>
 
-      <div class="project-rail" id="project-rail" tabindex="0" aria-label="Selected projects gallery">
-        <!-- 01 Children's Museum -->
-        <a class="project-card" href="project-museum.html" data-project="museum">
-          <img src="assets/projects/museum/museum-hero.png" alt="Children's Museum architectural design" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">01</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Children's<br>Museum</strong>
-            <small>Cultural · Massing & Transparency / 2025</small>
-          </span>
-        </a>
+      <!-- ----------------------------------------------------------------
+           Spread 01: Monograph Chapter I — Children's Museum
+           ---------------------------------------------------------------- -->
+      <article class="runway-spread spread-project" id="spread-01" data-chapter="01 // CHILDREN'S MUSEUM">
+        <!-- Parallax Background -->
+        <div class="parallax-bg" aria-hidden="true">
+          <div class="bg-grid-lines"></div>
+          <span class="bg-ghost-numeral">01</span>
+          <img class="bg-elevation-linework" src="assets/projects/museum/elevation-study.png" alt="" loading="lazy">
+          <span class="registration-mark mark-tl">+ SEC 01.A</span>
+          <span class="registration-mark mark-br">PEARL ST. FRONTAGE +</span>
+        </div>
 
-        <!-- 02 Central Lobby -->
-        <a class="project-card" href="project-lobby.html" data-project="lobby">
-          <img src="assets/projects/central loby/suspended shapes1.jpg" alt="University Central Lobby lighting design" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">02</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>University<br>Central Lobby</strong>
-            <small>Lighting Design · Interior & Facade / 2025</small>
-          </span>
-        </a>
+        <!-- Midground Photographic Horizon -->
+        <div class="parallax-mid">
+          <div class="project-plate-composition">
+            <div class="plate-hero-wrap">
+              <img src="assets/projects/museum/museum-hero.png" alt="Children's Museum Pearl Street exterior perspective" loading="lazy">
+              <div class="plate-caption-tag">Pl. 01.1 // Primary Elevation &amp; Public Glazed Atrium</div>
+            </div>
+            <div class="plate-secondary-wrap">
+              <img src="assets/projects/museum/axonometric-model.png" alt="Axonometric massing model of Children's Museum" loading="lazy">
+              <div class="plate-caption-tag">Pl. 01.2 // Interlocking Massing Axonometric</div>
+            </div>
+          </div>
+        </div>
 
-        <!-- 03 Mountain Home -->
-        <a class="project-card" href="project-mountain.html" data-project="mountain">
-          <img src="assets/projects/mountain-home.jpg" alt="Luxury Mountain Home rendering" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">03</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Luxury<br>Mountain Home</strong>
-            <small>Residential · Daylight Studies / 2025</small>
-          </span>
-        </a>
+        <!-- Foreground Typographic Plane -->
+        <div class="parallax-fg">
+          <div class="project-monograph-story">
+            <span class="chapter-badge">Chapter 01 // Cultural &amp; Civic Architecture · 2025</span>
+            <h2 class="chapter-title">Children's<br><em>Museum</em></h2>
+            <p class="chapter-subtitle">Pearl Street Mall Civic Void &amp; North Daylight Clerestories</p>
+            
+            <p class="chapter-narrative">
+              Carved into the pedestrian fabric of Boulder’s downtown mall, the museum dissolves the threshold between civic street life and hands-on discovery. Deep clerestories draw diffused northern daylight into multi-level workshop galleries while eliminating annual solar exposure glare.
+            </p>
 
-        <!-- 04 Bench Study -->
-        <a class="project-card wide" href="project-bench.html" data-project="bench">
-          <img src="assets/projects/bench study/bench-persp-style1.png" alt="Exterior Bench Lighting Studies" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">04</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Exterior Bench<br>Lighting Study</strong>
-            <small>Lighting Research · Mockups & Optics / 2025</small>
-          </span>
-        </a>
+            <div class="chapter-data-sheet">
+              <div class="data-cell">
+                <span class="data-cell-key">Location</span>
+                <span class="data-cell-value">Pearl Street Mall, Boulder, CO</span>
+              </div>
+              <div class="data-cell">
+                <span class="data-cell-key">Daylight Autonomy</span>
+                <span class="data-cell-value">sDA 78% / ASE 4.2%</span>
+              </div>
+              <div class="data-cell">
+                <span class="data-cell-key">Typology</span>
+                <span class="data-cell-value">Cultural Community Hub</span>
+              </div>
+              <div class="data-cell">
+                <span class="data-cell-key">Computational Suite</span>
+                <span class="data-cell-value">ClimateStudio · Revit · Twinmotion</span>
+              </div>
+            </div>
 
-        <!-- 05 Photography -->
-        <a class="project-card" href="photography.html" data-project="photo">
-          <img src="assets/projects/photography.jpg" alt="Architectural photography study" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">05</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Photography &<br>Light Studies</strong>
-            <small>Visual Studies · Shadow & Geometry</small>
-          </span>
-        </a>
+            <a href="project-museum.html" class="monograph-cta">
+              <span>Open Monograph Chapter 01</span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </article>
 
-        <!-- 06 Lighting Sketches -->
-        <a class="project-card" href="sketches.html" data-project="sketches">
-          <img src="assets/Light Sketches/Senior Design/Exterior.jpg" alt="Lighting Sketches and Visual Ideation" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">06</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Lighting Sketches<br>&amp; Ideation</strong>
-            <small>Hand Sketches · Daylight &amp; Nocturnal</small>
-          </span>
-        </a>
-      </div>
-    </section>
+      <!-- ----------------------------------------------------------------
+           Spread 02: Monograph Chapter II — University Central Lobby
+           ---------------------------------------------------------------- -->
+      <article class="runway-spread spread-project" id="spread-02" data-chapter="02 // CENTRAL LOBBY">
+        <!-- Parallax Background -->
+        <div class="parallax-bg" aria-hidden="true">
+          <div class="bg-grid-lines"></div>
+          <span class="bg-ghost-numeral">02</span>
+          <span class="registration-mark mark-tl">+ OPT 02.B</span>
+          <span class="registration-mark mark-br">AGi32 PHOTOMETRIC MODEL +</span>
+        </div>
 
-    <!-- About / Contact Section -->
-    <section class="about" id="about">
-      <p class="kicker">About / Contact</p>
-      <h2>Designing for the interplay between daylight, shadow, and <em>circadian rhythm.</em></h2>
-      <div class="about-content">
-        <p>
-          Architectural Engineering graduate student at the University of Colorado Boulder with an emphasis on lighting design and circadian rhythm. Exploring the intersection of architectural form, illumination, and human perception.
-        </p>
-        <a class="contact-link" href="mailto:julian.kotara@colorado.edu">
-          julian.kotara@colorado.edu <span>↗</span>
-        </a>
-      </div>
-    </section>
+        <!-- Midground Photographic Horizon -->
+        <div class="parallax-mid">
+          <div class="project-plate-composition">
+            <div class="plate-hero-wrap">
+              <img src="assets/projects/central loby/suspended shapes1.jpg" alt="University Central Lobby suspended catenary luminaire arrays" loading="lazy">
+              <div class="plate-caption-tag">Pl. 02.1 // Suspended Geometric Catenary Arrays</div>
+            </div>
+            <div class="plate-secondary-wrap">
+              <img src="assets/projects/central loby/linear option 1 2.jpg" alt="Linear grazing cove illumination study" loading="lazy">
+              <div class="plate-caption-tag">Pl. 02.2 // Perimeter Linear Grazing &amp; Wall Wash</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Foreground Typographic Plane -->
+        <div class="parallax-fg">
+          <div class="project-monograph-story">
+            <span class="chapter-badge">Chapter 02 // Circadian Lighting Research · 2025</span>
+            <h2 class="chapter-title">Central<br><em>Lobby</em></h2>
+            <p class="chapter-subtitle">Multi-Tier Atrium Daylighting &amp; Diurnal CCT Modulation</p>
+            
+            <p class="chapter-narrative">
+              Sculpting spatial identity and physiological wakefulness within a massive university atrium. Calculated in AGi32 to harvest daylight through roof monitors during morning lectures, seamlessly transitioning to warm 2700K suspended pendants as natural light recedes.
+            </p>
+
+            <div class="chapter-data-sheet">
+              <div class="data-cell">
+                <span class="data-cell-key">Circadian Target</span>
+                <span class="data-cell-value">mEDI &gt; 250 Melanopic Lux</span>
+              </div>
+              <div class="data-cell">
+                <span class="data-cell-key">Power Density</span>
+                <span class="data-cell-value">0.48 W/ft² (38% below code)</span>
+              </div>
+              <div class="data-cell">
+                <span class="data-cell-key">CCT Range</span>
+                <span class="data-cell-value">6500K Sky Noon → 2700K Dusk</span>
+              </div>
+              <div class="data-cell">
+                <span class="data-cell-key">Engineering Suite</span>
+                <span class="data-cell-value">AGi32 · Photometric Raytracing</span>
+              </div>
+            </div>
+
+            <a href="project-lobby.html" class="monograph-cta">
+              <span>Open Monograph Chapter 02</span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- ----------------------------------------------------------------
+           Spread 03: Monograph Chapter III — Luxury Mountain Home
+           ---------------------------------------------------------------- -->
+      <article class="runway-spread spread-project" id="spread-03" data-chapter="03 // MOUNTAIN HOME">
+        <!-- Parallax Background -->
+        <div class="parallax-bg" aria-hidden="true">
+          <div class="bg-grid-lines"></div>
+          <span class="bg-ghost-numeral">03</span>
+          <img class="bg-elevation-linework" src="assets/projects/mountain home/luxury home massing.png" alt="" loading="lazy">
+          <span class="registration-mark mark-tl">+ ELEV 03.C</span>
+          <span class="registration-mark mark-br">BLUE RIDGE CONTOUR +</span>
+        </div>
+
+        <!-- Midground Photographic Horizon -->
+        <div class="parallax-mid">
+          <div class="project-plate-composition">
+            <div class="plate-hero-wrap">
+              <img src="assets/projects/mountain-home.jpg" alt="Luxury Mountain Home ridge perspective" loading="lazy">
+              <div class="plate-caption-tag">Pl. 03.1 // Stepped Terraces &amp; Mountain Horizon Horizon</div>
+            </div>
+            <div class="plate-secondary-wrap">
+              <img src="assets/projects/mountain home/luxury home massing.png" alt="Stepped massing diagram following ridge contour" loading="lazy">
+              <div class="plate-caption-tag">Pl. 03.2 // Topographical Terracing &amp; Solar Penetration</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Foreground Typographic Plane -->
+        <div class="parallax-fg">
+          <div class="project-monograph-story">
+            <span class="chapter-badge">Chapter 03 // Alpine Residential Architecture · 2025</span>
+            <h2 class="chapter-title">Mountain<br><em>Home</em></h2>
+            <p class="chapter-subtitle">Stepped Ridge Topography &amp; Calculated Solar Overhangs</p>
+            
+            <p class="chapter-narrative">
+              Carved directly into the slope of a western North Carolina ridge, this alpine residence mediates dramatic solar exposure and panoramic horizon vistas. Custom overhangs cut off high 71° summer sun while capturing deep low-angle winter heat gains.
+            </p>
+
+            <div class="chapter-data-sheet">
+              <div class="data-cell">
+                <span class="data-cell-key">Topography</span>
+                <span class="data-cell-value">Western NC Ridgeline Slope</span>
+              </div>
+              <div class="data-cell">
+                <span class="data-cell-key">Solar Geometry</span>
+                <span class="data-cell-value">71° Solar Overhang Cutoff</span>
+              </div>
+              <div class="data-cell">
+                <span class="data-cell-key">Envelope Palette</span>
+                <span class="data-cell-value">Local Stone · Heavy Timber · Low-E</span>
+              </div>
+              <div class="data-cell">
+                <span class="data-cell-key">Modeling</span>
+                <span class="data-cell-value">Revit · Enscape · Solar Vectoring</span>
+              </div>
+            </div>
+
+            <a href="project-mountain.html" class="monograph-cta">
+              <span>Open Monograph Chapter 03</span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- ----------------------------------------------------------------
+           Spread 04: Monograph Chapter IV — Exterior Bench Lighting Study
+           ---------------------------------------------------------------- -->
+      <article class="runway-spread spread-project" id="spread-04" data-chapter="04 // BENCH STUDY">
+        <!-- Parallax Background -->
+        <div class="parallax-bg" aria-hidden="true">
+          <div class="bg-grid-lines"></div>
+          <span class="bg-ghost-numeral">04</span>
+          <img class="bg-elevation-linework" src="assets/projects/bench study/bench-plan-style1.png" alt="" loading="lazy">
+          <span class="registration-mark mark-tl">+ MOCKUP 04.D</span>
+          <span class="registration-mark mark-br">DARK SKY ZERO UPLIGHT +</span>
+        </div>
+
+        <!-- Midground Photographic Horizon -->
+        <div class="parallax-mid">
+          <div class="project-plate-composition">
+            <div class="plate-hero-wrap">
+              <img src="assets/projects/bench study/bench-persp-style1.png" alt="Exterior Bench physical prototype with asymmetric low grazing optics" loading="lazy">
+              <div class="plate-caption-tag">Pl. 04.1 // Physical Prototype &amp; Asymmetric Pathway Grazing</div>
+            </div>
+            <div class="plate-secondary-wrap">
+              <img src="assets/projects/bench study/bench-plan-style1.png" alt="Bench technical CAD section and beam distribution" loading="lazy">
+              <div class="plate-caption-tag">Pl. 04.2 // Optical Cutoff &amp; Asymmetric Cavity Detail</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Foreground Typographic Plane -->
+        <div class="parallax-fg">
+          <div class="project-monograph-story">
+            <span class="chapter-badge">Chapter 04 // Optical Research &amp; Mockups · 2025</span>
+            <h2 class="chapter-title">Bench<br><em>Study</em></h2>
+            <p class="chapter-subtitle">1:1 Physical Luminaire Prototyping &amp; Dark Sky Compliance</p>
+            
+            <p class="chapter-narrative">
+              An empirical exploration into pedestrian wayfinding and zero upward waste light. Constructing full-scale mockups to test concealed asymmetric luminaire cavities that illuminate walking surfaces with precision while protecting nocturnal night sky darkness.
+            </p>
+
+            <div class="chapter-data-sheet">
+              <div class="data-cell">
+                <span class="data-cell-key">BUG Rating</span>
+                <span class="data-cell-value">B1 - U0 - G0 (Zero Uplight)</span>
+              </div>
+              <div class="data-cell">
+                <span class="data-cell-key">Testing Rig</span>
+                <span class="data-cell-value">1:1 Full Scale Wooden Mockup</span>
+              </div>
+              <div class="data-cell">
+                <span class="data-cell-key">Optical Shielding</span>
+                <span class="data-cell-value">Concealed 45° Asymmetric Lip</span>
+              </div>
+              <div class="data-cell">
+                <span class="data-cell-key">Standard</span>
+                <span class="data-cell-value">IDA Dark Sky Compliant</span>
+              </div>
+            </div>
+
+            <a href="project-bench.html" class="monograph-cta">
+              <span>Open Monograph Chapter 04</span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- ----------------------------------------------------------------
+           Spread 05: Curatorial Interlude — Hand Sketches Monograph Salon
+           ---------------------------------------------------------------- -->
+      <article class="runway-spread spread-sketches" id="spread-05" data-chapter="05 // HAND SKETCHES">
+        <!-- Parallax Background -->
+        <div class="parallax-bg" aria-hidden="true">
+          <div class="bg-grid-lines"></div>
+          <span class="bg-ghost-numeral">05</span>
+          <span class="registration-mark mark-tl">+ FOLIO 05.E</span>
+          <span class="registration-mark mark-br">ANALOG TRACE ARCHIVE +</span>
+        </div>
+
+        <!-- Midground Continuous Filmstrip -->
+        <div class="parallax-mid">
+          <div class="sketches-filmstrip">
+            <div class="sketch-frame">
+              <img src="assets/Light Sketches/Chicago Center ALD/Ald concept sketch.jpg" alt="Chicago Center ALD daylight and circulation concept sketch" loading="lazy">
+              <div class="sketch-frame-caption">
+                <span>Fig. 5.1 // Chicago Center ALD</span>
+                <span>Daylight Penetration</span>
+              </div>
+            </div>
+            <div class="sketch-frame">
+              <img src="assets/Light Sketches/Senior Design/Exterior.jpg" alt="Senior Design nocturnal facade grazing hand sketch" loading="lazy">
+              <div class="sketch-frame-caption">
+                <span>Fig. 5.2 // Senior Design</span>
+                <span>Nocturnal Grazing</span>
+              </div>
+            </div>
+            <div class="sketch-frame">
+              <img src="assets/Light Sketches/Chicago Center ALD/Ald 1st perspective.jpg" alt="Atrium circulation and vertical luminous stair sketch" loading="lazy">
+              <div class="sketch-frame-caption">
+                <span>Fig. 5.3 // Circulation Perspective</span>
+                <span>Luminous Stair Flow</span>
+              </div>
+            </div>
+            <div class="sketch-frame">
+              <img src="assets/Light Sketches/IMG_0334.jpeg" alt="Luminaire optical array conceptual sketch" loading="lazy">
+              <div class="sketch-frame-caption">
+                <span>Fig. 5.4 // Optical Array</span>
+                <span>Hand Ink Study</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Foreground Typographic Plane -->
+        <div class="parallax-fg">
+          <div class="project-monograph-story">
+            <span class="chapter-badge">Chapter 05 // Analog Ideation &amp; Trace · 2026</span>
+            <h2 class="chapter-title">Spatial<br><em>Sketches</em></h2>
+            <p class="chapter-subtitle">The Hand Sketch as Primary Optical Instrument</p>
+            
+            <p class="chapter-narrative">
+              Before computational raytracing begins, ink on trace paper tests light’s initial geometry. These fourteen visual studies capture solar trajectories, aperture angles, and nocturnal contrast gradients in raw, expressive gestural notation.
+            </p>
+
+            <a href="sketches.html" class="monograph-cta">
+              <span>View Complete 14-Sketch Folio</span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- ----------------------------------------------------------------
+           Spread 06: Curatorial Interlude — 35mm Analog Light & Photography
+           ---------------------------------------------------------------- -->
+      <article class="runway-spread spread-photo" id="spread-06" data-chapter="06 // 35MM OBSERVATION">
+        <!-- Parallax Background -->
+        <div class="parallax-bg" aria-hidden="true">
+          <div class="bg-grid-lines"></div>
+          <span class="bg-ghost-numeral">06</span>
+          <span class="registration-mark mark-tl">+ OPT 06.F</span>
+          <span class="registration-mark mark-br">35MM SILVER HALIDE ARCHIVE +</span>
+        </div>
+
+        <!-- Midground Triptych -->
+        <div class="parallax-mid">
+          <div class="photo-triptych">
+            <div class="triptych-item">
+              <img src="assets/photography/arch/IMG_6268 2.jpeg" alt="Architectural vertical massing low-angle study" loading="lazy">
+              <div class="plate-caption-tag">35mm Arch // Vertical Massing &amp; Elevation</div>
+            </div>
+            <div class="triptych-item">
+              <img src="assets/photography/light/36537049-14CF-4DF3-9025-EDFB5DE96B23_1_105_c.jpeg" alt="Striated daylight beam raking across interior wall" loading="lazy">
+              <div class="plate-caption-tag">Daylight Study // Raking Morning Angle</div>
+            </div>
+            <div class="triptych-item">
+              <img src="assets/photography/light/IMG_6082.JPG" alt="High chiaroscuro contrast shadow geometry study" loading="lazy">
+              <div class="plate-caption-tag">Chiaroscuro Study // Chiaroscuro Form</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Foreground Typographic Plane -->
+        <div class="parallax-fg">
+          <div class="project-monograph-story">
+            <span class="chapter-badge">Chapter 06 // Visual Laboratory · Ongoing</span>
+            <h2 class="chapter-title">Shadow &amp;<br><em>Geometry</em></h2>
+            <p class="photo-editorial-quote">
+              "Shadow is not the absence of light, but its architectural counterpart."
+            </p>
+            <p class="chapter-narrative">
+              An ongoing photographic archive examining the physical interaction of natural daylight with architectural surfaces, structural corners, and fleeting atmospheric gradients.
+            </p>
+
+            <a href="photography.html" class="monograph-cta">
+              <span>Enter Photographic Gallery (21 Studies)</span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- ----------------------------------------------------------------
+           Spread 07: Colophon & Curatorial Imprint
+           ---------------------------------------------------------------- -->
+      <article class="runway-spread spread-colophon" id="spread-07" data-chapter="07 // COLOPHON & BIO">
+        <!-- Parallax Background -->
+        <div class="parallax-bg" aria-hidden="true">
+          <div class="bg-grid-lines"></div>
+          <span class="bg-ghost-numeral">07</span>
+          <span class="registration-mark mark-tl">+ COLOPHON 07.G</span>
+          <span class="registration-mark mark-br">BOULDER, COLORADO +</span>
+        </div>
+
+        <div class="colophon-grid">
+          <div class="colophon-bio">
+            <span class="chapter-badge">Colophon // Curatorial Statement</span>
+            <h2>Julian<br><em>Kotara</em></h2>
+            <p class="colophon-text">
+              Architectural Engineering graduate student at the University of Colorado Boulder focusing on lighting design, daylight harvesting, and circadian wellness. Bridging rigorous quantitative photometrics with sensitive spatial intuition.
+            </p>
+            <a class="colophon-contact-link" href="mailto:julian.kotara@colorado.edu">
+              <span>julian.kotara@colorado.edu</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+
+          <div class="colophon-index">
+            <div>
+              <div class="colophon-index-title">Monograph Directory // Direct Folio Links</div>
+              <ul class="colophon-link-list">
+                <li><a href="project-museum.html"><span>01 / Children's Museum</span> <span>Pearl Street ↗</span></a></li>
+                <li><a href="project-lobby.html"><span>02 / University Central Lobby</span> <span>Atrium Lighting ↗</span></a></li>
+                <li><a href="project-mountain.html"><span>03 / Luxury Mountain Home</span> <span>Alpine Envelope ↗</span></a></li>
+                <li><a href="project-bench.html"><span>04 / Exterior Bench Study</span> <span>Dark Sky Optics ↗</span></a></li>
+                <li><a href="sketches.html"><span>05 / Lighting Sketches (14)</span> <span>Analog Trace ↗</span></a></li>
+                <li><a href="photography.html"><span>06 / Photography Studies (21)</span> <span>35mm Monochromes ↗</span></a></li>
+                <li><a href="about.html"><span>07 / Extended Background &amp; CV</span> <span>Academic Profile ↗</span></a></li>
+              </ul>
+            </div>
+
+            <div class="colophon-imprint">
+              Haute Architectural Monograph · Vol. III · 2026<br>
+              Typeset in Playfair Display &amp; Manrope · Built on GSAP 3 &amp; ScrollTrigger
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
   </main>
 
-  <script src="script.js"></script>
-  <script src="lighting-fx.js"></script>
-  <script src="editor.js"></script>
+  <!-- ====================================================================
+       Bottom Runway HUD & Dynamic Scrubber Bar
+       ==================================================================== -->
+  <footer class="runway-hud-bar" role="navigation" aria-label="Runway Timeline Controls">
+    <div class="hud-stepper-group">
+      <button class="hud-btn" id="hud-prev" aria-label="Previous Monograph Spread">← PREV</button>
+      <button class="hud-btn" id="hud-next" aria-label="Next Monograph Spread">NEXT →</button>
+      <span class="hud-percentage" id="hud-percent" aria-live="polite">0%</span>
+    </div>
+
+    <!-- Interactive Horizontal Scrubber Track -->
+    <div class="hud-scrubber-track" id="scrubber-track" role="slider" aria-label="Monograph Runway Progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+      <div class="hud-scrubber-fill" id="scrubber-fill"></div>
+    </div>
+
+    <!-- Chapter Quick-Jump Pills -->
+    <div class="hud-chapter-pills" role="tablist" aria-label="Chapter Jumps">
+      <button class="chapter-pill active" data-target="spread-00">COVER</button>
+      <button class="chapter-pill" data-target="spread-01">01 MUSEUM</button>
+      <button class="chapter-pill" data-target="spread-02">02 LOBBY</button>
+      <button class="chapter-pill" data-target="spread-03">03 MOUNTAIN</button>
+      <button class="chapter-pill" data-target="spread-04">04 BENCH</button>
+      <button class="chapter-pill" data-target="spread-05">05 SKETCHES</button>
+      <button class="chapter-pill" data-target="spread-06">06 35MM</button>
+      <button class="chapter-pill" data-target="spread-07">07 COLOPHON</button>
+    </div>
+  </footer>
+
+  <!-- Runway Engine Script -->
+  <script src="runway.js"></script>
 </body>
 </html>
-
-
-

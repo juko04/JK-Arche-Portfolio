@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Julian Kotara — Architectural & Lighting Design</title>
+  <title>Julian Kotara — The Interactive Drafting Desk · Architectural & Lighting Design</title>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="styles.css">
   
@@ -17,150 +17,313 @@
 </head>
 <body>
 
-  <!-- Navigation -->
-  <header class="glass-nav">
-    <a class="monogram" href="index.html" aria-label="Julian Kotara home">JK<span>.</span></a>
-    <nav aria-label="Main navigation">
-      <a href="work.html">Work</a>
+  <!-- Top Desk HUD Bar -->
+  <header class="desk-hud-top">
+    <div class="hud-left">
+      <a class="hud-brand" href="index.html">
+        Julian Kotara <span>// Studio Desk 2026</span>
+      </a>
+    </div>
+
+    <nav class="hud-nav" aria-label="Main Navigation">
+      <a href="work.html">Work Index</a>
       <a href="sketches.html">Sketches</a>
       <a href="photography.html">Photography</a>
       <a href="about.html">About</a>
     </nav>
+
+    <div class="hud-right">
+      <span class="hud-coords" id="hud-coords">CANVAS // X: 1680 · Y: 1240 · 85%</span>
+    </div>
   </header>
 
-  <!-- Main Content -->
-  <main id="top">
-    <!-- Hero / Intro -->
-    <section class="intro">
-      <div class="geo-circle geo-circle-top-left" id="geo-circle-top-left" aria-hidden="true"></div>
-      <div class="geo-circle geo-circle-bottom-right" id="geo-circle-bottom-right" aria-hidden="true"></div>
+  <!-- Interactive Drafting Viewport -->
+  <main class="drafting-viewport" id="drafting-viewport" aria-label="Interactive Drafting Desk Canvas. Click and drag to pan; use wheel to zoom.">
+    <div class="drafting-surface" id="drafting-surface">
+      
+      <!-- Coordinate Datum Markers -->
+      <span class="surface-datum-marker top-left">+ 00.00 / 00.00 MAT ORIGIN [BOULDER STUDIO]</span>
+      <span class="surface-datum-marker top-right">+ 36.00 / 00.00 DATUM [40.0076° N]</span>
+      <span class="surface-datum-marker bottom-left">+ 00.00 / 28.00 DATUM [105.2659° W]</span>
+      <span class="surface-datum-marker bottom-right">+ 36.00 / 28.00 SCALE 1:50</span>
 
-      <p class="kicker hero-kicker" id="hero-kicker" data-custom-id="hero-kicker">Architectural Engineering · Lighting Design</p>
-      <h1 class="hero-title" id="hero-title" data-custom-id="hero-title">Julian<br><span id="hero-last-name">Kotara</span></h1>
+      <!-- ====================================================================
+           SHEET 00: Center Studio Statement Sheet
+           ==================================================================== -->
+      <article class="arch-sheet sheet-hero-main" id="sheet-hero">
+        <span class="sheet-corner-mark tl"></span>
+        <span class="sheet-corner-mark tr"></span>
+        <span class="sheet-corner-mark bl"></span>
+        <span class="sheet-corner-mark br"></span>
 
-      <div class="intro-body" id="hero-body" data-custom-id="hero-body">
-        <p class="role" id="hero-role" data-custom-id="hero-role">Architectural Engineering Graduate Student · Lighting Design &amp; Daylighting</p>
-        <p class="intro-copy" id="hero-copy" data-custom-id="hero-copy">
-          I study how daylight and electric light shape human biology, mood, and spatial perception. By balancing computational analysis with an appreciation for shadow and texture, I design environments that feel natural, comfortable, and intentional.
-        </p>
-      </div>
-
-
-      <div class="intro-bottom">
-        <a class="explore" href="#work">Explore selected work <span>↓</span></a>
-        <span class="intro-meta">CU Boulder · Portfolio 2026</span>
-      </div>
-    </section>
-
-    <!-- Selected Work Horizontal Rail -->
-    <section class="work-section" id="work">
-      <div class="work-head">
-        <div class="work-head-text">
-          <p class="kicker">Selected Projects</p>
-          <h2>Move <em>through</em> the work.</h2>
-          <p>Scroll sideways or use controls</p>
+        <div class="sheet-meta-bar">
+          <span class="sheet-stamp">⊕ Studio Ledger 00</span>
+          <span>CU Boulder · Arch. Engineering M.S.</span>
         </div>
-        <div class="rail-controls">
-          <button class="rail-button" id="previous" aria-label="Previous project">←</button>
-          <button class="rail-button" id="next" aria-label="Next project">→</button>
-        </div>
-      </div>
 
-      <div class="project-rail" id="project-rail" tabindex="0" aria-label="Selected projects gallery">
-        <!-- 01 Children's Museum -->
-        <a class="project-card" href="project-museum.html" data-project="museum">
-          <img src="assets/projects/museum/museum-hero.png" alt="Children's Museum architectural design" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">01</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Children's<br>Museum</strong>
-            <small>Cultural · Massing & Transparency / 2025</small>
-          </span>
-        </a>
-
-        <!-- 02 Central Lobby -->
-        <a class="project-card" href="project-lobby.html" data-project="lobby">
-          <img src="assets/projects/central loby/suspended shapes1.jpg" alt="University Central Lobby lighting design" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">02</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>University<br>Central Lobby</strong>
-            <small>Lighting Design · Interior & Facade / 2025</small>
-          </span>
-        </a>
-
-        <!-- 03 Mountain Home -->
-        <a class="project-card" href="project-mountain.html" data-project="mountain">
-          <img src="assets/projects/mountain-home.jpg" alt="Luxury Mountain Home rendering" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">03</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Luxury<br>Mountain Home</strong>
-            <small>Residential · Daylight Studies / 2025</small>
-          </span>
-        </a>
-
-        <!-- 04 Bench Study -->
-        <a class="project-card wide" href="project-bench.html" data-project="bench">
-          <img src="assets/projects/bench study/bench-persp-style1.png" alt="Exterior Bench Lighting Studies" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">04</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Exterior Bench<br>Lighting Study</strong>
-            <small>Lighting Research · Mockups & Optics / 2025</small>
-          </span>
-        </a>
-
-        <!-- 05 Photography -->
-        <a class="project-card" href="photography.html" data-project="photo">
-          <img src="assets/projects/photography.jpg" alt="Architectural photography study" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">05</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Photography &<br>Light Studies</strong>
-            <small>Visual Studies · Shadow & Geometry</small>
-          </span>
-        </a>
-
-        <!-- 06 Lighting Sketches -->
-        <a class="project-card" href="sketches.html" data-project="sketches">
-          <img src="assets/Light Sketches/Senior Design/Exterior.jpg" alt="Lighting Sketches and Visual Ideation" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">06</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Lighting Sketches<br>&amp; Ideation</strong>
-            <small>Hand Sketches · Daylight &amp; Nocturnal</small>
-          </span>
-        </a>
-      </div>
-    </section>
-
-    <!-- About / Contact Section -->
-    <section class="about" id="about">
-      <p class="kicker">About / Contact</p>
-      <h2>Designing for the interplay between daylight, shadow, and <em>circadian rhythm.</em></h2>
-      <div class="about-content">
-        <p>
-          Architectural Engineering graduate student at the University of Colorado Boulder with an emphasis on lighting design and circadian rhythm. Exploring the intersection of architectural form, illumination, and human perception.
+        <h1 class="hero-lead-title">
+          Light is an active<br><em>architectural material.</em>
+        </h1>
+        <p class="hero-lead-quote">
+          I bridge the computational physics of daylight harvesting and circadian metrics with sensory illumination, material shadow, and optical craft.
         </p>
-        <a class="contact-link" href="mailto:julian.kotara@colorado.edu">
-          julian.kotara@colorado.edu <span>↗</span>
-        </a>
-      </div>
-    </section>
+
+        <div class="sheet-data-strip">
+          <div><span class="data-tag-label">Specialization:</span> <span class="data-tag-val">Daylighting &amp; Electric Lighting</span></div>
+          <div><span class="data-tag-label">Degree Track:</span> <span class="data-tag-val">B.S. &amp; M.S. Architectural Eng.</span></div>
+          <div><span class="data-tag-label">Location:</span> <span class="data-tag-val">Boulder, Colorado</span></div>
+          <div><span class="data-tag-label">Interaction:</span> <span class="data-tag-val">Drag desk to pan · Drag sheets to restack</span></div>
+        </div>
+
+        <div class="sheet-actions">
+          <a class="sheet-btn" href="about.html">Read Full Biography ↗</a>
+          <a class="sheet-btn" href="mailto:julian.kotara@colorado.edu">Inquire / Email ↗</a>
+        </div>
+      </article>
+
+      <!-- ====================================================================
+           SHEET 01: University Central Lobby
+           ==================================================================== -->
+      <article class="arch-sheet sheet-project-lobby" id="sheet-lobby">
+        <span class="sheet-corner-mark tl"></span>
+        <span class="sheet-corner-mark tr"></span>
+        <span class="sheet-corner-mark bl"></span>
+        <span class="sheet-corner-mark br"></span>
+
+        <div class="sheet-meta-bar">
+          <span class="sheet-stamp">⊕ Sheet 01 / Lighting Design</span>
+          <span>2025 Study</span>
+        </div>
+
+        <div class="sheet-media-frame">
+          <img src="assets/projects/central loby/suspended shapes1.jpg" alt="University Central Lobby Illumination" loading="lazy">
+        </div>
+
+        <h2 class="sheet-title">University Central Lobby</h2>
+        <p class="sheet-desc">
+          Suspended volumetric luminaires designed to visually anchor an expansive atrium volume while delivering circadian vertical illuminance.
+        </p>
+
+        <div class="sheet-data-strip">
+          <div><span class="data-tag-label">Calculation Engine:</span> <span class="data-tag-val">AGi32 Full Radiosity</span></div>
+          <div><span class="data-tag-label">Circadian Target:</span> <span class="data-tag-val">250+ mEDI Daytime</span></div>
+          <div><span class="data-tag-label">CCT Strategy:</span> <span class="data-tag-val">3000K Warm Architectural White</span></div>
+          <div><span class="data-tag-label">Mounting:</span> <span class="data-tag-val">Custom Catenary Pendant Rig</span></div>
+        </div>
+
+        <div class="sheet-actions">
+          <button class="sheet-btn open-inspect-btn">Quick Inspect ↗</button>
+          <a class="sheet-btn" href="project-lobby.html">Project Dossier ↗</a>
+        </div>
+      </article>
+
+      <!-- ====================================================================
+           SHEET 02: Children's Museum
+           ==================================================================== -->
+      <article class="arch-sheet sheet-project-museum" id="sheet-museum">
+        <span class="sheet-corner-mark tl"></span>
+        <span class="sheet-corner-mark tr"></span>
+        <span class="sheet-corner-mark bl"></span>
+        <span class="sheet-corner-mark br"></span>
+
+        <div class="sheet-meta-bar">
+          <span class="sheet-stamp">⊕ Sheet 02 / Daylighting &amp; Massing</span>
+          <span>2025 Study</span>
+        </div>
+
+        <div class="sheet-media-frame">
+          <img src="assets/projects/museum/museum-hero.png" alt="Children's Museum Model" loading="lazy">
+        </div>
+
+        <h2 class="sheet-title">Children's Museum</h2>
+        <p class="sheet-desc">
+          A stepped civic massing and dynamic solar envelope simulated in ClimateStudio to maximize spatial daylight autonomy (sDA 78%).
+        </p>
+
+        <div class="sheet-data-strip">
+          <div><span class="data-tag-label">Typology:</span> <span class="data-tag-val">Cultural &amp; Educational Hub</span></div>
+          <div><span class="data-tag-label">Daylight Autonomy:</span> <span class="data-tag-val">sDA 78% (Target > 75%)</span></div>
+          <div><span class="data-tag-label">Solar Glare:</span> <span class="data-tag-val">ASE 6.2% Mitigation</span></div>
+          <div><span class="data-tag-label">Tools:</span> <span class="data-tag-val">Revit, ClimateStudio, Twinmotion</span></div>
+        </div>
+
+        <div class="sheet-actions">
+          <button class="sheet-btn open-inspect-btn">Quick Inspect ↗</button>
+          <a class="sheet-btn" href="project-museum.html">Project Dossier ↗</a>
+        </div>
+      </article>
+
+      <!-- ====================================================================
+           SHEET 03: Exterior Bench Study
+           ==================================================================== -->
+      <article class="arch-sheet sheet-project-bench" id="sheet-bench">
+        <span class="sheet-corner-mark tl"></span>
+        <span class="sheet-corner-mark tr"></span>
+        <span class="sheet-corner-mark bl"></span>
+        <span class="sheet-corner-mark br"></span>
+
+        <div class="sheet-meta-bar">
+          <span class="sheet-stamp">⊕ Sheet 03 / Mockup &amp; Photometry</span>
+          <span>2025 Study</span>
+        </div>
+
+        <div class="sheet-media-frame">
+          <img src="assets/projects/bench study/bench-persp-style1.png" alt="Exterior Bench Study" loading="lazy">
+        </div>
+
+        <h2 class="sheet-title">Exterior Bench Lighting Study</h2>
+        <p class="sheet-desc">
+          1:1 scale physical optical mockup testing custom grazing angles, pedestrian cutoff distributions, and zero-uplight Dark Sky compliance.
+        </p>
+
+        <div class="sheet-data-strip">
+          <div><span class="data-tag-label">Mockup Method:</span> <span class="data-tag-val">1:1 Physical Optical Bench</span></div>
+          <div><span class="data-tag-label">BUG Rating:</span> <span class="data-tag-val">B1-U0-G0 (Zero Uplight)</span></div>
+          <div><span class="data-tag-label">Ground Uniformity:</span> <span class="data-tag-val">3:1 Ratio Target</span></div>
+          <div><span class="data-tag-label">Color Temp:</span> <span class="data-tag-val">2700K Wildlife-Safe</span></div>
+        </div>
+
+        <div class="sheet-actions">
+          <button class="sheet-btn open-inspect-btn">Quick Inspect ↗</button>
+          <a class="sheet-btn" href="project-bench.html">Project Dossier ↗</a>
+        </div>
+      </article>
+
+      <!-- ====================================================================
+           SHEET 04: Luxury Mountain Home
+           ==================================================================== -->
+      <article class="arch-sheet sheet-project-mountain" id="sheet-mountain">
+        <span class="sheet-corner-mark tl"></span>
+        <span class="sheet-corner-mark tr"></span>
+        <span class="sheet-corner-mark bl"></span>
+        <span class="sheet-corner-mark br"></span>
+
+        <div class="sheet-meta-bar">
+          <span class="sheet-stamp">⊕ Sheet 04 / Residential Solar</span>
+          <span>2025 Study</span>
+        </div>
+
+        <div class="sheet-media-frame">
+          <img src="assets/projects/mountain-home.jpg" alt="Luxury Mountain Home" loading="lazy">
+        </div>
+
+        <h2 class="sheet-title">Luxury Mountain Home</h2>
+        <p class="sheet-desc">
+          Stepped alpine massing utilizing deep southern eaves to invite winter solar heating while blocking high-altitude summer direct glare.
+        </p>
+
+        <div class="sheet-data-strip">
+          <div><span class="data-tag-label">Solar Strategy:</span> <span class="data-tag-val">Passive Solar Overhang 71°</span></div>
+          <div><span class="data-tag-label">Glazing:</span> <span class="data-tag-val">Low-E Triple Pane (SHGC 0.28)</span></div>
+          <div><span class="data-tag-label">Location:</span> <span class="data-tag-val">Western North Carolina</span></div>
+          <div><span class="data-tag-label">Site Elevation:</span> <span class="data-tag-val">3,800 ft Ridge</span></div>
+        </div>
+
+        <div class="sheet-actions">
+          <button class="sheet-btn open-inspect-btn">Quick Inspect ↗</button>
+          <a class="sheet-btn" href="project-mountain.html">Project Dossier ↗</a>
+        </div>
+      </article>
+
+      <!-- ====================================================================
+           SHEET 05: Hand Sketches & Ideation
+           ==================================================================== -->
+      <article class="arch-sheet sheet-sketches" id="sheet-sketches">
+        <span class="sheet-corner-mark tl"></span>
+        <span class="sheet-corner-mark tr"></span>
+        <span class="sheet-corner-mark bl"></span>
+        <span class="sheet-corner-mark br"></span>
+
+        <div class="sheet-meta-bar">
+          <span class="sheet-stamp">⊕ Sheet 05 / Vellum Ideation</span>
+          <span>14 Hand Studies</span>
+        </div>
+
+        <div class="sheet-strip">
+          <div class="sheet-strip-thumb"><img src="assets/Light Sketches/Chicago Center ALD/Ald concept sketch.jpg" alt="Sketch 1" loading="lazy"></div>
+          <div class="sheet-strip-thumb"><img src="assets/Light Sketches/Senior Design/Exterior.jpg" alt="Sketch 2" loading="lazy"></div>
+          <div class="sheet-strip-thumb"><img src="assets/Light Sketches/Chicago Center ALD/Ald 2nd floor stairs.jpg" alt="Sketch 3" loading="lazy"></div>
+        </div>
+
+        <h2 class="sheet-title">Lighting Sketches &amp; Ideation</h2>
+        <p class="sheet-desc">
+          Hand-drawn lighting diagrams, solar penetration studies, and nocturnal illuminance sketches testing reflections and spatial boundaries.
+        </p>
+
+        <div class="sheet-actions">
+          <button class="sheet-btn open-inspect-btn">Quick Inspect ↗</button>
+          <a class="sheet-btn" href="sketches.html">Browse All 14 Studies ↗</a>
+        </div>
+      </article>
+
+      <!-- ====================================================================
+           SHEET 06: 35mm Analog Light & Photography
+           ==================================================================== -->
+      <article class="arch-sheet sheet-photo" id="sheet-photo">
+        <span class="sheet-corner-mark tl"></span>
+        <span class="sheet-corner-mark tr"></span>
+        <span class="sheet-corner-mark bl"></span>
+        <span class="sheet-corner-mark br"></span>
+
+        <div class="sheet-meta-bar">
+          <span class="sheet-stamp">⊕ Sheet 06 / Film Observations</span>
+          <span>21 Works</span>
+        </div>
+
+        <div class="sheet-strip">
+          <div class="sheet-strip-thumb"><img src="assets/photography/arch/IMG_6268 2.jpeg" alt="Photo 1" loading="lazy"></div>
+          <div class="sheet-strip-thumb"><img src="assets/photography/light/IMG_2694 2.JPG" alt="Photo 2" loading="lazy"></div>
+          <div class="sheet-strip-thumb"><img src="assets/photography/arch/kotara004502-R1-052-24A.jpg" alt="Photo 3" loading="lazy"></div>
+        </div>
+
+        <h2 class="sheet-title">35mm Film &amp; Architectural Light</h2>
+        <p class="sheet-desc">
+          Observational studies capturing razor-sharp shadow geometry, architectural texture, and fleeting daylight rakes.
+        </p>
+
+        <div class="sheet-actions">
+          <button class="sheet-btn open-inspect-btn">Quick Inspect ↗</button>
+          <a class="sheet-btn" href="photography.html">Explore 21 Works ↗</a>
+        </div>
+      </article>
+
+    </div>
   </main>
 
-  <script src="script.js"></script>
-  <script src="lighting-fx.js"></script>
-  <script src="editor.js"></script>
+  <!-- Floating Camera Dock (Bottom) -->
+  <div class="camera-dock-wrap">
+    <nav class="camera-dock" aria-label="Camera quick jump navigation">
+      <button class="dock-item active" data-target="sheet-hero">Studio Overview</button>
+      <button class="dock-item" data-target="sheet-lobby">01 / Central Lobby</button>
+      <button class="dock-item" data-target="sheet-museum">02 / Children's Museum</button>
+      <button class="dock-item" data-target="sheet-bench">03 / Bench Study</button>
+      <button class="dock-item" data-target="sheet-mountain">04 / Mountain Home</button>
+      <button class="dock-item" data-target="sheet-sketches">05 / Hand Sketches</button>
+      <button class="dock-item" data-target="sheet-photo">06 / 35mm Photo</button>
+    </nav>
+  </div>
+
+  <!-- Zoom HUD Controls -->
+  <div class="desk-zoom-hud" aria-label="Canvas zoom controls">
+    <button class="zoom-btn" id="zoom-in" aria-label="Zoom in">+</button>
+    <button class="zoom-btn" id="zoom-out" aria-label="Zoom out">−</button>
+    <button class="zoom-btn" id="zoom-reset" aria-label="Reset view">⊙</button>
+  </div>
+
+  <!-- Sheet Inspection Modal -->
+  <div class="sheet-modal" id="sheet-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" id="modal-close" aria-label="Close dialog">✕</button>
+      <span class="kicker" style="color: var(--accent-cyan);">Inspection Dossier</span>
+      <h2 class="sheet-title" id="modal-title" style="font-size: 32px; margin-top: 6px;">Project Title</h2>
+      <div class="modal-content-wrap">
+        <img id="modal-image" src="" alt="Project Inspection View">
+        <p class="sheet-desc" id="modal-desc" style="font-size: 15px; margin-bottom: 24px;"></p>
+        <a class="sheet-btn" id="modal-link" href="#" style="padding: 10px 18px; font-size: 12px;">Open Full Project Page ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="drafting-desk.js"></script>
 </body>
 </html>
-
-
-

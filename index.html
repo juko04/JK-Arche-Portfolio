@@ -3,164 +3,345 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Julian Kotara — Architectural & Lighting Design</title>
+  <title>Julian Kotara — The Heliostat Pavilion · Daylighting & Solar Engineering</title>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="styles.css">
   
   <!-- GSAP 3 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
 <body>
 
+  <!-- Dynamic Solar CCT Wash Layer -->
+  <div class="solar-ambient-wash" id="solar-ambient-wash" aria-hidden="true"></div>
+
   <!-- Navigation -->
-  <header class="glass-nav">
-    <a class="monogram" href="index.html" aria-label="Julian Kotara home">JK<span>.</span></a>
+  <header class="heliostat-nav">
+    <a class="monogram" href="index.html" aria-label="Julian Kotara Heliostat Home">
+      Julian Kotara <span class="heliostat-logo-sub">/ Heliostat Pavilion</span>
+    </a>
     <nav aria-label="Main navigation">
       <a href="work.html">Work</a>
       <a href="sketches.html">Sketches</a>
       <a href="photography.html">Photography</a>
       <a href="about.html">About</a>
     </nav>
+    <a class="heliostat-nav-cta" href="mailto:julian.kotara@colorado.edu">Inquire ↗</a>
   </header>
 
-  <!-- Main Content -->
-  <main id="top">
-    <!-- Hero / Intro -->
-    <section class="intro">
-      <div class="geo-circle geo-circle-top-left" id="geo-circle-top-left" aria-hidden="true"></div>
-      <div class="geo-circle geo-circle-bottom-right" id="geo-circle-bottom-right" aria-hidden="true"></div>
-
-      <p class="kicker hero-kicker" id="hero-kicker" data-custom-id="hero-kicker">Architectural Engineering · Lighting Design</p>
-      <h1 class="hero-title" id="hero-title" data-custom-id="hero-title">Julian<br><span id="hero-last-name">Kotara</span></h1>
-
-      <div class="intro-body" id="hero-body" data-custom-id="hero-body">
-        <p class="role" id="hero-role" data-custom-id="hero-role">Architectural Engineering Graduate Student · Lighting Design &amp; Daylighting</p>
-        <p class="intro-copy" id="hero-copy" data-custom-id="hero-copy">
-          I study how daylight and electric light shape human biology, mood, and spatial perception. By balancing computational analysis with an appreciation for shadow and texture, I design environments that feel natural, comfortable, and intentional.
-        </p>
-      </div>
-
-
-      <div class="intro-bottom">
-        <a class="explore" href="#work">Explore selected work <span>↓</span></a>
-        <span class="intro-meta">CU Boulder · Portfolio 2026</span>
-      </div>
-    </section>
-
-    <!-- Selected Work Horizontal Rail -->
-    <section class="work-section" id="work">
-      <div class="work-head">
-        <div class="work-head-text">
-          <p class="kicker">Selected Projects</p>
-          <h2>Move <em>through</em> the work.</h2>
-          <p>Scroll sideways or use controls</p>
-        </div>
-        <div class="rail-controls">
-          <button class="rail-button" id="previous" aria-label="Previous project">←</button>
-          <button class="rail-button" id="next" aria-label="Next project">→</button>
+  <main>
+    <!-- Hero Section -->
+    <section class="heliostat-hero" id="top">
+      <div class="hero-datum-bar">
+        <span class="kicker">Architectural Daylighting &amp; Solar Trajectory Studies</span>
+        <div class="solar-status-pill">
+          <span class="solar-status-dot" aria-hidden="true"></span>
+          <span id="solar-status-text">180° / 75° Solar Beam</span>
         </div>
       </div>
 
-      <div class="project-rail" id="project-rail" tabindex="0" aria-label="Selected projects gallery">
-        <!-- 01 Children's Museum -->
-        <a class="project-card" href="project-museum.html" data-project="museum">
-          <img src="assets/projects/museum/museum-hero.png" alt="Children's Museum architectural design" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">01</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Children's<br>Museum</strong>
-            <small>Cultural · Massing & Transparency / 2025</small>
-          </span>
-        </a>
+      <h1 class="hero-headline">
+        Space sculpted by light,<br>calibrated across <em>solar trajectories.</em>
+      </h1>
 
-        <!-- 02 Central Lobby -->
-        <a class="project-card" href="project-lobby.html" data-project="lobby">
-          <img src="assets/projects/central loby/suspended shapes1.jpg" alt="University Central Lobby lighting design" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">02</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>University<br>Central Lobby</strong>
-            <small>Lighting Design · Interior & Facade / 2025</small>
-          </span>
-        </a>
+      <p class="hero-lead-text">
+        M.S. Architectural Engineer at CU Boulder specializing in computational daylighting, solar envelope optimization, and electric luminaire integration.
+      </p>
 
-        <!-- 03 Mountain Home -->
-        <a class="project-card" href="project-mountain.html" data-project="mountain">
-          <img src="assets/projects/mountain-home.jpg" alt="Luxury Mountain Home rendering" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">03</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Luxury<br>Mountain Home</strong>
-            <small>Residential · Daylight Studies / 2025</small>
-          </span>
-        </a>
+      <!-- The 360° Heliostat Compass & Ray Caster Instrument -->
+      <div class="heliostat-instrument-box" aria-label="Interactive Heliostat Solar Compass">
+        
+        <!-- Circular Dial -->
+        <div class="compass-dial-wrap" id="compass-dial-wrap" title="Drag the sun marker to rotate azimuth and elevation">
+          <div class="compass-dial-ring"></div>
+          <span class="compass-cardinal north">N 0°</span>
+          <span class="compass-cardinal east">E 90°</span>
+          <span class="compass-cardinal south">S 180°</span>
+          <span class="compass-cardinal west">W 270°</span>
+          
+          <div class="compass-crosshair-h"></div>
+          <div class="compass-crosshair-v"></div>
+          <div class="compass-ray-vector" id="compass-ray-vector"></div>
 
-        <!-- 04 Bench Study -->
-        <a class="project-card wide" href="project-bench.html" data-project="bench">
-          <img src="assets/projects/bench study/bench-persp-style1.png" alt="Exterior Bench Lighting Studies" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">04</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Exterior Bench<br>Lighting Study</strong>
-            <small>Lighting Research · Mockups & Optics / 2025</small>
-          </span>
-        </a>
+          <!-- Draggable Sun Marker -->
+          <div class="compass-sun-marker" id="compass-sun-marker" role="slider" aria-label="Solar position marker" tabindex="0">
+            <span class="sun-core-dot"></span>
+          </div>
+        </div>
 
-        <!-- 05 Photography -->
-        <a class="project-card" href="photography.html" data-project="photo">
-          <img src="assets/projects/photography.jpg" alt="Architectural photography study" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">05</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Photography &<br>Light Studies</strong>
-            <small>Visual Studies · Shadow & Geometry</small>
-          </span>
-        </a>
+        <!-- Instrument Description & Presets -->
+        <div class="instrument-content">
+          <span class="kicker" style="color: var(--accent-solar);">Heliostat Ray Caster</span>
+          <h2>Interactive Solar Compass</h2>
+          <p class="instrument-desc">
+            Drag the sun marker around the dial to recalculate real-time architectural ray-shadow angles across every project card, or select a calibrated solar preset.
+          </p>
 
-        <!-- 06 Lighting Sketches -->
-        <a class="project-card" href="sketches.html" data-project="sketches">
-          <img src="assets/Light Sketches/Senior Design/Exterior.jpg" alt="Lighting Sketches and Visual Ideation" loading="lazy">
-          <span class="card-shade"></span>
-          <span class="project-index">06</span>
-          <span class="open-mark">↗</span>
-          <span class="card-copy">
-            <strong>Lighting Sketches<br>&amp; Ideation</strong>
-            <small>Hand Sketches · Daylight &amp; Nocturnal</small>
-          </span>
-        </a>
+          <div class="preset-button-row" role="group" aria-label="Solar trajectory presets">
+            <button class="preset-btn" data-preset="morning">08:00 AM Dawn Rake</button>
+            <button class="preset-btn active" data-preset="noon">12:00 PM High Noon</button>
+            <button class="preset-btn" data-preset="afternoon">16:30 PM Western Rake</button>
+            <button class="preset-btn" data-preset="dusk">19:30 PM Dusk</button>
+          </div>
+        </div>
+
+        <!-- Numerical Readouts -->
+        <div class="instrument-metrics">
+          <div class="metric-line">
+            <span class="metric-line-label">Solar Azimuth</span>
+            <span class="metric-line-val" id="val-azimuth">180° Azimuth</span>
+          </div>
+          <div class="metric-line">
+            <span class="metric-line-label">Solar Altitude</span>
+            <span class="metric-line-val" id="val-elevation">75° Altitude</span>
+          </div>
+          <div class="metric-line">
+            <span class="metric-line-label">Daylight Spectrum</span>
+            <span class="metric-line-val" id="val-cct">6500K Clear Sky Noon</span>
+          </div>
+        </div>
+
       </div>
     </section>
 
-    <!-- About / Contact Section -->
-    <section class="about" id="about">
-      <p class="kicker">About / Contact</p>
-      <h2>Designing for the interplay between daylight, shadow, and <em>circadian rhythm.</em></h2>
-      <div class="about-content">
-        <p>
-          Architectural Engineering graduate student at the University of Colorado Boulder with an emphasis on lighting design and circadian rhythm. Exploring the intersection of architectural form, illumination, and human perception.
+    <!-- Selected Project Studies (Ray-Shadow Reactive Cards) -->
+    <section class="solar-studies-section" id="work">
+      <div class="section-head-wrap">
+        <div>
+          <p class="kicker">Selected Studies / Solar Portfolio</p>
+          <h2>Daylighting &amp; <em>Photometric Studies</em></h2>
+        </div>
+        <p class="section-desc" style="font-size: 14px; max-width: 460px; color: var(--ink-secondary); line-height: 1.5;">
+          Every project is evaluated through the dialectic between structural massing, daylight autonomy metrics, and visual comfort.
         </p>
-        <a class="contact-link" href="mailto:julian.kotara@colorado.edu">
-          julian.kotara@colorado.edu <span>↗</span>
+      </div>
+
+      <div class="studies-grid">
+
+        <!-- STUDY 01: Children's Museum -->
+        <article class="study-card">
+          <div class="study-visual">
+            <span class="study-badge">Study 01 / Daylighting</span>
+            <img src="assets/projects/museum/museum-hero.png" alt="Children's Museum Massing Study" loading="lazy">
+          </div>
+          <div class="study-body">
+            <span class="study-taxonomy">Civic Architecture · Daylighting</span>
+            <h3 class="study-title">Children's Museum</h3>
+            <p class="study-desc">
+              Massing optimization designed to maximize spatial daylight autonomy (sDA) across play galleries while eliminating annual solar exposure (ASE) glare risks.
+            </p>
+            <div class="study-hud-table">
+              <div class="hud-table-item">
+                <span class="hud-table-label">Spatial Daylight Autonomy</span>
+                <span class="hud-table-val">sDA 78% (Target: >75%)</span>
+              </div>
+              <div class="hud-table-item">
+                <span class="hud-table-label">Annual Solar Exposure</span>
+                <span class="hud-table-val">ASE 6.2% (Target: <10%)</span>
+              </div>
+              <div class="hud-table-item">
+                <span class="hud-table-label">Climate Simulation</span>
+                <span class="hud-table-val">ClimateStudio / EnergyPlus</span>
+              </div>
+              <div class="hud-table-item">
+                <span class="hud-table-label">Site Coordinates</span>
+                <span class="hud-table-val">Boulder, CO · 40.0° N</span>
+              </div>
+            </div>
+            <a class="study-cta" href="project-museum.html">Examine Daylighting Study ↗</a>
+          </div>
+        </article>
+
+        <!-- STUDY 02: University Central Lobby -->
+        <article class="study-card">
+          <div class="study-visual">
+            <span class="study-badge">Study 02 / Atrium Optics</span>
+            <img src="assets/projects/central loby/suspended shapes1.jpg" alt="University Central Lobby Lighting" loading="lazy">
+          </div>
+          <div class="study-body">
+            <span class="study-taxonomy">Interior Lighting · Circadian Optics</span>
+            <h3 class="study-title">University Central Lobby</h3>
+            <p class="study-desc">
+              Suspended volumetric luminaires that bridge skylight daylight harvesting with electric illumination, maintaining comfortable vertical illuminance (Ev).
+            </p>
+            <div class="study-hud-table">
+              <div class="hud-table-item">
+                <span class="hud-table-label">Circadian Metric</span>
+                <span class="hud-table-val">250+ mEDI Daytime Target</span>
+              </div>
+              <div class="hud-table-item">
+                <span class="hud-table-label">Photometric Software</span>
+                <span class="hud-table-val">AGi32 Calculation Engine</span>
+              </div>
+              <div class="hud-table-item">
+                <span class="hud-table-label">Daylight Harvesting</span>
+                <span class="hud-table-val">0-10V Photosensor Dims</span>
+              </div>
+              <div class="hud-table-item">
+                <span class="hud-table-label">Glare Rating</span>
+                <span class="hud-table-val">UGR < 16 Discomfort Rating</span>
+              </div>
+            </div>
+            <a class="study-cta" href="project-lobby.html">Examine Lighting Study ↗</a>
+          </div>
+        </article>
+
+        <!-- STUDY 03: Luxury Mountain Home -->
+        <article class="study-card">
+          <div class="study-visual">
+            <span class="study-badge">Study 03 / Solar Overhang</span>
+            <img src="assets/projects/mountain-home.jpg" alt="Mountain Home Solar Study" loading="lazy">
+          </div>
+          <div class="study-body">
+            <span class="study-taxonomy">Residential · Passive Solar</span>
+            <h3 class="study-title">Luxury Mountain Home</h3>
+            <p class="study-desc">
+              Stepped alpine massing utilizing deep southern eaves to invite winter solar heat gain while completely blocking harsh summer high-altitude solar radiation.
+            </p>
+            <div class="study-hud-table">
+              <div class="hud-table-item">
+                <span class="hud-table-label">Solar Geometry</span>
+                <span class="hud-table-val">Calculated Eave Cutoff at 71°</span>
+              </div>
+              <div class="hud-table-item">
+                <span class="hud-table-label">Glazing Specification</span>
+                <span class="hud-table-val">Triple Pane Low-E (SHGC 0.28)</span>
+              </div>
+              <div class="hud-table-item">
+                <span class="hud-table-label">Thermal Strategy</span>
+                <span class="hud-table-val">High Thermal Mass Slate Floors</span>
+              </div>
+              <div class="hud-table-item">
+                <span class="hud-table-label">Elevation</span>
+                <span class="hud-table-val">3,800 ft Alpine Ridge</span>
+              </div>
+            </div>
+            <a class="study-cta" href="project-mountain.html">Examine Solar Study ↗</a>
+          </div>
+        </article>
+
+        <!-- STUDY 04: Exterior Bench Study -->
+        <article class="study-card">
+          <div class="study-visual">
+            <span class="study-badge">Study 04 / Physical Mockup</span>
+            <img src="assets/projects/bench study/bench-persp-style1.png" alt="Exterior Bench Luminaire Study" loading="lazy">
+          </div>
+          <div class="study-body">
+            <span class="study-taxonomy">Optics Research · Physical Prototyping</span>
+            <h3 class="study-title">Exterior Bench Lighting Study</h3>
+            <p class="study-desc">
+              1:1 scale physical optical mockup testing custom grazing angles, pedestrian cutoff distributions, and zero-uplight Dark Sky compliance.
+            </p>
+            <div class="study-hud-table">
+              <div class="hud-table-item">
+                <span class="hud-table-label">Dark Sky Compliance</span>
+                <span class="hud-table-val">BUG Rating: B1-U0-G0</span>
+              </div>
+              <div class="hud-table-item">
+                <span class="hud-table-label">Mockup Method</span>
+                <span class="hud-table-val">1:1 Scale Optical Bench</span>
+              </div>
+              <div class="hud-table-item">
+                <span class="hud-table-label">Ground Uniformity</span>
+                <span class="hud-table-val">3:1 Illuminance Ratio</span>
+              </div>
+              <div class="hud-table-item">
+                <span class="hud-table-label">Color Temperature</span>
+                <span class="hud-table-val">2700K Wildlife-Safe Warm</span>
+              </div>
+            </div>
+            <a class="study-cta" href="project-bench.html">Examine Mockup Study ↗</a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- Curatorial Inquiries: Sketches & 35mm Photography -->
+    <section class="curatorial-section">
+      <div class="section-head-wrap">
+        <div>
+          <p class="kicker">Visual Laboratory / Direct Observation</p>
+          <h2>Ideation &amp; <em>Analog Inquiries</em></h2>
+        </div>
+        <p class="section-desc" style="font-size: 14px; max-width: 460px; color: var(--ink-secondary); line-height: 1.5;">
+          Direct observations of natural raking light, cast shadows, and urban massing that ground our quantitative daylight models.
+        </p>
+      </div>
+
+      <div class="curatorial-grid">
+        <!-- Sketches Card -->
+        <a class="curatorial-card" href="sketches.html">
+          <div class="curatorial-head">
+            <span class="kicker">01 / Hand Ideation · 14 Studies</span>
+            <h3>Solar Sketches &amp; <em>Tracing</em></h3>
+          </div>
+          <p class="curatorial-desc">
+            Hand-drawn lighting diagrams, sun penetration studies, and nocturnal illuminance sketches testing reflections and spatial boundaries.
+          </p>
+          <div class="curatorial-strip">
+            <div class="curatorial-strip-img"><img src="assets/Light Sketches/Chicago Center ALD/Ald concept sketch.jpg" alt="Sketch 1" loading="lazy"></div>
+            <div class="curatorial-strip-img"><img src="assets/Light Sketches/Senior Design/Exterior.jpg" alt="Sketch 2" loading="lazy"></div>
+            <div class="curatorial-strip-img"><img src="assets/Light Sketches/Chicago Center ALD/Ald 2nd floor stairs.jpg" alt="Sketch 3" loading="lazy"></div>
+          </div>
+          <div class="curatorial-footer">
+            <span>Explore 14 Lighting Sketches ↗</span>
+            <span>Vellum &amp; Graphite</span>
+          </div>
+        </a>
+
+        <!-- Photography Card -->
+        <a class="curatorial-card" href="photography.html">
+          <div class="curatorial-head">
+            <span class="kicker">02 / 35mm Film · 21 Works</span>
+            <h3>Architectural Light &amp; <em>Shadow</em></h3>
+          </div>
+          <p class="curatorial-desc">
+            Analog 35mm and digital explorations of razor-sharp shadow geometry, architectural texture, and fleeting daylight phenomena.
+          </p>
+          <div class="curatorial-strip">
+            <div class="curatorial-strip-img"><img src="assets/photography/arch/IMG_6268 2.jpeg" alt="Photo 1" loading="lazy"></div>
+            <div class="curatorial-strip-img"><img src="assets/photography/light/IMG_2694 2.JPG" alt="Photo 2" loading="lazy"></div>
+            <div class="curatorial-strip-img"><img src="assets/photography/arch/kotara004502-R1-052-24A.jpg" alt="Photo 3" loading="lazy"></div>
+          </div>
+          <div class="curatorial-footer">
+            <span>Explore 21 Photographs ↗</span>
+            <span>Analog &amp; Digital</span>
+          </div>
         </a>
       </div>
     </section>
   </main>
 
-  <script src="script.js"></script>
-  <script src="lighting-fx.js"></script>
-  <script src="editor.js"></script>
+  <!-- Colophon Footer -->
+  <footer class="heliostat-footer">
+    <div class="footer-inner">
+      <div class="footer-quote-wrap">
+        <div class="footer-quote-text">
+          “Light is an environmental force that bridges <em>computational physics</em> with human emotional well-being. Thoughtful daylighting anchors us to time and place.”
+        </div>
+        <div class="footer-contact-block">
+          <p>
+            M.S. Architectural Engineering Graduate Student at the University of Colorado Boulder. Specializing in daylighting analysis, optical simulation, and architectural illumination.
+          </p>
+          <a class="footer-email-link" href="mailto:julian.kotara@colorado.edu">julian.kotara@colorado.edu ↗</a>
+        </div>
+      </div>
+
+      <div class="footer-meta-bar">
+        <span>Julian Kotara · Heliostat Pavilion 2026</span>
+        <span>Boulder, Colorado · 40.0076° N, 105.2659° W</span>
+        <span>Daylighting &amp; Environmental Systems</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="heliostat.js"></script>
 </body>
 </html>
-
-
-

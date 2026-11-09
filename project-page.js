@@ -300,9 +300,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Assemble Complete Page Markup
   document.body.innerHTML = `
     <!-- Glass Navigation -->
-    <header class="glass-nav">
-      <a class="monogram" href="index.html" aria-label="Julian Kotara home">JK<span>.</span></a>
+    <header class="glass-nav" role="banner">
+      <a class="hud-brand" href="index.html" aria-label="Julian Kotara Drafting Desk">
+        Julian Kotara <span class="hud-brand-sub">// Studio Desk 2026</span>
+      </a>
       <nav aria-label="Main navigation">
+        <a href="index.html">Desk Canvas</a>
         <a href="work.html" class="active">Work</a>
         <a href="sketches.html">Sketches</a>
         <a href="photography.html">Photography</a>

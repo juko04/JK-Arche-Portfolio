@@ -299,15 +299,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Assemble Complete Page Markup
   document.body.innerHTML = `
-    <!-- Glass Navigation -->
-    <header class="glass-nav">
-      <a class="monogram" href="index.html" aria-label="Julian Kotara home">JK<span>.</span></a>
+    <!-- Dynamic Solar CCT Ambient Wash Layer -->
+    <div class="solar-ambient-wash" id="solar-ambient-wash" aria-hidden="true"></div>
+
+    <!-- Pinned Daylight Navigation Header -->
+    <header class="heliostat-nav">
+      <a class="monogram" href="index.html" aria-label="Julian Kotara Heliostat Home">
+        Julian Kotara <span class="heliostat-logo-sub">/ Heliostat Pavilion</span>
+      </a>
+
+      <!-- Pinned 360° Heliostat Compass in Viewport -->
+      <div class="nav-heliostat-instrument" title="Pinned 360° Heliostat Compass — Drag sun puck to adjust solar geometry">
+        <div class="nav-compass-dial" id="nav-compass-dial" role="slider" aria-label="Pinned Heliostat Sun Compass">
+          <div class="nav-compass-crosshair-h"></div>
+          <div class="nav-compass-crosshair-v"></div>
+          <div class="nav-ray-vector" id="nav-ray-vector"></div>
+          <div class="nav-sun-marker" id="nav-sun-marker"></div>
+        </div>
+        <span class="nav-solar-badge" id="nav-val-azimuth">180° Az / 75° Alt</span>
+      </div>
+
       <nav aria-label="Main navigation">
         <a href="work.html" class="active">Work</a>
         <a href="sketches.html">Sketches</a>
         <a href="photography.html">Photography</a>
         <a href="about.html">About</a>
       </nav>
+      <a class="heliostat-nav-cta" href="mailto:julian.kotara@colorado.edu">Inquire ↗</a>
     </header>
 
     <!-- Main Project Detail Container -->
@@ -377,6 +395,17 @@ document.addEventListener('DOMContentLoaded', () => {
         </a>
       </nav>
     </main>
+
+    <!-- Technical Colophon Footer -->
+    <footer class="heliostat-footer">
+      <div class="footer-inner">
+        <div class="footer-meta-bar">
+          <span>Julian Kotara · Heliostat Pavilion 2026</span>
+          <span>Boulder, Colorado · 40.0076° N, 105.2659° W</span>
+          <span>Daylighting &amp; Environmental Systems</span>
+        </div>
+      </div>
+    </footer>
   `;
 
   // Register GSAP ScrollTrigger if available
@@ -437,14 +466,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Dynamically attach lighting effects & editor tools
-  const fxScript = document.createElement('script');
-  fxScript.src = 'lighting-fx.js';
-  document.body.appendChild(fxScript);
-
-  const editorScript = document.createElement('script');
-  editorScript.src = 'editor.js';
-  document.body.appendChild(editorScript);
+  // Dynamically attach Heliostat Solar Engine
+  const helioScript = document.createElement('script');
+  helioScript.src = 'heliostat.js';
+  document.body.appendChild(helioScript);
 });
 
 

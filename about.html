@@ -3,26 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About — Julian Kotara</title>
+  <title>About — Julian Kotara · The Heliostat Pavilion</title>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="styles.css">
+  
+  <!-- GSAP 3 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
-<body>
+<body class="subpage">
 
-  <!-- Navigation -->
-  <header class="glass-nav">
-    <a class="monogram" href="index.html" aria-label="Julian Kotara home">JK<span>.</span></a>
+  <!-- Dynamic Solar Ambient Wash Layer -->
+  <div class="solar-ambient-wash" id="solar-ambient-wash" aria-hidden="true"></div>
+
+  <!-- Pinned Daylight Navigation Header -->
+  <header class="heliostat-nav">
+    <a class="monogram" href="index.html" aria-label="Julian Kotara Heliostat Home">
+      Julian Kotara <span class="heliostat-logo-sub">/ Heliostat Pavilion</span>
+    </a>
+
+    <!-- Pinned 360° Heliostat Compass in Viewport -->
+    <div class="nav-heliostat-instrument" title="Pinned 360° Heliostat Compass — Drag sun puck to adjust solar geometry">
+      <div class="nav-compass-dial" id="nav-compass-dial" role="slider" aria-label="Pinned Heliostat Sun Compass">
+        <div class="nav-compass-crosshair-h"></div>
+        <div class="nav-compass-crosshair-v"></div>
+        <div class="nav-ray-vector" id="nav-ray-vector"></div>
+        <div class="nav-sun-marker" id="nav-sun-marker"></div>
+      </div>
+      <span class="nav-solar-badge" id="nav-val-azimuth">180° Az / 75° Alt</span>
+    </div>
+
     <nav aria-label="Main navigation">
       <a href="work.html">Work</a>
       <a href="sketches.html">Sketches</a>
       <a href="photography.html">Photography</a>
       <a href="about.html" class="active">About</a>
     </nav>
+    <a class="heliostat-nav-cta" href="mailto:julian.kotara@colorado.edu">Inquire ↗</a>
   </header>
 
   <div class="about-page-wrap">
@@ -31,17 +52,18 @@
       <div class="about-sticky">
         <p class="kicker">About / Background</p>
         <h1>Julian<br>Kotara</h1>
-        <p class="role" style="font-size: 20px; color: var(--ink); margin-bottom: 20px;">
-          Architectural Engineering<br>Focus in Lighting Design
+        <p class="role" style="font-size: 19px; color: var(--ink-primary); margin-bottom: 24px; font-weight: 500;">
+          Architectural Engineering<br>
+          <span style="color: var(--accent-solar); font-size: 15px; font-family: var(--font-mono); text-transform: uppercase;">Focus in Daylighting &amp; Illumination</span>
         </p>
 
-        <div class="about-contact-box">
-          <p class="kicker">Get in Touch</p>
-          <a class="contact-link" href="mailto:julian.kotara@colorado.edu">
+        <div class="about-contact-box" style="background: var(--bg-surface); border: 1px solid var(--line-hairline); box-shadow: var(--shadow-ray); padding: 24px; border-radius: 3px;">
+          <p class="kicker" style="margin-bottom: 8px;">Direct Correspondence</p>
+          <a class="contact-link" href="mailto:julian.kotara@colorado.edu" style="font-family: var(--font-serif); font-size: 18px; text-decoration: underline; text-underline-offset: 4px;">
             julian.kotara@colorado.edu <span>↗</span>
           </a>
-          <p style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; color: var(--muted); margin-top: 15px;">
-            Based in Boulder, Colorado
+          <p style="font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; color: var(--ink-muted); margin-top: 14px; letter-spacing: 0.08em;">
+            CU Boulder · 40.0076° N, 105.2659° W
           </p>
         </div>
       </div>
@@ -49,49 +71,53 @@
       <!-- Right Content: Philosophy, Bio, Skills -->
       <div class="about-right">
         <h2 class="about-statement">
-          "Light is both a quantitative architectural material and a biological necessity. Good lighting doesn't just illuminate space—it shapes how we feel, focus, and move through it."
+          “Light is both an environmental force and an architectural material. Calculated daylighting anchors building massing to the physics of place.”
         </h2>
 
         <div class="about-narrative">
           <p>
-            I am an Architectural Engineering graduate student at the University of Colorado Boulder with a passion for architectural lighting design. My work bridges the analytical discipline of building engineering with spatial design and human perception.
+            I am an Architectural Engineering graduate student at the University of Colorado Boulder specializing in daylighting analysis, optical simulation, and architectural illumination. My research examines the dialectic between building geometry, climate-based daylight autonomy, and human visual comfort.
           </p>
           <p>
-            Whether studying daylight harvesting and solar trajectories or sculpting nighttime identities through electric luminaire integration, I treat light as an active architectural material. My background in photography further sharpens my eye for contrast, shadow gradients, color temperature, and composition.
+            From solar envelope optimization in ClimateStudio to precision luminaire layouts in AGi32 and 1:1 scale optical mockups, I approach illumination through both quantitative rigor and tactile spatial craft. My background in analog 35mm film photography sharpens my sensitivity to contrast ratios, raking shadow gradients, and spectral color temperature.
           </p>
         </div>
 
-        <!-- Skills & Proficiencies -->
+        <!-- Skills & Proficiencies Title Block Matrix -->
         <div class="skills-grid" id="skills-grid">
-          <div class="skill-col" id="skills-col-lighting">
-            <h4>Lighting & Analysis</h4>
+          <div class="skill-col">
+            <h4>Daylighting &amp; Optics</h4>
             <ul>
-              <li>Daylighting & Solar Studies (ClimateStudio)</li>
-              <li>Photometric Analysis (AGi32)</li>
-              <li>Circadian Metrics (mEDI / EML)</li>
-              <li>Physical Mockups & Optical Testing</li>
-              <li>Glare Control & Daylight Metrics (sDA, ASE)</li>
+              <li>Climate-Based Daylight Modeling (sDA, ASE)</li>
+              <li>ClimateStudio &amp; Radiance Engines</li>
+              <li>AGi32 Point-by-Point Photometrics</li>
+              <li>Circadian Stimulus (mEDI / EML targets)</li>
+              <li>1:1 Physical Optical Mockups &amp; Testing</li>
+              <li>Dark Sky BUG Ratings &amp; Cutoff Optics</li>
             </ul>
           </div>
 
-          <div class="skill-col" id="skills-col-architecture">
-            <h4>3D & Architecture</h4>
+          <div class="skill-col">
+            <h4>Architecture &amp; Computation</h4>
             <ul>
-              <li>Revit / BIM Modeling</li>
-              <li>Rhino & Grasshopper</li>
-              <li>AutoCAD Drafting</li>
-              <li>Enscape & Twinmotion Rendering</li>
-              <li>Parametric & Spatial Modeling</li>
+              <li>Autodesk Revit / BIM Coordination</li>
+              <li>Rhino &amp; Grasshopper (Ladybug Tools)</li>
+              <li>AutoCAD Technical Drafting</li>
+              <li>Enscape &amp; Twinmotion Visualization</li>
+              <li>Solar Geometry &amp; Overhang Cutoff Calc</li>
+              <li>Passive Solar Massing Optimization</li>
             </ul>
           </div>
 
-          <div class="skill-col" id="skills-col-creative">
-            <h4>Visual & Creative</h4>
+          <div class="skill-col">
+            <h4>Observation &amp; Medium</h4>
             <ul>
-              <li>Architectural Photography (35mm & Digital)</li>
-              <li>Adobe Photoshop & Lightroom</li>
-              <li>Adobe InDesign & Illustrator</li>
-              <li>Spatial Composition & Framing</li>
+              <li>Analog 35mm Film Photography</li>
+              <li>Large-Format Architectural Documentation</li>
+              <li>Adobe Creative Suite (InDesign, Illustrator)</li>
+              <li>Graphite &amp; Vellum Lighting Sketches</li>
+              <li>Material Reflectance &amp; Transmittance Tests</li>
+              <li>Technical Drawing Title Block Composition</li>
             </ul>
           </div>
         </div>
@@ -99,11 +125,17 @@
     </main>
   </div>
 
+  <!-- Technical Colophon Footer -->
+  <footer class="heliostat-footer">
+    <div class="footer-inner">
+      <div class="footer-meta-bar">
+        <span>Julian Kotara · Heliostat Pavilion 2026</span>
+        <span>Boulder, Colorado · 40.0076° N, 105.2659° W</span>
+        <span>Daylighting &amp; Environmental Systems</span>
+      </div>
+    </div>
+  </footer>
 
-  <script src="lighting-fx.js"></script>
-  <script src="editor.js"></script>
+  <script src="heliostat.js"></script>
 </body>
 </html>
-
-
-

@@ -3,109 +3,121 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Work — Julian Kotara</title>
+  <title>Work — Julian Kotara · The Heliostat Pavilion</title>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="styles.css">
   
   <!-- GSAP 3 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
 <body class="subpage">
 
-  <!-- Navigation -->
-  <header class="glass-nav">
-    <a class="monogram" href="index.html" aria-label="Julian Kotara home">JK<span>.</span></a>
+  <!-- Dynamic Solar Ambient Wash Layer -->
+  <div class="solar-ambient-wash" id="solar-ambient-wash" aria-hidden="true"></div>
+
+  <!-- Pinned Daylight Navigation Header -->
+  <header class="heliostat-nav">
+    <a class="monogram" href="index.html" aria-label="Julian Kotara Heliostat Home">
+      Julian Kotara <span class="heliostat-logo-sub">/ Heliostat Pavilion</span>
+    </a>
+
+    <!-- Pinned 360° Heliostat Compass in Viewport -->
+    <div class="nav-heliostat-instrument" title="Pinned 360° Heliostat Compass — Drag sun puck to adjust solar geometry">
+      <div class="nav-compass-dial" id="nav-compass-dial" role="slider" aria-label="Pinned Heliostat Sun Compass">
+        <div class="nav-compass-crosshair-h"></div>
+        <div class="nav-compass-crosshair-v"></div>
+        <div class="nav-ray-vector" id="nav-ray-vector"></div>
+        <div class="nav-sun-marker" id="nav-sun-marker"></div>
+      </div>
+      <span class="nav-solar-badge" id="nav-val-azimuth">180° Az / 75° Alt</span>
+    </div>
+
     <nav aria-label="Main navigation">
       <a href="work.html" class="active">Work</a>
       <a href="sketches.html">Sketches</a>
       <a href="photography.html">Photography</a>
       <a href="about.html">About</a>
     </nav>
+    <a class="heliostat-nav-cta" href="mailto:julian.kotara@colorado.edu">Inquire ↗</a>
   </header>
 
   <main class="sub-hero">
-    <p class="kicker">Index / Selected Projects</p>
+    <p class="kicker">Index / Daylighting &amp; Illumination Portfolio</p>
     <h1>Work shaped<br>by <em>light.</em></h1>
-    <p style="font-size: 15px; max-width: 500px; color: var(--muted); margin: 0 0 30px;">
-      Explore architectural concepts, lighting studies, and visual explorations.
+    <p style="font-size: 15px; max-width: 540px; color: var(--ink-secondary); margin: 0 0 36px; line-height: 1.6;">
+      Architectural daylighting studies, luminaire prototypes, analog 35mm observations, and physical mockups.
     </p>
 
     <div class="work-categories">
       <!-- Section 1: Lighting Design & Studies -->
       <div>
-        <h3 class="work-group-title">01 / Lighting Design &amp; Research</h3>
-        <div class="work-list">
-          <a class="work-list-item" href="project-lobby.html">
-            <span class="item-num">01</span>
-            <div class="work-list-thumb">
-              <img src="assets/projects/central loby/suspended shapes1.jpg" alt="University Central Lobby preview">
-            </div>
-            <strong>University Central Lobby</strong>
-            <span class="item-type">Lighting Design · 2025</span>
-            <span class="item-arrow">↗</span>
-          </a>
-          <a class="work-list-item" href="project-bench.html">
-            <span class="item-num">02</span>
-            <div class="work-list-thumb">
-              <img src="assets/projects/bench study/bench-persp-style1.png" alt="Exterior Bench Study preview">
-            </div>
-            <strong>Exterior Bench Lighting Study</strong>
-            <span class="item-type">Research &amp; Mockups · 2025</span>
-            <span class="item-arrow">↗</span>
-          </a>
-          <a class="work-list-item" href="sketches.html">
-            <span class="item-num">03</span>
-            <div class="work-list-thumb">
-              <img src="assets/Light Sketches/Senior Design/Exterior.jpg" alt="Lighting Sketches & Visual Ideation preview">
-            </div>
-            <strong>Lighting Sketches &amp; Ideation</strong>
-            <span class="item-type">Visual Ideation · Hand Sketches · 2026</span>
-            <span class="item-arrow">↗</span>
-          </a>
-        </div>
-      </div>
-
-      <!-- Section 2: Architectural Design -->
-      <div>
-        <h3 class="work-group-title">02 / Architecture &amp; Space</h3>
+        <h3 class="work-group-title">01 / Daylighting &amp; Architectural Photometrics</h3>
         <div class="work-list">
           <a class="work-list-item" href="project-museum.html">
-            <span class="item-num">04</span>
+            <span class="item-num">01</span>
             <div class="work-list-thumb">
               <img src="assets/projects/museum/museum-hero.png" alt="Children's Museum preview">
             </div>
             <strong>Children's Museum</strong>
-            <span class="item-type">Cultural &amp; Community · 2025</span>
+            <span class="item-type">Civic Architecture · Daylighting · sDA 78% · 2025</span>
+            <span class="item-arrow">↗</span>
+          </a>
+          <a class="work-list-item" href="project-lobby.html">
+            <span class="item-num">02</span>
+            <div class="work-list-thumb">
+              <img src="assets/projects/central loby/suspended shapes1.jpg" alt="University Central Lobby preview">
+            </div>
+            <strong>University Central Lobby</strong>
+            <span class="item-type">Atrium Optics · Circadian 250+ mEDI · 2025</span>
             <span class="item-arrow">↗</span>
           </a>
           <a class="work-list-item" href="project-mountain.html">
-            <span class="item-num">05</span>
+            <span class="item-num">03</span>
             <div class="work-list-thumb">
               <img src="assets/projects/mountain-home.jpg" alt="Luxury Mountain Home preview">
             </div>
             <strong>Luxury Mountain Home</strong>
-            <span class="item-type">Residential · 2025</span>
+            <span class="item-type">Passive Solar · Alpine Eave 71° Cutoff · 2025</span>
+            <span class="item-arrow">↗</span>
+          </a>
+          <a class="work-list-item" href="project-bench.html">
+            <span class="item-num">04</span>
+            <div class="work-list-thumb">
+              <img src="assets/projects/bench study/bench-persp-style1.png" alt="Exterior Bench Study preview">
+            </div>
+            <strong>Exterior Bench Lighting Study</strong>
+            <span class="item-type">Physical Mockup · BUG B1-U0-G0 · 2025</span>
             <span class="item-arrow">↗</span>
           </a>
         </div>
       </div>
 
-      <!-- Section 3: Photography -->
+      <!-- Section 2: Visual Ideation & Direct Observation -->
       <div>
-        <h3 class="work-group-title">03 / Photography &amp; Light Studies</h3>
+        <h3 class="work-group-title">02 / Ideation &amp; Analog Inquiries</h3>
         <div class="work-list">
+          <a class="work-list-item" href="sketches.html">
+            <span class="item-num">05</span>
+            <div class="work-list-thumb">
+              <img src="assets/Light Sketches/Senior Design/Exterior.jpg" alt="Lighting Sketches preview">
+            </div>
+            <strong>Solar Sketches &amp; Visual Ideation</strong>
+            <span class="item-type">Hand Studies · 14 Plates · Vellum &amp; Graphite</span>
+            <span class="item-arrow">↗</span>
+          </a>
           <a class="work-list-item" href="photography.html">
             <span class="item-num">06</span>
             <div class="work-list-thumb">
               <img src="assets/photography/light/IMG_6082.JPG" alt="Photography & Visual Studies preview">
             </div>
-            <strong>Photography &amp; Visual Studies</strong>
-            <span class="item-type">Light &amp; Architecture · Ongoing</span>
+            <strong>Architectural Light &amp; Shadow Photography</strong>
+            <span class="item-type">35mm Film &amp; Digital · 21 Works · Ongoing</span>
             <span class="item-arrow">↗</span>
           </a>
         </div>
@@ -113,7 +125,17 @@
     </div>
   </main>
 
-  <script src="lighting-fx.js"></script>
-  <script src="editor.js"></script>
+  <!-- Technical Colophon Footer -->
+  <footer class="heliostat-footer">
+    <div class="footer-inner">
+      <div class="footer-meta-bar">
+        <span>Julian Kotara · Heliostat Pavilion 2026</span>
+        <span>Boulder, Colorado · 40.0076° N, 105.2659° W</span>
+        <span>Daylighting &amp; Environmental Systems</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="heliostat.js"></script>
 </body>
 </html>

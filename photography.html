@@ -18,15 +18,33 @@
 </head>
 <body class="photo-page">
 
-  <!-- Navigation -->
-  <header class="glass-nav">
-    <a class="monogram" href="index.html" aria-label="Julian Kotara home">JK<span>.</span></a>
+  <!-- Dynamic Solar Ambient Wash Layer -->
+  <div class="solar-ambient-wash" id="solar-ambient-wash" aria-hidden="true"></div>
+
+  <!-- Pinned Daylight Navigation Header -->
+  <header class="heliostat-nav">
+    <a class="monogram" href="index.html" aria-label="Julian Kotara Heliostat Home">
+      Julian Kotara <span class="heliostat-logo-sub">/ Heliostat Pavilion</span>
+    </a>
+
+    <!-- Pinned 360° Heliostat Compass in Viewport -->
+    <div class="nav-heliostat-instrument" title="Pinned 360° Heliostat Compass — Drag sun puck to adjust solar geometry">
+      <div class="nav-compass-dial" id="nav-compass-dial" role="slider" aria-label="Pinned Heliostat Sun Compass">
+        <div class="nav-compass-crosshair-h"></div>
+        <div class="nav-compass-crosshair-v"></div>
+        <div class="nav-ray-vector" id="nav-ray-vector"></div>
+        <div class="nav-sun-marker" id="nav-sun-marker"></div>
+      </div>
+      <span class="nav-solar-badge" id="nav-val-azimuth">180° Az / 75° Alt</span>
+    </div>
+
     <nav aria-label="Main navigation">
       <a href="work.html">Work</a>
       <a href="sketches.html">Sketches</a>
       <a href="photography.html" class="active">Photography</a>
       <a href="about.html">About</a>
     </nav>
+    <a class="heliostat-nav-cta" href="mailto:julian.kotara@colorado.edu">Inquire ↗</a>
   </header>
 
   <main class="photo-container">
@@ -625,7 +643,6 @@
       }, { passive: true });
     });
   </script>
-  <script src="lighting-fx.js"></script>
-  <script src="editor.js"></script>
+  <script src="heliostat.js"></script>
 </body>
 </html>

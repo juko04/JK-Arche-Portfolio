@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Julian Kotara — The Heliostat Pavilion · Daylighting & Solar Engineering</title>
+  <title>Julian Kotara — The Heliostat Pavilion · Architectural Daylighting & Solar Engineering</title>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,14 +18,26 @@
 </head>
 <body>
 
-  <!-- Dynamic Solar CCT Wash Layer -->
+  <!-- Dynamic Solar CCT Ambient Wash Layer -->
   <div class="solar-ambient-wash" id="solar-ambient-wash" aria-hidden="true"></div>
 
-  <!-- Navigation -->
+  <!-- Pinned Daylight Navigation Header -->
   <header class="heliostat-nav">
     <a class="monogram" href="index.html" aria-label="Julian Kotara Heliostat Home">
       Julian Kotara <span class="heliostat-logo-sub">/ Heliostat Pavilion</span>
     </a>
+
+    <!-- Pinned 360° Heliostat Compass in Viewport -->
+    <div class="nav-heliostat-instrument" title="Pinned 360° Heliostat Compass — Drag sun puck to adjust solar geometry">
+      <div class="nav-compass-dial" id="nav-compass-dial" role="slider" aria-label="Pinned Heliostat Sun Compass">
+        <div class="nav-compass-crosshair-h"></div>
+        <div class="nav-compass-crosshair-v"></div>
+        <div class="nav-ray-vector" id="nav-ray-vector"></div>
+        <div class="nav-sun-marker" id="nav-sun-marker"></div>
+      </div>
+      <span class="nav-solar-badge" id="nav-val-azimuth">180° Az / 75° Alt</span>
+    </div>
+
     <nav aria-label="Main navigation">
       <a href="work.html">Work</a>
       <a href="sketches.html">Sketches</a>
@@ -40,9 +52,12 @@
     <section class="heliostat-hero" id="top">
       <div class="hero-datum-bar">
         <span class="kicker">Architectural Daylighting &amp; Solar Trajectory Studies</span>
-        <div class="solar-status-pill">
-          <span class="solar-status-dot" aria-hidden="true"></span>
-          <span id="solar-status-text">180° / 75° Solar Beam</span>
+        <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+          <span class="kicker" id="hud-incident-mode" style="color: var(--accent-solar);">Zenith D65 Solar Beam (6500K)</span>
+          <div class="solar-status-pill">
+            <span class="solar-status-dot" aria-hidden="true"></span>
+            <span id="solar-status-text">180° / 75° · 6500K</span>
+          </div>
         </div>
       </div>
 
@@ -54,11 +69,11 @@
         M.S. Architectural Engineer at CU Boulder specializing in computational daylighting, solar envelope optimization, and electric luminaire integration.
       </p>
 
-      <!-- The 360° Heliostat Compass & Ray Caster Instrument -->
+      <!-- The 360° Heliostat Compass & Ray Caster Instrument Box -->
       <div class="heliostat-instrument-box" aria-label="Interactive Heliostat Solar Compass">
         
         <!-- Circular Dial -->
-        <div class="compass-dial-wrap" id="compass-dial-wrap" title="Drag the sun marker to rotate azimuth and elevation">
+        <div class="compass-dial-wrap" id="compass-dial-wrap" title="Drag the sun marker across 360° azimuth and altitude">
           <div class="compass-dial-ring"></div>
           <span class="compass-cardinal north">N 0°</span>
           <span class="compass-cardinal east">E 90°</span>
@@ -69,7 +84,7 @@
           <div class="compass-crosshair-v"></div>
           <div class="compass-ray-vector" id="compass-ray-vector"></div>
 
-          <!-- Draggable Sun Marker -->
+          <!-- Draggable Sun Marker Puck -->
           <div class="compass-sun-marker" id="compass-sun-marker" role="slider" aria-label="Solar position marker" tabindex="0">
             <span class="sun-core-dot"></span>
           </div>
@@ -80,7 +95,7 @@
           <span class="kicker" style="color: var(--accent-solar);">Heliostat Ray Caster</span>
           <h2>Interactive Solar Compass</h2>
           <p class="instrument-desc">
-            Drag the sun marker around the dial to recalculate real-time architectural ray-shadow angles across every project card, or select a calibrated solar preset.
+            Drag the sun puck around the 360° azimuth ring to cast real-time trigonometric drop shadows across every architectural plate, or play the continuous daylight cycle.
           </p>
 
           <div class="preset-button-row" role="group" aria-label="Solar trajectory presets">
@@ -88,6 +103,7 @@
             <button class="preset-btn active" data-preset="noon">12:00 PM High Noon</button>
             <button class="preset-btn" data-preset="afternoon">16:30 PM Western Rake</button>
             <button class="preset-btn" data-preset="dusk">19:30 PM Dusk</button>
+            <button class="solar-sweep-btn" id="solar-sweep-btn">Play Solar Sweep</button>
           </div>
         </div>
 
@@ -139,11 +155,11 @@
             <div class="study-hud-table">
               <div class="hud-table-item">
                 <span class="hud-table-label">Spatial Daylight Autonomy</span>
-                <span class="hud-table-val">sDA 78% (Target: >75%)</span>
+                <span class="hud-table-val">sDA 78% (Target: &gt;75%)</span>
               </div>
               <div class="hud-table-item">
                 <span class="hud-table-label">Annual Solar Exposure</span>
-                <span class="hud-table-val">ASE 6.2% (Target: <10%)</span>
+                <span class="hud-table-val">ASE 6.2% (Target: &lt;10%)</span>
               </div>
               <div class="hud-table-item">
                 <span class="hud-table-label">Climate Simulation</span>
@@ -185,7 +201,7 @@
               </div>
               <div class="hud-table-item">
                 <span class="hud-table-label">Glare Rating</span>
-                <span class="hud-table-val">UGR < 16 Discomfort Rating</span>
+                <span class="hud-table-val">UGR &lt; 16 Discomfort Rating</span>
               </div>
             </div>
             <a class="study-cta" href="project-lobby.html">Examine Lighting Study ↗</a>
@@ -319,7 +335,7 @@
     </section>
   </main>
 
-  <!-- Colophon Footer -->
+  <!-- Technical Title Block Colophon Footer -->
   <footer class="heliostat-footer">
     <div class="footer-inner">
       <div class="footer-quote-wrap">

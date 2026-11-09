@@ -3,62 +3,64 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Julian Kotara — The Interactive Drafting Desk · Architectural & Lighting Design</title>
+  <title>Julian Kotara — The Interactive Drafting Desk · Architectural &amp; Lighting Design</title>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Manrope:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="styles.css">
   
   <!-- GSAP 3 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
-<body>
+<body class="drafting-desk-body">
 
   <!-- Top Desk HUD Bar -->
-  <header class="desk-hud-top">
+  <header class="desk-hud-top" role="banner">
     <div class="hud-left">
-      <a class="hud-brand" href="index.html">
-        Julian Kotara <span>// Studio Desk 2026</span>
+      <a class="hud-brand" href="index.html" aria-label="Julian Kotara Drafting Desk">
+        Julian Kotara <span class="hud-brand-sub">// Studio Desk 2026 · Boulder, CO</span>
       </a>
     </div>
 
     <nav class="hud-nav" aria-label="Main Navigation">
-      <a href="work.html">Work Index</a>
-      <a href="sketches.html">Sketches</a>
-      <a href="photography.html">Photography</a>
-      <a href="about.html">About</a>
+      <a class="hud-link active" href="index.html">Desk Canvas</a>
+      <a class="hud-link" href="work.html">Work Index</a>
+      <a class="hud-link" href="sketches.html">Sketches</a>
+      <a class="hud-link" href="photography.html">Photography</a>
+      <a class="hud-link" href="about.html">About</a>
     </nav>
 
     <div class="hud-right">
-      <span class="hud-coords" id="hud-coords">CANVAS // X: 1680 · Y: 1240 · 85%</span>
+      <span class="hud-coords" id="hud-coords">CANVAS // X: 1680 · Y: 1240 · 85% · NORTH ↑</span>
     </div>
   </header>
 
   <!-- Interactive Drafting Viewport -->
-  <main class="drafting-viewport" id="drafting-viewport" aria-label="Interactive Drafting Desk Canvas. Click and drag to pan; use wheel to zoom.">
+  <main class="drafting-viewport" id="drafting-viewport" aria-label="Interactive Drafting Desk Canvas. Click and drag to pan desk; use wheel to zoom; click or drag vellum sheets to inspect and restack.">
     <div class="drafting-surface" id="drafting-surface">
       
-      <!-- Coordinate Datum Markers -->
+      <!-- Surface Coordinate Datum Crosshairs & Labels -->
       <span class="surface-datum-marker top-left">+ 00.00 / 00.00 MAT ORIGIN [BOULDER STUDIO]</span>
-      <span class="surface-datum-marker top-right">+ 36.00 / 00.00 DATUM [40.0076° N]</span>
+      <span class="surface-datum-marker top-right">+ 36.00 / 00.00 DATUM [40.0076° N · NORTH ↑]</span>
       <span class="surface-datum-marker bottom-left">+ 00.00 / 28.00 DATUM [105.2659° W]</span>
-      <span class="surface-datum-marker bottom-right">+ 36.00 / 28.00 SCALE 1:50</span>
+      <span class="surface-datum-marker bottom-right">+ 36.00 / 28.00 SCALE 1:50 · CUTTING MAT FIELD</span>
 
       <!-- ====================================================================
-           SHEET 00: Center Studio Statement Sheet
+           SHEET 00: Center Studio Statement Sheet (Prologue)
            ==================================================================== -->
-      <article class="arch-sheet sheet-hero-main" id="sheet-hero">
-        <span class="sheet-corner-mark tl"></span>
-        <span class="sheet-corner-mark tr"></span>
-        <span class="sheet-corner-mark bl"></span>
-        <span class="sheet-corner-mark br"></span>
+      <article class="arch-sheet sheet-hero-main" id="sheet-hero" tabindex="0" aria-label="Studio Ledger Sheet 00: Design Statement">
+        <div class="sheet-tab"><span>00 / PROLOGUE</span></div>
+        <span class="sheet-corner-mark tl">+</span>
+        <span class="sheet-corner-mark tr">+</span>
+        <span class="sheet-corner-mark bl">+</span>
+        <span class="sheet-corner-mark br">+</span>
 
         <div class="sheet-meta-bar">
-          <span class="sheet-stamp">⊕ Studio Ledger 00</span>
-          <span>CU Boulder · Arch. Engineering M.S.</span>
+          <span class="sheet-stamp">⊕ REF · 00 / PROLOGUE</span>
+          <span class="sheet-meta-sub">CU Boulder · Arch. Engineering M.S.</span>
         </div>
 
         <h1 class="hero-lead-title">
@@ -72,27 +74,28 @@
           <div><span class="data-tag-label">Specialization:</span> <span class="data-tag-val">Daylighting &amp; Electric Lighting</span></div>
           <div><span class="data-tag-label">Degree Track:</span> <span class="data-tag-val">B.S. &amp; M.S. Architectural Eng.</span></div>
           <div><span class="data-tag-label">Location:</span> <span class="data-tag-val">Boulder, Colorado</span></div>
-          <div><span class="data-tag-label">Interaction:</span> <span class="data-tag-val">Drag desk to pan · Drag sheets to restack</span></div>
+          <div><span class="data-tag-label">Interaction:</span> <span class="data-tag-val">Drag desk to pan · Click sheet to inspect</span></div>
         </div>
 
         <div class="sheet-actions">
-          <a class="sheet-btn" href="about.html">Read Full Biography ↗</a>
-          <a class="sheet-btn" href="mailto:julian.kotara@colorado.edu">Inquire / Email ↗</a>
+          <button class="sheet-btn open-inspect-btn" aria-label="Open Studio Ledger Dossier">Inspect Dossier ↗</button>
+          <a class="sheet-btn" href="about.html">Read Biography ↗</a>
         </div>
       </article>
 
       <!-- ====================================================================
            SHEET 01: University Central Lobby
            ==================================================================== -->
-      <article class="arch-sheet sheet-project-lobby" id="sheet-lobby">
-        <span class="sheet-corner-mark tl"></span>
-        <span class="sheet-corner-mark tr"></span>
-        <span class="sheet-corner-mark bl"></span>
-        <span class="sheet-corner-mark br"></span>
+      <article class="arch-sheet sheet-project-lobby" id="sheet-lobby" tabindex="0" aria-label="Project Sheet 01: University Central Lobby">
+        <div class="sheet-tab"><span>01 / ARCH</span></div>
+        <span class="sheet-corner-mark tl">+</span>
+        <span class="sheet-corner-mark tr">+</span>
+        <span class="sheet-corner-mark bl">+</span>
+        <span class="sheet-corner-mark br">+</span>
 
         <div class="sheet-meta-bar">
-          <span class="sheet-stamp">⊕ Sheet 01 / Lighting Design</span>
-          <span>2025 Study</span>
+          <span class="sheet-stamp">⊕ REF · 01 / ARCH · LUM 01</span>
+          <span class="sheet-meta-sub">2025 Study · Atrium Volume</span>
         </div>
 
         <div class="sheet-media-frame">
@@ -112,7 +115,7 @@
         </div>
 
         <div class="sheet-actions">
-          <button class="sheet-btn open-inspect-btn">Quick Inspect ↗</button>
+          <button class="sheet-btn open-inspect-btn" aria-label="Inspect Central Lobby drawings and specs">Quick Inspect ↗</button>
           <a class="sheet-btn" href="project-lobby.html">Project Dossier ↗</a>
         </div>
       </article>
@@ -120,19 +123,20 @@
       <!-- ====================================================================
            SHEET 02: Children's Museum
            ==================================================================== -->
-      <article class="arch-sheet sheet-project-museum" id="sheet-museum">
-        <span class="sheet-corner-mark tl"></span>
-        <span class="sheet-corner-mark tr"></span>
-        <span class="sheet-corner-mark bl"></span>
-        <span class="sheet-corner-mark br"></span>
+      <article class="arch-sheet sheet-project-museum" id="sheet-museum" tabindex="0" aria-label="Project Sheet 02: Children's Museum">
+        <div class="sheet-tab"><span>02 / ELEV</span></div>
+        <span class="sheet-corner-mark tl">+</span>
+        <span class="sheet-corner-mark tr">+</span>
+        <span class="sheet-corner-mark bl">+</span>
+        <span class="sheet-corner-mark br">+</span>
 
         <div class="sheet-meta-bar">
-          <span class="sheet-stamp">⊕ Sheet 02 / Daylighting &amp; Massing</span>
-          <span>2025 Study</span>
+          <span class="sheet-stamp">⊕ REF · 02 / ELEV · DAYLIGHT</span>
+          <span class="sheet-meta-sub">2025 Study · Pearl Street</span>
         </div>
 
         <div class="sheet-media-frame">
-          <img src="assets/projects/museum/museum-hero.png" alt="Children's Museum Model" loading="lazy">
+          <img src="assets/projects/museum/museum-hero.png" alt="Children's Museum Massing Model" loading="lazy">
         </div>
 
         <h2 class="sheet-title">Children's Museum</h2>
@@ -142,13 +146,13 @@
 
         <div class="sheet-data-strip">
           <div><span class="data-tag-label">Typology:</span> <span class="data-tag-val">Cultural &amp; Educational Hub</span></div>
-          <div><span class="data-tag-label">Daylight Autonomy:</span> <span class="data-tag-val">sDA 78% (Target > 75%)</span></div>
+          <div><span class="data-tag-label">Daylight Autonomy:</span> <span class="data-tag-val">sDA 78% (Target &gt; 75%)</span></div>
           <div><span class="data-tag-label">Solar Glare:</span> <span class="data-tag-val">ASE 6.2% Mitigation</span></div>
           <div><span class="data-tag-label">Tools:</span> <span class="data-tag-val">Revit, ClimateStudio, Twinmotion</span></div>
         </div>
 
         <div class="sheet-actions">
-          <button class="sheet-btn open-inspect-btn">Quick Inspect ↗</button>
+          <button class="sheet-btn open-inspect-btn" aria-label="Inspect Children's Museum massing and daylighting">Quick Inspect ↗</button>
           <a class="sheet-btn" href="project-museum.html">Project Dossier ↗</a>
         </div>
       </article>
@@ -156,19 +160,20 @@
       <!-- ====================================================================
            SHEET 03: Exterior Bench Study
            ==================================================================== -->
-      <article class="arch-sheet sheet-project-bench" id="sheet-bench">
-        <span class="sheet-corner-mark tl"></span>
-        <span class="sheet-corner-mark tr"></span>
-        <span class="sheet-corner-mark bl"></span>
-        <span class="sheet-corner-mark br"></span>
+      <article class="arch-sheet sheet-project-bench" id="sheet-bench" tabindex="0" aria-label="Project Sheet 03: Exterior Bench Study">
+        <div class="sheet-tab"><span>03 / PHOTOMETRIC</span></div>
+        <span class="sheet-corner-mark tl">+</span>
+        <span class="sheet-corner-mark tr">+</span>
+        <span class="sheet-corner-mark bl">+</span>
+        <span class="sheet-corner-mark br">+</span>
 
         <div class="sheet-meta-bar">
-          <span class="sheet-stamp">⊕ Sheet 03 / Mockup &amp; Photometry</span>
-          <span>2025 Study</span>
+          <span class="sheet-stamp">⊕ REF · 03 / PHOTOMETRIC · 1:1</span>
+          <span class="sheet-meta-sub">2025 Study · Dark Sky</span>
         </div>
 
         <div class="sheet-media-frame">
-          <img src="assets/projects/bench study/bench-persp-style1.png" alt="Exterior Bench Study" loading="lazy">
+          <img src="assets/projects/bench study/bench-persp-style1.png" alt="Exterior Bench Perspective Study" loading="lazy">
         </div>
 
         <h2 class="sheet-title">Exterior Bench Lighting Study</h2>
@@ -184,7 +189,7 @@
         </div>
 
         <div class="sheet-actions">
-          <button class="sheet-btn open-inspect-btn">Quick Inspect ↗</button>
+          <button class="sheet-btn open-inspect-btn" aria-label="Inspect Bench Study optical mockups">Quick Inspect ↗</button>
           <a class="sheet-btn" href="project-bench.html">Project Dossier ↗</a>
         </div>
       </article>
@@ -192,15 +197,16 @@
       <!-- ====================================================================
            SHEET 04: Luxury Mountain Home
            ==================================================================== -->
-      <article class="arch-sheet sheet-project-mountain" id="sheet-mountain">
-        <span class="sheet-corner-mark tl"></span>
-        <span class="sheet-corner-mark tr"></span>
-        <span class="sheet-corner-mark bl"></span>
-        <span class="sheet-corner-mark br"></span>
+      <article class="arch-sheet sheet-project-mountain" id="sheet-mountain" tabindex="0" aria-label="Project Sheet 04: Luxury Mountain Home">
+        <div class="sheet-tab"><span>04 / SOLAR</span></div>
+        <span class="sheet-corner-mark tl">+</span>
+        <span class="sheet-corner-mark tr">+</span>
+        <span class="sheet-corner-mark bl">+</span>
+        <span class="sheet-corner-mark br">+</span>
 
         <div class="sheet-meta-bar">
-          <span class="sheet-stamp">⊕ Sheet 04 / Residential Solar</span>
-          <span>2025 Study</span>
+          <span class="sheet-stamp">⊕ REF · 04 / SOLAR · RESIDENTIAL</span>
+          <span class="sheet-meta-sub">2025 Study · Ridge Site</span>
         </div>
 
         <div class="sheet-media-frame">
@@ -220,7 +226,7 @@
         </div>
 
         <div class="sheet-actions">
-          <button class="sheet-btn open-inspect-btn">Quick Inspect ↗</button>
+          <button class="sheet-btn open-inspect-btn" aria-label="Inspect Mountain Home solar diagrams">Quick Inspect ↗</button>
           <a class="sheet-btn" href="project-mountain.html">Project Dossier ↗</a>
         </div>
       </article>
@@ -228,21 +234,22 @@
       <!-- ====================================================================
            SHEET 05: Hand Sketches & Ideation
            ==================================================================== -->
-      <article class="arch-sheet sheet-sketches" id="sheet-sketches">
-        <span class="sheet-corner-mark tl"></span>
-        <span class="sheet-corner-mark tr"></span>
-        <span class="sheet-corner-mark bl"></span>
-        <span class="sheet-corner-mark br"></span>
+      <article class="arch-sheet sheet-sketches" id="sheet-sketches" tabindex="0" aria-label="Project Sheet 05: Hand Sketches">
+        <div class="sheet-tab"><span>05 / VELLUM</span></div>
+        <span class="sheet-corner-mark tl">+</span>
+        <span class="sheet-corner-mark tr">+</span>
+        <span class="sheet-corner-mark bl">+</span>
+        <span class="sheet-corner-mark br">+</span>
 
         <div class="sheet-meta-bar">
-          <span class="sheet-stamp">⊕ Sheet 05 / Vellum Ideation</span>
-          <span>14 Hand Studies</span>
+          <span class="sheet-stamp">⊕ REF · 05 / VELLUM · 14 STUDIES</span>
+          <span class="sheet-meta-sub">Hand Ideation</span>
         </div>
 
         <div class="sheet-strip">
-          <div class="sheet-strip-thumb"><img src="assets/Light Sketches/Chicago Center ALD/Ald concept sketch.jpg" alt="Sketch 1" loading="lazy"></div>
-          <div class="sheet-strip-thumb"><img src="assets/Light Sketches/Senior Design/Exterior.jpg" alt="Sketch 2" loading="lazy"></div>
-          <div class="sheet-strip-thumb"><img src="assets/Light Sketches/Chicago Center ALD/Ald 2nd floor stairs.jpg" alt="Sketch 3" loading="lazy"></div>
+          <div class="sheet-strip-thumb"><img src="assets/Light Sketches/Chicago Center ALD/Ald concept sketch.jpg" alt="Chicago Center ALD concept sketch" loading="lazy"></div>
+          <div class="sheet-strip-thumb"><img src="assets/Light Sketches/Senior Design/Exterior.jpg" alt="Senior Design exterior sketch" loading="lazy"></div>
+          <div class="sheet-strip-thumb"><img src="assets/Light Sketches/Chicago Center ALD/Ald 2nd floor stairs.jpg" alt="Stairs daylight study" loading="lazy"></div>
         </div>
 
         <h2 class="sheet-title">Lighting Sketches &amp; Ideation</h2>
@@ -251,7 +258,7 @@
         </p>
 
         <div class="sheet-actions">
-          <button class="sheet-btn open-inspect-btn">Quick Inspect ↗</button>
+          <button class="sheet-btn open-inspect-btn" aria-label="Inspect Hand Sketches gallery">Quick Inspect ↗</button>
           <a class="sheet-btn" href="sketches.html">Browse All 14 Studies ↗</a>
         </div>
       </article>
@@ -259,21 +266,22 @@
       <!-- ====================================================================
            SHEET 06: 35mm Analog Light & Photography
            ==================================================================== -->
-      <article class="arch-sheet sheet-photo" id="sheet-photo">
-        <span class="sheet-corner-mark tl"></span>
-        <span class="sheet-corner-mark tr"></span>
-        <span class="sheet-corner-mark bl"></span>
-        <span class="sheet-corner-mark br"></span>
+      <article class="arch-sheet sheet-photo" id="sheet-photo" tabindex="0" aria-label="Project Sheet 06: Photography">
+        <div class="sheet-tab"><span>06 / OBSERVATIONAL</span></div>
+        <span class="sheet-corner-mark tl">+</span>
+        <span class="sheet-corner-mark tr">+</span>
+        <span class="sheet-corner-mark bl">+</span>
+        <span class="sheet-corner-mark br">+</span>
 
         <div class="sheet-meta-bar">
-          <span class="sheet-stamp">⊕ Sheet 06 / Film Observations</span>
-          <span>21 Works</span>
+          <span class="sheet-stamp">⊕ REF · 06 / OBSERVATIONAL · 21 WORKS</span>
+          <span class="sheet-meta-sub">Analog Laboratory</span>
         </div>
 
         <div class="sheet-strip">
-          <div class="sheet-strip-thumb"><img src="assets/photography/arch/IMG_6268 2.jpeg" alt="Photo 1" loading="lazy"></div>
-          <div class="sheet-strip-thumb"><img src="assets/photography/light/IMG_2694 2.JPG" alt="Photo 2" loading="lazy"></div>
-          <div class="sheet-strip-thumb"><img src="assets/photography/arch/kotara004502-R1-052-24A.jpg" alt="Photo 3" loading="lazy"></div>
+          <div class="sheet-strip-thumb"><img src="assets/photography/arch/IMG_6268 2.jpeg" alt="Vertical Massing Study" loading="lazy"></div>
+          <div class="sheet-strip-thumb"><img src="assets/photography/light/IMG_2694 2.JPG" alt="Specular Daylight Study" loading="lazy"></div>
+          <div class="sheet-strip-thumb"><img src="assets/photography/arch/kotara004502-R1-052-24A.jpg" alt="35mm Film Study" loading="lazy"></div>
         </div>
 
         <h2 class="sheet-title">35mm Film &amp; Architectural Light</h2>
@@ -282,7 +290,7 @@
         </p>
 
         <div class="sheet-actions">
-          <button class="sheet-btn open-inspect-btn">Quick Inspect ↗</button>
+          <button class="sheet-btn open-inspect-btn" aria-label="Inspect 35mm photo studies">Quick Inspect ↗</button>
           <a class="sheet-btn" href="photography.html">Explore 21 Works ↗</a>
         </div>
       </article>
@@ -290,10 +298,10 @@
     </div>
   </main>
 
-  <!-- Floating Camera Dock (Bottom) -->
-  <div class="camera-dock-wrap">
+  <!-- Floating Camera Glide Dock (Bottom) -->
+  <aside class="camera-dock-wrap" aria-label="Camera Navigation Dock">
     <nav class="camera-dock" aria-label="Camera quick jump navigation">
-      <button class="dock-item active" data-target="sheet-hero">Studio Overview</button>
+      <button class="dock-item active" data-target="sheet-hero">00 / Studio Ledger</button>
       <button class="dock-item" data-target="sheet-lobby">01 / Central Lobby</button>
       <button class="dock-item" data-target="sheet-museum">02 / Children's Museum</button>
       <button class="dock-item" data-target="sheet-bench">03 / Bench Study</button>
@@ -301,25 +309,60 @@
       <button class="dock-item" data-target="sheet-sketches">05 / Hand Sketches</button>
       <button class="dock-item" data-target="sheet-photo">06 / 35mm Photo</button>
     </nav>
-  </div>
+  </aside>
 
   <!-- Zoom HUD Controls -->
-  <div class="desk-zoom-hud" aria-label="Canvas zoom controls">
+  <aside class="desk-zoom-hud" aria-label="Canvas zoom controls">
     <button class="zoom-btn" id="zoom-in" aria-label="Zoom in">+</button>
     <button class="zoom-btn" id="zoom-out" aria-label="Zoom out">−</button>
-    <button class="zoom-btn" id="zoom-reset" aria-label="Reset view">⊙</button>
-  </div>
+    <button class="zoom-btn" id="zoom-reset" aria-label="Reset view to Studio Ledger">⊙</button>
+  </aside>
 
-  <!-- Sheet Inspection Modal -->
-  <div class="sheet-modal" id="sheet-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <!-- High-Resolution Architectural Inspection Modal -->
+  <div class="sheet-modal" id="sheet-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
     <div class="modal-dialog">
-      <button class="modal-close-btn" id="modal-close" aria-label="Close dialog">✕</button>
-      <span class="kicker" style="color: var(--accent-cyan);">Inspection Dossier</span>
-      <h2 class="sheet-title" id="modal-title" style="font-size: 32px; margin-top: 6px;">Project Title</h2>
-      <div class="modal-content-wrap">
+      <!-- Modal Navigation Header -->
+      <div class="modal-header-nav">
+        <div class="modal-header-left">
+          <span class="modal-code" id="modal-code">REF · 01 / ARCH · LUM 01</span>
+          <span class="modal-badge">Inspection Dossier</span>
+        </div>
+        <div class="modal-header-actions">
+          <button class="modal-nav-arrow" id="modal-prev" aria-label="Previous sheet" title="Previous Sheet (Left Arrow)">←</button>
+          <button class="modal-nav-arrow" id="modal-next" aria-label="Next sheet" title="Next Sheet (Right Arrow)">→</button>
+          <button class="modal-close-btn" id="modal-close" aria-label="Close dialog" title="Close (Escape)">✕</button>
+        </div>
+      </div>
+
+      <!-- Modal Titles -->
+      <div class="modal-title-wrap">
+        <h2 class="modal-title" id="modal-title">Project Title</h2>
+        <p class="modal-subtitle" id="modal-subtitle">Subheading &amp; Typology</p>
+      </div>
+
+      <!-- Main Visual Media Viewer & Caption -->
+      <div class="modal-media-frame">
         <img id="modal-image" src="" alt="Project Inspection View">
-        <p class="sheet-desc" id="modal-desc" style="font-size: 15px; margin-bottom: 24px;"></p>
-        <a class="sheet-btn" id="modal-link" href="#" style="padding: 10px 18px; font-size: 12px;">Open Full Project Page ↗</a>
+        <figcaption class="modal-caption" id="modal-caption"></figcaption>
+      </div>
+
+      <!-- Thumbnail Switcher Strip -->
+      <div class="modal-gallery-tabs" id="modal-gallery-tabs" aria-label="Alternative drawing views"></div>
+
+      <!-- Architectural Narrative & Specs Grid -->
+      <div class="modal-details-grid">
+        <div class="modal-narrative-col">
+          <p class="modal-lead" id="modal-lead"></p>
+          <p class="modal-desc" id="modal-desc"></p>
+          <div class="modal-actions">
+            <a class="modal-primary-link" id="modal-link" href="#">Open Full Project Page ↗</a>
+          </div>
+        </div>
+
+        <div class="modal-specs-col">
+          <h3 class="specs-heading">Technical Specifications &amp; Photometrics</h3>
+          <div class="modal-specs-grid" id="modal-specs-grid"></div>
+        </div>
       </div>
     </div>
   </div>

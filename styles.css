@@ -4,36 +4,37 @@
    ========================================================================== */
 
 :root {
-  /* Dynamic Theme Tokens */
-  --theme-hue: 75;       /* Default: 75 (Sage Light Green) */
-  --theme-sat: 26%;      /* Default: 26% */
-
-  /* Smart Color Palette preserving exact lightness */
-  --field: hsl(var(--theme-hue), var(--theme-sat), 65%);
-  --field-light: hsl(var(--theme-hue), var(--theme-sat), 78%);
-  --field-tint: hsl(var(--theme-hue), calc(var(--theme-sat) + 5%), 84%);
-  --ink: hsl(var(--theme-hue), 14%, 12%);
-  --paper: #ece9df;
-  --paper-card: #e3dfd3;
-  --glass: rgba(245, 244, 237, 0.88);
-  --glass-dark: rgba(31, 35, 27, 0.85);
-  --line: hsla(var(--theme-hue), 14%, 12%, 0.16);
-  --line-strong: hsla(var(--theme-hue), 14%, 12%, 0.45);
+  /* Haute Editorial Monograph Palette */
+  --field: #ECEAE4;
+  --field-light: #F4F2EC;
+  --field-tint: #FAF9F6;
+  --ink: #161514;
+  --paper: #ECEAE4;
+  --paper-card: #E4E1D7;
+  --glass: rgba(236, 234, 228, 0.92);
+  --glass-dark: rgba(22, 21, 20, 0.88);
+  --line: rgba(22, 21, 20, 0.12);
+  --line-strong: rgba(22, 21, 20, 0.28);
   --line-light: rgba(255, 255, 255, 0.2);
-  --terracotta: #9a4a3c;
-  --muted: hsla(var(--theme-hue), 10%, 25%, 0.7);
+  --terracotta: #A8553A;
+  --muted: rgba(22, 21, 20, 0.65);
 
   /* Typography */
   --sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --serif: 'Playfair Display', Georgia, serif;
   --mono: 'DM Mono', 'SFMono-Regular', Consolas, monospace;
 
+  /* Emil Kowalski Craft Easings */
+  --ease-out-fast: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-expressive: cubic-bezier(0.2, 0.9, 0.1, 1);
+  --ease-in-swift: cubic-bezier(0.7, 0, 0.84, 0);
+
   /* Layout Spacing */
   --site-padding: clamp(20px, 5vw, 70px);
   --section-spacing: clamp(70px, 10vh, 130px);
-  --radius-sm: 3px;
-  --radius-md: 6px;
-  --radius-lg: 12px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
 }
 
 
@@ -1010,27 +1011,28 @@ em {
    ========================================================================== */
 
 .photo-page {
-  background: #191b16;
-  color: #edeae2;
+  background: var(--charcoal, #161514);
+  color: var(--bone, #ECEAE4);
   min-height: 100vh;
 }
 
 .photo-page .glass-nav {
-  background: var(--glass-dark);
-  border-color: rgba(255, 255, 255, 0.12);
-  color: #edeae2;
+  background: rgba(22, 21, 20, 0.88);
+  border-color: rgba(236, 234, 228, 0.12);
+  color: var(--bone, #ECEAE4);
 }
 
 .photo-page .glass-nav .monogram {
-  color: #edeae2;
+  color: var(--bone, #ECEAE4);
 }
 
 .photo-page .glass-nav nav a {
-  color: #edeae2;
+  color: var(--bone, #ECEAE4);
 }
 
 .photo-page .glass-nav nav a.active {
-  border-color: #edeae2;
+  border-color: var(--terracotta, #A8553A);
+  color: #FFFFFF;
 }
 
 .photo-container {
@@ -3901,27 +3903,28 @@ body.is-scrubbing *::after {
    ========================================================================== */
 
 .sketches-page {
-  background: #10120d;
-  color: #edeae2;
+  background: var(--charcoal, #161514);
+  color: var(--bone, #ECEAE4);
   min-height: 100vh;
 }
 
 .sketches-page .glass-nav {
-  background: var(--glass-dark);
-  border-color: rgba(255, 255, 255, 0.12);
-  color: #edeae2;
+  background: rgba(22, 21, 20, 0.88);
+  border-color: rgba(236, 234, 228, 0.12);
+  color: var(--bone, #ECEAE4);
 }
 
 .sketches-page .glass-nav .monogram {
-  color: #edeae2;
+  color: var(--bone, #ECEAE4);
 }
 
 .sketches-page .glass-nav nav a {
-  color: #edeae2;
+  color: var(--bone, #ECEAE4);
 }
 
 .sketches-page .glass-nav nav a.active {
-  border-color: #edeae2;
+  border-color: var(--terracotta, #A8553A);
+  color: #FFFFFF;
 }
 
 .sketches-container {
@@ -4026,11 +4029,11 @@ body.is-scrubbing *::after {
 }
 
 .sketch-filter-btn.active {
-  background: #d1a868;
-  color: #12140e;
-  border-color: #d1a868;
+  background: var(--terracotta, #A8553A);
+  color: #FFFFFF;
+  border-color: var(--terracotta, #A8553A);
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(209, 168, 104, 0.35);
+  box-shadow: 0 2px 8px rgba(168, 85, 58, 0.35);
 }
 
 /* Chapter Sections */

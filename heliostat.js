@@ -2,9 +2,10 @@
  * Julian Kotara — The Heliostat Sun-Clock & Ray Caster Engine
  * Site 2: The Sun-Clock Pavilion & Heliostat Compass
  * 
- * Interactive 360° Solar Compass, Dynamic Trigonometric Cast Shadows,
- * Dynamic CCT Daylight Shifting, Full Nocturnal Architectural Mode,
- * and Real-Time Astronomical Location-Based Solar Positioning.
+ * Dr. Andrew Marsh 2D Stereographic Sun-Path Projection (Boulder, CO · 40.0° N),
+ * Continuous 60fps Mathematical CCT & Color Interpolation,
+ * Dynamic Upstream/Downstream Card Shadow Stacking, Nocturnal Mode,
+ * and Real-Time Astronomical Solar Calculation.
  * 
  * Adheres strictly to GSAP 3 performance & Emil Kowalski design engineering.
  */
@@ -31,56 +32,31 @@
       azimuth: 105,
       altitude: 24,
       name: '08:00 AM · Morning Rake',
-      cct: '4200K Morning Daylight',
-      kelvin: 4200,
-      badge: 'Low-Angle Morning Beam (4200K)',
-      canvas: '#FAF5ED',
-      paper: '#F3ECE1',
-      tint: 'rgba(217, 119, 6, 0.08)'
+      badge: 'Low-Angle Morning Beam'
     },
     noon: {
       azimuth: 180,
       altitude: 75,
       name: '12:00 PM · High Noon',
-      cct: '6500K Clear Sky Noon',
-      kelvin: 6500,
-      badge: 'Zenith Direct Solar Beam (6500K)',
-      canvas: '#F8F9FA',
-      paper: '#EFF1F4',
-      tint: 'rgba(59, 130, 246, 0.03)'
+      badge: 'Zenith Direct Solar Beam (D65)'
     },
     afternoon: {
       azimuth: 250,
       altitude: 32,
       name: '16:30 PM · Western Rake',
-      cct: '3800K Afternoon Sun',
-      kelvin: 3800,
-      badge: 'Raking Golden Beam (3800K)',
-      canvas: '#FAF2E4',
-      paper: '#F2E7D5',
-      tint: 'rgba(245, 158, 11, 0.08)'
+      badge: 'Raking Golden Beam'
     },
     dusk: {
       azimuth: 295,
-      altitude: 8,
+      altitude: 6,
       name: '19:30 PM · Golden Twilight',
-      cct: '2700K Low Horizon Dusk',
-      kelvin: 2700,
-      badge: 'Grazing Dusk Amber (2700K)',
-      canvas: '#F6E7D5',
-      paper: '#EED9C3',
-      tint: 'rgba(217, 119, 6, 0.16)'
+      badge: 'Grazing Dusk Amber'
     },
     night: {
       azimuth: 345,
       altitude: -14,
       name: '22:00 PM · Nocturnal Mode',
-      cct: '3000K Artificial Luminaires',
-      kelvin: 3000,
-      badge: 'Electric Luminaire Integration (3000K)',
-      canvas: '#0D0E12',
-      paper: '#14161E',
-      tint: 'rgba(13, 14, 18, 0.5)'
+      badge: 'Electric Luminaire Integration (Nocturnal)'
     }
   };
 
@@ -90,12 +66,13 @@
   });
 
   function initHeliostatEngine() {
-    // Hero Dial Elements
+    // Andrew Marsh Stereographic Hero Dial Elements
     const heroDial = document.getElementById('compass-dial-wrap');
     const heroSunPuck = document.getElementById('compass-sun-marker');
-    const heroRayVector = document.getElementById('compass-ray-vector');
+    const marshRayLine = document.getElementById('marsh-ray-line');
+    const marshActivePath = document.getElementById('marsh-active-trajectory');
 
-    // Pinned Nav Header Dial Elements (persistent in viewport)
+    // Pinned Nav Header Dial Elements
     const navDial = document.getElementById('nav-compass-dial');
     const navSunPuck = document.getElementById('nav-sun-marker');
     const navRayVector = document.getElementById('nav-ray-vector');
@@ -114,13 +91,156 @@
     const sweepToggleBtn = document.getElementById('solar-sweep-btn');
     const liveSyncBtn = document.getElementById('btn-live-solar');
 
-    // Dial Radius Configuration
-    const HERO_RADIUS = 80; // px
-    const NAV_RADIUS = 18;  // px
+    // Stereographic Dial Geometry (Andrew Marsh standard)
+    const HERO_RADIUS = 120; // px (radius of outer horizon 0° elevation circle in 280x280 SVG)
+    const HERO_CX = 140;     // px center X
+    const HERO_CY = 140;     // px center Y
+    const NAV_RADIUS = 18;   // px
+    const NAV_CX = 24;
+    const NAV_CY = 24;
 
     /**
-     * Calculate trigonometric cast shadows, dynamic CCT, and day/night mode
-     * in a hardware-accelerated 60fps loop.
+     * Continuous Mathematical Lighting & CCT Interpolation.
+     * Computes seamless RGB colors across the full daylight to nocturnal spectrum.
+     */
+    function getContinuousLighting(alt) {
+      const stops = [
+        { alt: -14, kelvin: 2200, canvas: [13, 14, 18], paper: [20, 22, 30], surface: [27, 30, 40], ink: [244, 243, 239], inkSec: [170, 167, 158], tint: [13, 14, 18, 0.45], dialBg: [20, 22, 30], isNight: true },
+        { alt: 0,   kelvin: 2600, canvas: [246, 231, 213], paper: [238, 217, 195], surface: [255, 253, 248], ink: [17, 17, 16], inkSec: [64, 62, 58], tint: [217, 119, 6, 0.16], dialBg: [246, 243, 236], isNight: false },
+        { alt: 15,  kelvin: 3800, canvas: [250, 242, 228], paper: [242, 231, 213], surface: [255, 255, 255], ink: [17, 17, 16], inkSec: [64, 62, 58], tint: [245, 158, 11, 0.08], dialBg: [248, 246, 240], isNight: false },
+        { alt: 45,  kelvin: 5200, canvas: [249, 246, 240], paper: [241, 237, 230], surface: [255, 255, 255], ink: [17, 17, 16], inkSec: [64, 62, 58], tint: [217, 119, 6, 0.04], dialBg: [248, 248, 247], isNight: false },
+        { alt: 75,  kelvin: 6500, canvas: [248, 249, 250], paper: [239, 241, 244], surface: [255, 255, 255], ink: [17, 17, 16], inkSec: [64, 62, 58], tint: [59, 130, 246, 0.03], dialBg: [245, 247, 250], isNight: false }
+      ];
+
+      let p0 = stops[0], p1 = stops[stops.length - 1];
+      if (alt <= stops[0].alt) {
+        p0 = p1 = stops[0];
+      } else if (alt >= stops[stops.length - 1].alt) {
+        p0 = p1 = stops[stops.length - 1];
+      } else {
+        for (let i = 0; i < stops.length - 1; i++) {
+          if (alt >= stops[i].alt && alt <= stops[i + 1].alt) {
+            p0 = stops[i];
+            p1 = stops[i + 1];
+            break;
+          }
+        }
+      }
+
+      const range = p1.alt - p0.alt;
+      const t = range === 0 ? 0 : Math.max(0, Math.min(1, (alt - p0.alt) / range));
+      const tSmooth = t * t * (3 - 2 * t);
+
+      const lerp = (a, b) => Math.round(a + (b - a) * tSmooth);
+      const lerpArr = (arrA, arrB) => arrA.map((v, i) => lerp(v, arrB[i]));
+
+      const canvas = lerpArr(p0.canvas, p1.canvas);
+      const paper = lerpArr(p0.paper, p1.paper);
+      const surface = lerpArr(p0.surface, p1.surface);
+      const dialBg = lerpArr(p0.dialBg, p1.dialBg);
+      const kelvin = Math.round(p0.kelvin + (p1.kelvin - p0.kelvin) * t);
+
+      return {
+        kelvin,
+        canvasStr: `rgb(${canvas[0]}, ${canvas[1]}, ${canvas[2]})`,
+        paperStr: `rgb(${paper[0]}, ${paper[1]}, ${paper[2]})`,
+        surfaceStr: `rgb(${surface[0]}, ${surface[1]}, ${surface[2]})`,
+        dialBgStr: `rgb(${dialBg[0]}, ${dialBg[1]}, ${dialBg[2]})`,
+        isNight: alt <= 0
+      };
+    }
+
+    function getCctDescriptor(k) {
+      if (k <= 2600) return 'Dusk Amber / Twilight';
+      if (k <= 3400) return 'Warm Horizon Rake';
+      if (k <= 4400) return 'Warm Architectural Daylight';
+      if (k <= 5500) return 'Direct Solar Beam';
+      return 'Zenith Clear Sky Daylight (D65)';
+    }
+
+    /**
+     * Dynamic Upstream/Downstream Card Stacking
+     * Ensures shadows from upstream cards smoothly pass over downstream cards,
+     * maintaining physical coplanar height across all plates.
+     */
+    function updateCardShadowStacking(sx, sy) {
+      const cardSelectors = [
+        '.studies-grid .study-card',
+        '.curatorial-grid .curatorial-card'
+      ];
+
+      cardSelectors.forEach(sel => {
+        const cards = document.querySelectorAll(sel);
+        if (!cards || cards.length < 2) return;
+
+        const cardData = Array.from(cards).map(card => {
+          const rect = card.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          // Dot product along shadow projection vector:
+          // Smaller projection = closer to sun = upstream = higher z-index!
+          const projection = cx * sx + cy * sy;
+          return { card, projection };
+        });
+
+        // Upstream cards have smaller projection
+        cardData.sort((a, b) => a.projection - b.projection);
+
+        // Assign descending z-index so upstream card's shadow casts OVER downstream card
+        const baseZ = 20;
+        cardData.forEach((item, index) => {
+          item.card.style.zIndex = baseZ - index;
+        });
+      });
+    }
+
+    /**
+     * Compute Active Day Sun-Path Arc for Boulder, CO (40.0° N)
+     * Renders today's stereographic sun-path trajectory in the Andrew Marsh chart.
+     */
+    function updateActiveDayArc(alt, az) {
+      if (!marshActivePath) return;
+
+      // Estimate solar declination from altitude at current azimuth
+      const phi = 40.0 * Math.PI / 180;
+      const azRad = (az * Math.PI) / 180;
+      const altRad = (Math.max(2, alt) * Math.PI) / 180;
+
+      // Declination approximation: sin(decl) = sin(phi)*sin(alt) + cos(phi)*cos(alt)*cos(az)
+      const sinDecl = Math.sin(phi) * Math.sin(altRad) + Math.cos(phi) * Math.cos(altRad) * Math.cos(azRad);
+      const decl = Math.asin(Math.max(-0.4, Math.min(0.4, sinDecl)));
+      const declDeg = (decl * 180) / Math.PI;
+
+      const pts = [];
+      for (let h = -120; h <= 120; h += 3) {
+        const H = (h * Math.PI) / 180;
+        const sinA = Math.sin(phi) * Math.sin(decl) + Math.cos(phi) * Math.cos(decl) * Math.cos(H);
+        const a = Math.asin(Math.max(-1, Math.min(1, sinA)));
+        const aDeg = (a * 180) / Math.PI;
+        if (aDeg < 0) continue;
+
+        const cosAzi = (Math.sin(decl) - Math.sin(phi) * Math.sin(a)) / (Math.cos(phi) * Math.cos(a));
+        let aziDeg = Math.acos(Math.max(-1, Math.min(1, cosAzi))) * (180 / Math.PI);
+        if (h > 0) aziDeg = 360 - aziDeg;
+
+        const r = HERO_RADIUS * (90 - aDeg) / 90;
+        const theta = (aziDeg - 90) * (Math.PI / 180);
+        const x = HERO_CX + r * Math.cos(theta);
+        const y = HERO_CY + r * Math.sin(theta);
+        pts.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+      }
+
+      if (pts.length > 2) {
+        marshActivePath.setAttribute('d', 'M ' + pts.join(' L '));
+      } else {
+        marshActivePath.setAttribute('d', '');
+      }
+    }
+
+    /**
+     * Primary 60fps Physics & Lighting Loop.
+     * Computes shadow projections, smooth CCT, Andrew Marsh stereographic dial,
+     * and dynamic card overlapping.
      */
     function updateSolarPhysics(az, alt, animateDuration = 0) {
       solarState.azimuth = ((az % 360) + 360) % 360;
@@ -130,39 +250,29 @@
       const altitude = solarState.altitude;
       const root = document.documentElement;
 
-      const isNight = altitude <= 0;
+      const lighting = getContinuousLighting(altitude);
 
-      // 1. NIGHT MODE TOGGLE
-      if (isNight) {
+      // Night Mode Class
+      if (lighting.isNight) {
         root.classList.add('solar-night');
       } else {
         root.classList.remove('solar-night');
       }
 
-      // 2. SHADOW CALCULATIONS
+      // Shadow Calculations
       let shadowX, shadowY, shadowBlur, shadowOpacity;
       let textShadowX, textShadowY, textShadowBlur, textShadowOpacity;
-      let bgCanvas, bgPaper, cctText, cctKelvin, washTint, incidentMode;
 
-      if (isNight) {
-        // Deep nocturnal artificial luminaire / moon casting
+      if (lighting.isNight) {
         shadowX = 0;
         shadowY = 14;
         shadowBlur = 6;
         shadowOpacity = 0.55;
 
-        // Hero headline shadow strictly behind letters
         textShadowX = 0;
         textShadowY = 8;
         textShadowBlur = 2.0;
         textShadowOpacity = 0.70;
-
-        bgCanvas = '#0D0E12';
-        bgPaper = '#14161E';
-        cctText = '3000K Electric Luminaires & Night';
-        cctKelvin = 3000;
-        washTint = 'rgba(13, 14, 18, 0.45)';
-        incidentMode = 'Electric Luminaire Integration (3000K Nocturnal)';
       } else {
         const rad = (azimuth * Math.PI) / 180;
         const normAlt = Math.max(0.04, Math.min(1, altitude / 90));
@@ -180,84 +290,63 @@
         textShadowY = Math.cos(rad) * textLength;
         textShadowBlur = 1.0 + (1 - normAlt) * 2.0;
         textShadowOpacity = (0.28 + (1 - normAlt) * 0.14).toFixed(3);
-
-        // Dynamic CCT & Material Color Shifting with Solar Elevation
-        if (altitude <= 12) {
-          bgCanvas = '#F6E7D5';
-          bgPaper = '#EED9C3';
-          cctText = '2700K Low Horizon Dusk';
-          cctKelvin = 2700;
-          washTint = 'rgba(217, 119, 6, 0.16)';
-          incidentMode = 'Grazing Dusk Amber (2700K)';
-        } else if (altitude <= 35) {
-          bgCanvas = '#FAF2E4';
-          bgPaper = '#F2E7D5';
-          cctText = '3800K Warm Rake Angle';
-          cctKelvin = 3800;
-          washTint = 'rgba(245, 158, 11, 0.08)';
-          incidentMode = 'Low-Angle Raking Beam (3800K)';
-        } else if (altitude <= 60) {
-          bgCanvas = '#FAF5ED';
-          bgPaper = '#F3ECE1';
-          cctText = '4800K Direct Solar Beam';
-          cctKelvin = 4800;
-          washTint = 'rgba(217, 119, 6, 0.04)';
-          incidentMode = 'Temperate Architectural Beam (4800K)';
-        } else {
-          bgCanvas = '#F8F9FA';
-          bgPaper = '#EFF1F4';
-          cctText = '6500K Clear Sky Noon';
-          cctKelvin = 6500;
-          washTint = 'rgba(59, 130, 246, 0.03)';
-          incidentMode = 'Zenith Direct Solar Beam (6500K)';
-        }
       }
+
+      // Dynamic Card Overlapping (upstream shadows cast over downstream cards)
+      updateCardShadowStacking(shadowX, shadowY);
 
       // Update Text Readouts
       const azRounded = Math.round(azimuth);
       const altRounded = Math.round(altitude);
+      const cctDesc = getCctDescriptor(lighting.kelvin);
 
       if (readoutAzimuth) readoutAzimuth.textContent = `${azRounded}° Azimuth`;
-      if (readoutAltitude) readoutAltitude.textContent = isNight ? `${altRounded}° (Below Horizon)` : `${altRounded}° Altitude`;
-      if (readoutCct) readoutCct.textContent = cctText;
-      if (readoutStatus) readoutStatus.textContent = isNight ? `${azRounded}° / Night · ${cctKelvin}K` : `${azRounded}° / ${altRounded}° · ${cctKelvin}K`;
-      if (navReadoutAzimuth) navReadoutAzimuth.textContent = isNight ? `${azRounded}° Az / Night` : `${azRounded}° Az / ${altRounded}° Alt`;
-      if (dynamicBeamBadge && !solarState.isLiveSync) dynamicBeamBadge.textContent = incidentMode;
-      if (ambientWash) ambientWash.style.background = washTint;
+      if (readoutAltitude) readoutAltitude.textContent = lighting.isNight ? `${altRounded}° (Below Horizon)` : `${altRounded}° Altitude`;
+      if (readoutCct) readoutCct.textContent = `${lighting.kelvin}K ${cctDesc}`;
+      if (readoutStatus) readoutStatus.textContent = lighting.isNight ? `${azRounded}° / Night · ${lighting.kelvin}K` : `${azRounded}° / ${altRounded}° · ${lighting.kelvin}K`;
+      if (navReadoutAzimuth) navReadoutAzimuth.textContent = lighting.isNight ? `${azRounded}° Az / Night` : `${azRounded}° Az / ${altRounded}° Alt`;
+      if (dynamicBeamBadge && !solarState.isLiveSync) dynamicBeamBadge.textContent = `${cctDesc} (${lighting.kelvin}K)`;
 
-      // Update Dial Positions (Hero & Nav)
+      // Update Dr. Andrew Marsh Stereographic Sun Position & Vector
       const dialRad = (azimuth - 90) * (Math.PI / 180);
-      const dialNormDist = isNight ? 1.0 : Math.max(0, Math.min(1, (90 - altitude) / 90));
+      const dialNormDist = lighting.isNight ? 1.05 : Math.max(0, Math.min(1, (90 - altitude) / 90));
 
       if (heroSunPuck) {
         const heroDist = dialNormDist * HERO_RADIUS;
-        const heroX = 100 + Math.cos(dialRad) * heroDist;
-        const heroY = 100 + Math.sin(dialRad) * heroDist;
-        heroSunPuck.style.left = `${heroX}px`;
-        heroSunPuck.style.top = `${heroY}px`;
+        const heroX = HERO_CX + Math.cos(dialRad) * heroDist;
+        const heroY = HERO_CY + Math.sin(dialRad) * heroDist;
+        heroSunPuck.style.left = `${heroX.toFixed(1)}px`;
+        heroSunPuck.style.top = `${heroY.toFixed(1)}px`;
 
-        if (heroRayVector) {
-          const heroAngle = (dialRad * 180) / Math.PI;
-          heroRayVector.style.width = `${heroDist}px`;
-          heroRayVector.style.transform = `rotate(${heroAngle}deg)`;
+        if (marshRayLine) {
+          // Ray from center through sun puck to outer rim
+          const rimX = HERO_CX + Math.cos(dialRad) * HERO_RADIUS;
+          const rimY = HERO_CY + Math.sin(dialRad) * HERO_RADIUS;
+          marshRayLine.setAttribute('x1', HERO_CX);
+          marshRayLine.setAttribute('y1', HERO_CY);
+          marshRayLine.setAttribute('x2', rimX.toFixed(1));
+          marshRayLine.setAttribute('y2', rimY.toFixed(1));
         }
+
+        updateActiveDayArc(altitude, azimuth);
       }
 
+      // Nav Mini Dial Position
       if (navSunPuck) {
         const navDist = dialNormDist * NAV_RADIUS;
-        const navX = 24 + Math.cos(dialRad) * navDist;
-        const navY = 24 + Math.sin(dialRad) * navDist;
-        navSunPuck.style.left = `${navX}px`;
-        navSunPuck.style.top = `${navY}px`;
+        const navX = NAV_CX + Math.cos(dialRad) * navDist;
+        const navY = NAV_CY + Math.sin(dialRad) * navDist;
+        navSunPuck.style.left = `${navX.toFixed(1)}px`;
+        navSunPuck.style.top = `${navY.toFixed(1)}px`;
 
         if (navRayVector) {
           const navAngle = (dialRad * 180) / Math.PI;
-          navRayVector.style.width = `${navDist}px`;
+          navRayVector.style.width = `${navDist.toFixed(1)}px`;
           navRayVector.style.transform = `rotate(${navAngle}deg)`;
         }
       }
 
-      // Apply CSS custom properties
+      // Apply Continuous CSS Custom Properties
       if (animateDuration > 0 && typeof gsap !== 'undefined') {
         const currentX = parseFloat(getComputedStyle(root).getPropertyValue('--sun-shadow-x')) || 0;
         const currentY = parseFloat(getComputedStyle(root).getPropertyValue('--sun-shadow-y')) || 16;
@@ -272,7 +361,9 @@
           blur: currentBlur,
           tx: currentTx,
           ty: currentTy,
-          tblur: currentTblur
+          tblur: currentTblur,
+          alt: solarState.altitude,
+          az: solarState.azimuth
         };
 
         gsap.to(proxy, {
@@ -282,10 +373,13 @@
           tx: textShadowX,
           ty: textShadowY,
           tblur: textShadowBlur,
+          alt: alt,
+          az: az,
           duration: animateDuration,
           ease: 'power3.out',
           overwrite: 'auto',
           onUpdate: () => {
+            const liveLight = getContinuousLighting(proxy.alt);
             applyCssVariables(
               root,
               proxy.x,
@@ -296,11 +390,12 @@
               proxy.ty,
               proxy.tblur,
               textShadowOpacity,
-              bgCanvas,
-              bgPaper,
-              washTint,
-              azimuth,
-              altitude
+              liveLight.canvasStr,
+              liveLight.paperStr,
+              liveLight.surfaceStr,
+              liveLight.dialBgStr,
+              proxy.az,
+              proxy.alt
             );
           }
         });
@@ -315,9 +410,10 @@
           textShadowY,
           textShadowBlur,
           textShadowOpacity,
-          bgCanvas,
-          bgPaper,
-          washTint,
+          lighting.canvasStr,
+          lighting.paperStr,
+          lighting.surfaceStr,
+          lighting.dialBgStr,
           azimuth,
           altitude
         );
@@ -336,7 +432,8 @@
       topacity,
       canvas,
       paper,
-      tint,
+      surface,
+      dialBg,
       az,
       alt
     ) {
@@ -360,10 +457,11 @@
       root.style.setProperty('--text-shadow-blur', `${tblurFixed}px`);
       root.style.setProperty('--text-shadow-opacity', topacity);
 
-      // Dynamic CCT Background Colors
+      // Continuous CCT Material Colors
       if (canvas) root.style.setProperty('--bg-canvas', canvas);
       if (paper) root.style.setProperty('--bg-paper', paper);
-      if (tint) root.style.setProperty('--cct-tint', tint);
+      if (surface) root.style.setProperty('--bg-surface', surface);
+      if (dialBg) root.style.setProperty('--dial-bg', dialBg);
 
       root.style.setProperty('--solar-azimuth', `${az.toFixed(1)}deg`);
       root.style.setProperty('--solar-altitude', `${alt.toFixed(1)}deg`);
@@ -372,13 +470,13 @@
     // ==========================================
     // POINTER DRAG INTERACTION (Hero & Nav Dials)
     // ==========================================
-    function setupDialDrag(dialElement, maxRadius) {
+    function setupDialDrag(dialElement, maxRadius, centerXOffset, centerYOffset) {
       if (!dialElement) return;
 
       function handleDragCoord(clientX, clientY) {
         const rect = dialElement.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
+        const centerX = rect.left + centerXOffset;
+        const centerY = rect.top + centerYOffset;
 
         const dx = clientX - centerX;
         const dy = clientY - centerY;
@@ -388,19 +486,19 @@
         let angleDeg = (angleRad * 180) / Math.PI + 90;
         if (angleDeg < 0) angleDeg += 360;
 
-        // Altitude from radial distance: center = 90° zenith, rim = 0° / night
+        // Altitude from radial distance: center = 90° zenith, rim = 0° horizon
         const dist = Math.sqrt(dx * dx + dy * dy);
-        const normDist = Math.min(1.05, dist / maxRadius);
+        const normDist = dist / maxRadius;
 
         let computedAltitude;
-        if (normDist >= 0.98) {
-          // Pulled to the outer rim dips into night mode
-          computedAltitude = -10;
+        if (normDist >= 1.0) {
+          // Pulled to or past the outer horizon ring dips into night mode
+          computedAltitude = Math.max(-14, -(normDist - 1.0) * 45);
         } else {
-          computedAltitude = Math.max(3, 90 - normDist * 88);
+          computedAltitude = Math.max(0, 90 - normDist * 90);
         }
 
-        // Deactivate presets & live sync during manual drag
+        // Deactivate preset buttons & live sync during manual drag
         presetButtons.forEach(btn => btn.classList.remove('active'));
         stopLiveSolarSync();
 
@@ -435,8 +533,8 @@
       });
     }
 
-    setupDialDrag(heroDial, HERO_RADIUS);
-    setupDialDrag(navDial, NAV_RADIUS);
+    setupDialDrag(heroDial, HERO_RADIUS, 140, 140);
+    setupDialDrag(navDial, NAV_RADIUS, 24, 24);
 
     // ==========================================
     // PRESET BUTTONS (Morning, Noon, Afternoon, Dusk, Night)
@@ -457,7 +555,7 @@
           if (sweepToggleBtn) sweepToggleBtn.classList.remove('active');
         }
 
-        updateSolarPhysics(preset.azimuth, preset.altitude, 0.65);
+        updateSolarPhysics(preset.azimuth, preset.altitude, 0.75);
       });
     });
 
@@ -489,13 +587,13 @@
           }
         });
 
-        // Dawn (100° Az, 20° Alt) -> Noon (180° Az, 76° Alt) -> Dusk (295° Az, 8° Alt) -> Night (340° Az, -14° Alt) -> Dawn
+        // Continuous smooth cycle: Dawn -> Noon -> Dusk -> Night -> Dawn
         solarState.sweepTimeline
-          .to(cycleObj, { az: 180, alt: 76, duration: 4.0, ease: 'sine.inOut' })
-          .to(cycleObj, { az: 295, alt: 8, duration: 4.0, ease: 'sine.inOut' })
+          .to(cycleObj, { az: 180, alt: 76, duration: 4.5, ease: 'sine.inOut' })
+          .to(cycleObj, { az: 295, alt: 6, duration: 4.5, ease: 'sine.inOut' })
           .to(cycleObj, { az: 345, alt: -14, duration: 2.5, ease: 'power1.inOut' })
           .set(cycleObj, { az: 90, alt: -5 })
-          .to(cycleObj, { az: 100, alt: 20, duration: 2.0, ease: 'power1.out' });
+          .to(cycleObj, { az: 100, alt: 20, duration: 2.5, ease: 'power1.out' });
       });
     }
 
@@ -571,7 +669,6 @@
         }
       }
 
-      // Attempt browser geolocation with quick fallback
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
           (pos) => {
@@ -583,7 +680,6 @@
             applyCurrentSolarPosition();
           },
           () => {
-            // Default to Julian's campus in Boulder, CO
             solarState.userLocation = { lat: 40.015, lon: -105.27, label: 'Boulder, CO' };
             applyCurrentSolarPosition();
           },
@@ -594,7 +690,6 @@
         applyCurrentSolarPosition();
       }
 
-      // Live 30s tracking interval
       if (solarState.liveTimer) clearInterval(solarState.liveTimer);
       solarState.liveTimer = setInterval(applyCurrentSolarPosition, 30000);
     }
@@ -617,7 +712,7 @@
         }
       }
 
-      updateSolarPhysics(solar.azimuth, solar.altitude, 0.65);
+      updateSolarPhysics(solar.azimuth, solar.altitude, 0.75);
     }
 
     function stopLiveSolarSync() {
@@ -672,7 +767,6 @@
       });
     });
 
-    // Cleanup on unload
     window.addEventListener('beforeunload', () => {
       ctx.revert();
     });

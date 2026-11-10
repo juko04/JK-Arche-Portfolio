@@ -94,9 +94,83 @@
     const HERO_RADIUS = 80; // px
     const NAV_RADIUS = 18;  // px
 
+    // ==========================================
+    // 3D INDIVIDUAL LETTER SHAPES INITIALIZATION
+    // Splits header text into standalone 3D architectural glyphs
+    // that cast independent directional shadows based on the sun's coordinates
+    // ==========================================
+    init3DTextShapes();
+
+    function init3DTextShapes() {
+      const targets = document.querySelectorAll('.hero-headline, .solar-3d-text, .monogram, .section-head-wrap h2, .subpage .sub-hero h1, .about-sticky h1, .instrument-content h2');
+
+      targets.forEach(el => {
+        if (el.dataset.split3d === 'true') return;
+        el.dataset.split3d = 'true';
+
+        // Accessibility: Preserve full original string
+        const cleanAria = el.textContent.trim().replace(/\s+/g, ' ');
+        if (!el.getAttribute('aria-label')) {
+          el.setAttribute('aria-label', cleanAria);
+        }
+
+        function processChild(node) {
+          if (node.nodeType === 3) { // Text node
+            const text = node.textContent;
+            if (!text) return null;
+
+            const frag = document.createDocumentFragment();
+            // Split tokens by whitespace while preserving spacing
+            const tokens = text.split(/(\s+)/);
+
+            tokens.forEach(token => {
+              if (!token) return;
+              if (/^\s+$/.test(token)) {
+                frag.appendChild(document.createTextNode(token));
+              } else {
+                const wordSpan = document.createElement('span');
+                wordSpan.className = 'solar-3d-word';
+
+                for (let i = 0; i < token.length; i++) {
+                  const char = token[i];
+                  const charSpan = document.createElement('span');
+                  charSpan.className = 'solar-3d-char';
+                  charSpan.dataset.char = char;
+                  charSpan.textContent = char;
+                  wordSpan.appendChild(charSpan);
+                }
+                frag.appendChild(wordSpan);
+              }
+            });
+            return frag;
+          } else if (node.nodeType === 1) { // Element node
+            if (node.tagName.toLowerCase() === 'br') {
+              return node.cloneNode(true);
+            }
+            const clone = node.cloneNode(false);
+            Array.from(node.childNodes).forEach(child => {
+              const res = processChild(child);
+              if (res) clone.appendChild(res);
+            });
+            return clone;
+          }
+          return null;
+        }
+
+        const frag = document.createDocumentFragment();
+        Array.from(el.childNodes).forEach(child => {
+          const res = processChild(child);
+          if (res) frag.appendChild(res);
+        });
+
+        el.innerHTML = '';
+        el.appendChild(frag);
+      });
+    }
+
     /**
      * Calculate trigonometric cast shadows and CCT in a 60fps rAF loop
-     * Exact requested formula:
+     * Sharp architectural sun projection formula:
      *   rad = azimuth * Math.PI / 180;
      *   shadowX = -Math.sin(rad) * length;
      *   shadowY = Math.cos(rad) * length;
@@ -112,12 +186,28 @@
       const rad = (azimuth * Math.PI) / 180;
       const normAlt = Math.max(0.04, Math.min(1, altitude / 90));
 
-      // Length inversely proportional to altitude (long at dusk, short at noon)
-      const length = 8 + (1 - normAlt) * 52;
+      // 1. CARD & SURFACE SHADOWS (Much sharper & high-contrast architectural projection)
+      // Length stretches from 16px at high noon to 84px at low grazing dusk
+      const length = 16 + (1 - normAlt) * 68;
       const shadowX = -Math.sin(rad) * length;
       const shadowY = Math.cos(rad) * length;
-      const shadowBlur = 12 + (1 - normAlt) * 36;
-      const shadowOpacity = (0.05 + (1 - normAlt) * 0.09).toFixed(3);
+      // Ultra-sharp blur: only 1.5px at noon, max 5.0px at lowest dusk
+      const shadowBlur = 1.5 + (1 - normAlt) * 3.5;
+      // High contrast opacity: 0.28 at noon, up to 0.44 at low raking sun
+      const shadowOpacity = (0.28 + (1 - normAlt) * 0.16).toFixed(3);
+
+      // 2. 3D INDIVIDUAL LETTER SHAPE SHADOWS
+      // Scaled proportionally for typography (5px to 31px projection)
+      const textLength = 5 + (1 - normAlt) * 26;
+      const textShadowX = -Math.sin(rad) * textLength;
+      const textShadowY = Math.cos(rad) * textLength;
+      // 3D extrusion bevel vector (1.2px to 3.0px)
+      const textBevelLength = 1.2 + (1 - normAlt) * 1.8;
+      const textBevelX = -Math.sin(rad) * textBevelLength;
+      const textBevelY = Math.cos(rad) * textBevelLength;
+      // Razor-sharp text blur (0.5px to 2.5px) and high opacity (0.45 to 0.75)
+      const textShadowBlur = 0.5 + (1 - normAlt) * 2.0;
+      const textShadowOpacity = (0.45 + (1 - normAlt) * 0.30).toFixed(3);
 
       // Opposite subtle highlight (light striking leading edge)
       const highlightX = (-shadowX * 0.08).toFixed(1);
@@ -164,9 +254,6 @@
       if (ambientWash) ambientWash.style.background = washTint;
 
       // Update Dial Visuals (Hero & Nav)
-      // On a clock compass, 0° = Top (-Y), 90° = Right (+X), 180° = Bottom (+Y), 270° = Left (-X)
-      // Angle for CSS coordinate space:
-      // radDial = (azimuth - 90) * Math.PI / 180
       const dialRad = (azimuth - 90) * (Math.PI / 180);
       const dialNormDist = (90 - altitude) / 90;
 
@@ -205,37 +292,123 @@
 
       if (animateDuration > 0 && typeof gsap !== 'undefined') {
         const currentX = parseFloat(getComputedStyle(root).getPropertyValue('--sun-shadow-x')) || 0;
-        const currentY = parseFloat(getComputedStyle(root).getPropertyValue('--sun-shadow-y')) || 12;
-        const currentBlur = parseFloat(getComputedStyle(root).getPropertyValue('--sun-shadow-blur')) || 24;
+        const currentY = parseFloat(getComputedStyle(root).getPropertyValue('--sun-shadow-y')) || 16;
+        const currentBlur = parseFloat(getComputedStyle(root).getPropertyValue('--sun-shadow-blur')) || 2;
+        const currentTx = parseFloat(getComputedStyle(root).getPropertyValue('--text-shadow-x')) || 0;
+        const currentTy = parseFloat(getComputedStyle(root).getPropertyValue('--text-shadow-y')) || 8;
+        const currentTblur = parseFloat(getComputedStyle(root).getPropertyValue('--text-shadow-blur')) || 1;
+        const currentBvx = parseFloat(getComputedStyle(root).getPropertyValue('--text-bevel-x')) || 0;
+        const currentBvy = parseFloat(getComputedStyle(root).getPropertyValue('--text-bevel-y')) || 1.5;
 
-        const proxy = { x: currentX, y: currentY, blur: currentBlur };
+        const proxy = {
+          x: currentX,
+          y: currentY,
+          blur: currentBlur,
+          tx: currentTx,
+          ty: currentTy,
+          tblur: currentTblur,
+          bvx: currentBvx,
+          bvy: currentBvy
+        };
+
         gsap.to(proxy, {
           x: shadowX,
           y: shadowY,
           blur: shadowBlur,
+          tx: textShadowX,
+          ty: textShadowY,
+          tblur: textShadowBlur,
+          bvx: textBevelX,
+          bvy: textBevelY,
           duration: animateDuration,
           ease: 'power3.out',
           overwrite: 'auto',
           onUpdate: () => {
-            applyCssVariables(root, proxy.x, proxy.y, proxy.blur, shadowOpacity, highlightX, highlightY, washTint, azimuth, altitude);
+            applyCssVariables(
+              root,
+              proxy.x,
+              proxy.y,
+              proxy.blur,
+              shadowOpacity,
+              highlightX,
+              highlightY,
+              washTint,
+              azimuth,
+              altitude,
+              proxy.tx,
+              proxy.ty,
+              proxy.tblur,
+              textShadowOpacity,
+              proxy.bvx,
+              proxy.bvy
+            );
           }
         });
       } else {
-        applyCssVariables(root, shadowX, shadowY, shadowBlur, shadowOpacity, highlightX, highlightY, washTint, azimuth, altitude);
+        applyCssVariables(
+          root,
+          shadowX,
+          shadowY,
+          shadowBlur,
+          shadowOpacity,
+          highlightX,
+          highlightY,
+          washTint,
+          azimuth,
+          altitude,
+          textShadowX,
+          textShadowY,
+          textShadowBlur,
+          textShadowOpacity,
+          textBevelX,
+          textBevelY
+        );
       }
     }
 
-    function applyCssVariables(root, sx, sy, blur, opacity, hx, hy, tint, az, alt) {
+    function applyCssVariables(
+      root,
+      sx,
+      sy,
+      blur,
+      opacity,
+      hx,
+      hy,
+      tint,
+      az,
+      alt,
+      tsx,
+      tsy,
+      tblur,
+      topacity,
+      tbx,
+      tby
+    ) {
       const sxFixed = typeof sx === 'number' ? sx.toFixed(2) : sx;
       const syFixed = typeof sy === 'number' ? sy.toFixed(2) : sy;
       const blurFixed = typeof blur === 'number' ? blur.toFixed(2) : blur;
 
+      const tsxFixed = typeof tsx === 'number' ? tsx.toFixed(2) : tsx;
+      const tsyFixed = typeof tsy === 'number' ? tsy.toFixed(2) : tsy;
+      const tblurFixed = typeof tblur === 'number' ? tblur.toFixed(2) : tblur;
+      const tbxFixed = typeof tbx === 'number' ? tbx.toFixed(2) : tbx;
+      const tbyFixed = typeof tby === 'number' ? tby.toFixed(2) : tby;
+
+      // Cards & Panels Sharp Shadows
       root.style.setProperty('--sun-shadow-x', `${sxFixed}px`);
       root.style.setProperty('--sun-shadow-y', `${syFixed}px`);
       root.style.setProperty('--sun-shadow-blur', `${blurFixed}px`);
       root.style.setProperty('--sun-shadow-opacity', opacity);
       root.style.setProperty('--sun-highlight-x', `${hx}px`);
       root.style.setProperty('--sun-highlight-y', `${hy}px`);
+
+      // 3D Typographic Letterform Shadows & Bevels
+      root.style.setProperty('--text-shadow-x', `${tsxFixed}px`);
+      root.style.setProperty('--text-shadow-y', `${tsyFixed}px`);
+      root.style.setProperty('--text-shadow-blur', `${tblurFixed}px`);
+      root.style.setProperty('--text-shadow-opacity', topacity);
+      root.style.setProperty('--text-bevel-x', `${tbxFixed}px`);
+      root.style.setProperty('--text-bevel-y', `${tbyFixed}px`);
 
       // Backwards-compatible aliases
       root.style.setProperty('--shadow-x', `${sxFixed}px`);

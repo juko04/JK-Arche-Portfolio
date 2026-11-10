@@ -32,11 +32,19 @@
   
   /* Dynamic Trigonometric Ray Shadow Variables (calculated in 60fps rAF in heliostat.js) */
   --sun-shadow-x: 0px;
-  --sun-shadow-y: 12px;
-  --sun-shadow-blur: 24px;
-  --sun-shadow-opacity: 0.08;
+  --sun-shadow-y: 18px;
+  --sun-shadow-blur: 2px;
+  --sun-shadow-opacity: 0.32;
   --sun-highlight-x: 0px;
   --sun-highlight-y: -1px;
+  
+  /* 3D Typographic Shape Shadow Variables (Extruded letterforms casting onto limestone) */
+  --text-shadow-x: 0px;
+  --text-shadow-y: 8px;
+  --text-shadow-blur: 1px;
+  --text-shadow-opacity: 0.55;
+  --text-bevel-x: 0px;
+  --text-bevel-y: 1.5px;
   
   --shadow-x: var(--sun-shadow-x);
   --shadow-y: var(--sun-shadow-y);
@@ -51,14 +59,20 @@
   --solar-azimuth: 180deg;
   --solar-altitude: 75deg;
 
-  /* Physical Directional Ray Cast Shadow Formula */
-  --shadow-ray: var(--sun-shadow-x) var(--sun-shadow-y) var(--sun-shadow-blur) rgba(17, 17, 16, var(--sun-shadow-opacity)),
-                0 1px 3px rgba(17, 17, 16, 0.03);
-  --shadow-ray-hover: calc(var(--sun-shadow-x) * 1.3) calc(var(--sun-shadow-y) * 1.3) calc(var(--sun-shadow-blur) * 1.4) rgba(17, 17, 16, calc(var(--sun-shadow-opacity) * 1.4)),
-                      0 4px 14px rgba(17, 17, 16, 0.05);
+  /* Physical Directional Ray Cast Shadow Formula (Much Sharper, High-Contrast Architectural Projection) */
+  --shadow-ray: 0 1px 2px rgba(17, 17, 16, 0.28),
+                var(--sun-shadow-x) var(--sun-shadow-y) var(--sun-shadow-blur) rgba(17, 17, 16, var(--sun-shadow-opacity)),
+                calc(var(--sun-shadow-x) * 0.5) calc(var(--sun-shadow-y) * 0.5) calc(var(--sun-shadow-blur) * 0.5) rgba(17, 17, 16, calc(var(--sun-shadow-opacity) * 0.65));
+  
+  --shadow-ray-hover: 0 2px 4px rgba(17, 17, 16, 0.35),
+                      calc(var(--sun-shadow-x) * 1.25) calc(var(--sun-shadow-y) * 1.25) calc(var(--sun-shadow-blur) * 1.2) rgba(17, 17, 16, calc(var(--sun-shadow-opacity) * 1.2)),
+                      calc(var(--sun-shadow-x) * 0.6) calc(var(--sun-shadow-y) * 0.6) calc(var(--sun-shadow-blur) * 0.6) rgba(17, 17, 16, calc(var(--sun-shadow-opacity) * 0.8));
 
   /* Directional Text Shadow */
-  --shadow-text: calc(var(--sun-shadow-x) * 0.1) calc(var(--sun-shadow-y) * 0.1) calc(var(--sun-shadow-blur) * 0.2) rgba(17, 17, 16, 0.07);
+  --shadow-text: 
+    calc(var(--text-bevel-x) * 0.5) calc(var(--text-bevel-y) * 0.5) 0px rgba(17, 17, 16, 0.65),
+    calc(var(--text-shadow-x) * 0.25) calc(var(--text-shadow-y) * 0.25) 0.5px rgba(17, 17, 16, 0.5),
+    var(--text-shadow-x) var(--text-shadow-y) var(--text-shadow-blur) rgba(17, 17, 16, var(--text-shadow-opacity));
 
   /* Typography */
   --font-serif: 'Playfair Display', Georgia, serif;
@@ -403,13 +417,80 @@ button:active,
   line-height: 1.05;
   letter-spacing: -0.03em;
   margin-bottom: 20px;
-  text-shadow: var(--shadow-text);
+  perspective: 1200px;
+  transform-style: preserve-3d;
 }
 
 .hero-headline em {
   font-style: italic;
   font-weight: 400;
   color: var(--accent-solar);
+}
+
+/* ==========================================================================
+   3D Architectural Letterforms & Directional Shadows
+   Individual 3D physical shapes casting solar shadows onto the limestone ground
+   ========================================================================== */
+.hero-headline,
+.solar-3d-headline,
+.section-head-wrap h2,
+.subpage .sub-hero h1,
+.monogram {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+.solar-3d-word {
+  display: inline-block;
+  white-space: nowrap;
+  position: relative;
+  vertical-align: baseline;
+}
+
+.solar-3d-char {
+  display: inline-block;
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: text-shadow, transform;
+  /* Physical stand-off from the limestone wall */
+  transform: translateZ(6px);
+  transition: text-shadow 35ms linear;
+
+  /* Multi-stop 3D extrusion thickness + razor-sharp wall shadow */
+  text-shadow:
+    /* Layer 1-3: Extruded physical 3D letter edges (gives solid depth) */
+    calc(var(--text-bevel-x) * 0.75) calc(var(--text-bevel-y) * 0.75) 0px rgba(17, 17, 16, 0.95),
+    calc(var(--text-bevel-x) * 1.5) calc(var(--text-bevel-y) * 1.5) 0px rgba(17, 17, 16, 0.85),
+    calc(var(--text-bevel-x) * 2.25) calc(var(--text-bevel-y) * 2.25) 0px rgba(17, 17, 16, 0.75),
+    /* Layer 4: Razor-sharp contact shadow at the base */
+    calc(var(--text-shadow-x) * 0.25) calc(var(--text-shadow-y) * 0.25) 0.5px rgba(17, 17, 16, 0.75),
+    /* Layer 5: Primary sharp directional cast shadow on the limestone wall */
+    var(--text-shadow-x) var(--text-shadow-y) var(--text-shadow-blur) rgba(17, 17, 16, var(--text-shadow-opacity)),
+    /* Layer 6: Secondary elongated raking shadow */
+    calc(var(--text-shadow-x) * 1.35) calc(var(--text-shadow-y) * 1.35) calc(var(--text-shadow-blur) * 1.5) rgba(17, 17, 16, calc(var(--text-shadow-opacity) * 0.45));
+}
+
+/* 3D Italic Accents (e.g. solar trajectories in hero headline) */
+em .solar-3d-char,
+.solar-3d-char.is-accent {
+  color: var(--accent-solar);
+  text-shadow:
+    calc(var(--text-bevel-x) * 0.75) calc(var(--text-bevel-y) * 0.75) 0px rgba(180, 83, 9, 0.95),
+    calc(var(--text-bevel-x) * 1.5) calc(var(--text-bevel-y) * 1.5) 0px rgba(180, 83, 9, 0.85),
+    calc(var(--text-bevel-x) * 2.25) calc(var(--text-bevel-y) * 2.25) 0px rgba(180, 83, 9, 0.75),
+    calc(var(--text-shadow-x) * 0.25) calc(var(--text-shadow-y) * 0.25) 0.5px rgba(17, 17, 16, 0.75),
+    var(--text-shadow-x) var(--text-shadow-y) var(--text-shadow-blur) rgba(17, 17, 16, var(--text-shadow-opacity)),
+    calc(var(--text-shadow-x) * 1.35) calc(var(--text-shadow-y) * 1.35) calc(var(--text-shadow-blur) * 1.5) rgba(17, 17, 16, calc(var(--text-shadow-opacity) * 0.45));
+}
+
+/* Monogram in Header (scaled for 15px nav brand) */
+.monogram .solar-3d-char {
+  transform: translateZ(3px);
+  text-shadow:
+    calc(var(--text-bevel-x) * 0.4) calc(var(--text-bevel-y) * 0.4) 0px rgba(17, 17, 16, 0.9),
+    calc(var(--text-bevel-x) * 0.8) calc(var(--text-bevel-y) * 0.8) 0px rgba(17, 17, 16, 0.75),
+    calc(var(--text-shadow-x) * 0.3) calc(var(--text-shadow-y) * 0.3) 0.5px rgba(17, 17, 16, 0.6),
+    calc(var(--text-shadow-x) * 0.75) calc(var(--text-shadow-y) * 0.75) var(--text-shadow-blur) rgba(17, 17, 16, var(--text-shadow-opacity));
 }
 
 .hero-lead-text {
@@ -757,6 +838,7 @@ button:active,
   line-height: 1.15;
   letter-spacing: -0.02em;
   margin-bottom: 12px;
+  text-shadow: var(--shadow-text);
 }
 
 .study-desc {
@@ -860,6 +942,7 @@ button:active,
   font-weight: 500;
   letter-spacing: -0.02em;
   margin-top: 4px;
+  text-shadow: var(--shadow-text);
 }
 
 .curatorial-head h3 em {
@@ -1087,6 +1170,7 @@ button:active,
   font-size: 18px;
   font-weight: 500;
   color: var(--ink-primary);
+  text-shadow: var(--shadow-text);
 }
 
 .item-type {

@@ -59,20 +59,15 @@
   --solar-azimuth: 180deg;
   --solar-altitude: 75deg;
 
-  /* Physical Directional Ray Cast Shadow Formula (Much Sharper, High-Contrast Architectural Projection) */
-  --shadow-ray: 0 1px 2px rgba(17, 17, 16, 0.28),
-                var(--sun-shadow-x) var(--sun-shadow-y) var(--sun-shadow-blur) rgba(17, 17, 16, var(--sun-shadow-opacity)),
-                calc(var(--sun-shadow-x) * 0.5) calc(var(--sun-shadow-y) * 0.5) calc(var(--sun-shadow-blur) * 0.5) rgba(17, 17, 16, calc(var(--sun-shadow-opacity) * 0.65));
+  /* Physical Directional Ray Cast Shadow Formula (ONE single clean physical projection) */
+  --shadow-ray: 0 1px 3px rgba(17, 17, 16, 0.08),
+                var(--sun-shadow-x) var(--sun-shadow-y) var(--sun-shadow-blur) rgba(17, 17, 16, var(--sun-shadow-opacity));
   
-  --shadow-ray-hover: 0 2px 4px rgba(17, 17, 16, 0.35),
-                      calc(var(--sun-shadow-x) * 1.25) calc(var(--sun-shadow-y) * 1.25) calc(var(--sun-shadow-blur) * 1.2) rgba(17, 17, 16, calc(var(--sun-shadow-opacity) * 1.2)),
-                      calc(var(--sun-shadow-x) * 0.6) calc(var(--sun-shadow-y) * 0.6) calc(var(--sun-shadow-blur) * 0.6) rgba(17, 17, 16, calc(var(--sun-shadow-opacity) * 0.8));
+  --shadow-ray-hover: 0 2px 6px rgba(17, 17, 16, 0.12),
+                      calc(var(--sun-shadow-x) * 1.15) calc(var(--sun-shadow-y) * 1.15) calc(var(--sun-shadow-blur) * 1.15) rgba(17, 17, 16, var(--sun-shadow-opacity));
 
-  /* Directional Text Shadow */
-  --shadow-text: 
-    calc(var(--text-bevel-x) * 0.5) calc(var(--text-bevel-y) * 0.5) 0px rgba(17, 17, 16, 0.65),
-    calc(var(--text-shadow-x) * 0.25) calc(var(--text-shadow-y) * 0.25) 0.5px rgba(17, 17, 16, 0.5),
-    var(--text-shadow-x) var(--text-shadow-y) var(--text-shadow-blur) rgba(17, 17, 16, var(--text-shadow-opacity));
+  /* Fallback text shadow (none everywhere except hero headline cast) */
+  --shadow-text: none;
 
   /* Typography */
   --font-serif: 'Playfair Display', Georgia, serif;
@@ -193,6 +188,7 @@ button:active,
   letter-spacing: 0.04em;
   color: var(--ink-primary);
   text-transform: uppercase;
+  text-shadow: none !important;
 }
 
 .monogram span,
@@ -417,80 +413,47 @@ button:active,
   line-height: 1.05;
   letter-spacing: -0.03em;
   margin-bottom: 20px;
-  perspective: 1200px;
-  transform-style: preserve-3d;
+  position: relative;
+  text-shadow: none !important;
 }
 
-.hero-headline em {
+/* Foreground letters (strictly on top, crisp ink, zero shadow) */
+.headline-foreground {
+  position: relative;
+  z-index: 2;
+  display: block;
+  color: var(--ink-primary);
+  transition: color 300ms ease;
+}
+
+.headline-foreground em {
   font-style: italic;
   font-weight: 400;
   color: var(--accent-solar);
+  transition: color 300ms ease;
 }
 
-/* ==========================================================================
-   3D Architectural Letterforms & Directional Shadows
-   Individual 3D physical shapes casting solar shadows onto the limestone ground
-   ========================================================================== */
-.hero-headline,
-.solar-3d-headline,
-.section-head-wrap h2,
-.subpage .sub-hero h1,
-.monogram {
-  perspective: 1200px;
-  transform-style: preserve-3d;
+/* Background cast shadow (strictly BEHIND foreground text, single crisp projection) */
+.headline-shadow-cast {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+  color: rgba(17, 17, 16, var(--text-shadow-opacity));
+  transform: translate3d(var(--text-shadow-x), var(--text-shadow-y), 0);
+  filter: blur(var(--text-shadow-blur));
+  will-change: transform, filter, color;
+  transition: color 300ms ease;
 }
 
-.solar-3d-word {
-  display: inline-block;
-  white-space: nowrap;
-  position: relative;
-  vertical-align: baseline;
-}
-
-.solar-3d-char {
-  display: inline-block;
-  position: relative;
-  transform-style: preserve-3d;
-  will-change: text-shadow, transform;
-  /* Physical stand-off from the limestone wall */
-  transform: translateZ(6px);
-  transition: text-shadow 35ms linear;
-
-  /* Multi-stop 3D extrusion thickness + razor-sharp wall shadow */
-  text-shadow:
-    /* Layer 1-3: Extruded physical 3D letter edges (gives solid depth) */
-    calc(var(--text-bevel-x) * 0.75) calc(var(--text-bevel-y) * 0.75) 0px rgba(17, 17, 16, 0.95),
-    calc(var(--text-bevel-x) * 1.5) calc(var(--text-bevel-y) * 1.5) 0px rgba(17, 17, 16, 0.85),
-    calc(var(--text-bevel-x) * 2.25) calc(var(--text-bevel-y) * 2.25) 0px rgba(17, 17, 16, 0.75),
-    /* Layer 4: Razor-sharp contact shadow at the base */
-    calc(var(--text-shadow-x) * 0.25) calc(var(--text-shadow-y) * 0.25) 0.5px rgba(17, 17, 16, 0.75),
-    /* Layer 5: Primary sharp directional cast shadow on the limestone wall */
-    var(--text-shadow-x) var(--text-shadow-y) var(--text-shadow-blur) rgba(17, 17, 16, var(--text-shadow-opacity)),
-    /* Layer 6: Secondary elongated raking shadow */
-    calc(var(--text-shadow-x) * 1.35) calc(var(--text-shadow-y) * 1.35) calc(var(--text-shadow-blur) * 1.5) rgba(17, 17, 16, calc(var(--text-shadow-opacity) * 0.45));
-}
-
-/* 3D Italic Accents (e.g. solar trajectories in hero headline) */
-em .solar-3d-char,
-.solar-3d-char.is-accent {
-  color: var(--accent-solar);
-  text-shadow:
-    calc(var(--text-bevel-x) * 0.75) calc(var(--text-bevel-y) * 0.75) 0px rgba(180, 83, 9, 0.95),
-    calc(var(--text-bevel-x) * 1.5) calc(var(--text-bevel-y) * 1.5) 0px rgba(180, 83, 9, 0.85),
-    calc(var(--text-bevel-x) * 2.25) calc(var(--text-bevel-y) * 2.25) 0px rgba(180, 83, 9, 0.75),
-    calc(var(--text-shadow-x) * 0.25) calc(var(--text-shadow-y) * 0.25) 0.5px rgba(17, 17, 16, 0.75),
-    var(--text-shadow-x) var(--text-shadow-y) var(--text-shadow-blur) rgba(17, 17, 16, var(--text-shadow-opacity)),
-    calc(var(--text-shadow-x) * 1.35) calc(var(--text-shadow-y) * 1.35) calc(var(--text-shadow-blur) * 1.5) rgba(17, 17, 16, calc(var(--text-shadow-opacity) * 0.45));
-}
-
-/* Monogram in Header (scaled for 15px nav brand) */
-.monogram .solar-3d-char {
-  transform: translateZ(3px);
-  text-shadow:
-    calc(var(--text-bevel-x) * 0.4) calc(var(--text-bevel-y) * 0.4) 0px rgba(17, 17, 16, 0.9),
-    calc(var(--text-bevel-x) * 0.8) calc(var(--text-bevel-y) * 0.8) 0px rgba(17, 17, 16, 0.75),
-    calc(var(--text-shadow-x) * 0.3) calc(var(--text-shadow-y) * 0.3) 0.5px rgba(17, 17, 16, 0.6),
-    calc(var(--text-shadow-x) * 0.75) calc(var(--text-shadow-y) * 0.75) var(--text-shadow-blur) rgba(17, 17, 16, var(--text-shadow-opacity));
+.headline-shadow-cast em {
+  font-style: italic;
+  font-weight: 400;
+  color: rgba(180, 83, 9, var(--text-shadow-opacity));
 }
 
 .hero-lead-text {
@@ -694,6 +657,41 @@ em .solar-3d-char,
   color: #FFFFFF;
 }
 
+/* Live Astronomical Sun Sync Button */
+.live-geo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-color: var(--accent-solar) !important;
+  color: var(--accent-solar) !important;
+  background: rgba(217, 119, 6, 0.06) !important;
+  font-weight: 500;
+}
+
+.live-geo-btn .live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-solar);
+  box-shadow: 0 0 6px var(--accent-solar);
+  animation: pulse-live 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse-live {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.75); }
+}
+
+.live-geo-btn.active {
+  background: var(--accent-solar) !important;
+  color: #FFFFFF !important;
+}
+
+.live-geo-btn.active .live-dot {
+  background: #FFFFFF;
+  box-shadow: 0 0 8px #FFFFFF;
+}
+
 /* Solar Numerical Readouts */
 .instrument-metrics {
   display: flex;
@@ -749,7 +747,6 @@ em .solar-3d-char,
   font-size: clamp(28px, 3.6vw, 44px);
   font-weight: 500;
   letter-spacing: -0.02em;
-  text-shadow: var(--shadow-text);
 }
 
 .section-head-wrap h2 em {
@@ -838,7 +835,6 @@ em .solar-3d-char,
   line-height: 1.15;
   letter-spacing: -0.02em;
   margin-bottom: 12px;
-  text-shadow: var(--shadow-text);
 }
 
 .study-desc {
@@ -942,7 +938,6 @@ em .solar-3d-char,
   font-weight: 500;
   letter-spacing: -0.02em;
   margin-top: 4px;
-  text-shadow: var(--shadow-text);
 }
 
 .curatorial-head h3 em {
@@ -1170,7 +1165,6 @@ em .solar-3d-char,
   font-size: 18px;
   font-weight: 500;
   color: var(--ink-primary);
-  text-shadow: var(--shadow-text);
 }
 
 .item-type {
@@ -1980,7 +1974,6 @@ em .solar-3d-char,
   line-height: 0.95;
   letter-spacing: -0.04em;
   margin: 10px 0 0;
-  text-shadow: var(--shadow-text);
 }
 
 /* Fast-Facts Project Specifications Bar */
@@ -2318,4 +2311,114 @@ em .solar-3d-char,
   }
   .lightbox-nav-btn.prev { left: 10px; }
   .lightbox-nav-btn.next { right: 10px; }
+}
+
+/* ==========================================================================
+   Nocturnal Architectural Mode (Night Version: altitude <= 0 or Night Preset)
+   ========================================================================== */
+html, body, .glass-nav, .heliostat-nav, .heliostat-instrument-box, .study-card, .curatorial-card, .work-list-item, .study-hud-table, .preset-btn, .solar-status-pill, .nav-solar-badge {
+  transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease;
+}
+
+html.solar-night {
+  --bg-canvas: #0D0E12;
+  --bg-paper: #14161E;
+  --bg-surface: #1B1E28;
+  --bg-surface-elevated: #232734;
+  
+  --ink-primary: #F4F3EF;
+  --ink-secondary: #AAA79E;
+  --ink-muted: #72706A;
+  --ink-faint: #484742;
+  
+  --line-hairline: rgba(255, 255, 255, 0.08);
+  --line-subtle: rgba(255, 255, 255, 0.16);
+  --line-strong: rgba(255, 255, 255, 0.32);
+  
+  --accent-solar: #F59E0B;
+  --accent-sky: #60A5FA;
+
+  --shadow-ray: 0 1px 4px rgba(0, 0, 0, 0.5),
+                var(--sun-shadow-x) var(--sun-shadow-y) var(--sun-shadow-blur) rgba(0, 0, 0, var(--sun-shadow-opacity));
+  --shadow-ray-hover: 0 2px 8px rgba(0, 0, 0, 0.6),
+                      calc(var(--sun-shadow-x) * 1.15) calc(var(--sun-shadow-y) * 1.15) calc(var(--sun-shadow-blur) * 1.15) rgba(0, 0, 0, var(--sun-shadow-opacity));
+}
+
+html.solar-night .heliostat-nav,
+html.solar-night .glass-nav {
+  background: rgba(13, 14, 18, 0.94);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+html.solar-night .compass-dial-ring,
+html.solar-night .nav-compass-dial {
+  background: #14161E;
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.6);
+}
+
+html.solar-night .compass-sun-marker,
+html.solar-night .nav-sun-marker {
+  background: #1B1E28;
+  border-color: #60A5FA;
+  box-shadow: 0 0 12px rgba(96, 165, 250, 0.6);
+}
+
+html.solar-night .sun-core-dot,
+html.solar-night .nav-sun-marker::after {
+  background: #60A5FA;
+}
+
+html.solar-night .solar-status-pill,
+html.solar-night .nav-solar-badge {
+  background: #1B1E28;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #F4F3EF;
+}
+
+html.solar-night .preset-btn {
+  background: #1B1E28;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #AAA79E;
+}
+
+html.solar-night .preset-btn:hover {
+  background: #232734;
+  color: #F4F3EF;
+}
+
+html.solar-night .preset-btn.active {
+  background: #F4F3EF;
+  color: #0D0E12;
+  border-color: #F4F3EF;
+}
+
+html.solar-night .headline-shadow-cast {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+html.solar-night .headline-shadow-cast em {
+  color: rgba(245, 158, 11, 0.35);
+}
+
+html.solar-night .study-hud-table {
+  background: #14161E;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+html.solar-night .hud-table-item {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+html.solar-night .study-cta,
+html.solar-night .heliostat-nav-cta {
+  background: #1B1E28;
+  border-color: rgba(255, 255, 255, 0.16);
+  color: #F4F3EF;
+}
+
+html.solar-night .study-cta:hover,
+html.solar-night .heliostat-nav-cta:hover {
+  background: #F4F3EF;
+  color: #0D0E12;
 }

@@ -3,7 +3,8 @@
  * Site 2: The Sun-Clock Pavilion & Heliostat Compass
  * 
  * Interactive 360° Solar Compass, Dynamic Trigonometric Cast Shadows,
- * CCT Daylight Transitions & Quantitative Solar Metrics.
+ * Dynamic CCT Daylight Shifting, Full Nocturnal Architectural Mode,
+ * and Real-Time Astronomical Location-Based Solar Positioning.
  * 
  * Adheres strictly to GSAP 3 performance & Emil Kowalski design engineering.
  */
@@ -13,12 +14,15 @@
 
   // Solar Coordinates & State
   const solarState = {
-    azimuth: 180,    // 0° = North, 90° = East, 180° = South (Noon), 270° = West
-    altitude: 75,   // 0° = Horizon, 90° = Zenith
+    azimuth: 180,     // 0° = North, 90° = East, 180° = South (Noon), 270° = West
+    altitude: 75,    // 0° = Horizon, 90° = Zenith, < 0° = Night / Below Horizon
     isDragging: false,
-    activeDial: null, // 'hero' or 'nav'
+    activeDial: null,
     isSweeping: false,
-    sweepTimeline: null
+    sweepTimeline: null,
+    isLiveSync: false,
+    liveTimer: null,
+    userLocation: { lat: 40.015, lon: -105.27, label: 'Boulder, CO' }
   };
 
   // Presets calibrated to Boulder, CO (40.0° N)
@@ -27,10 +31,12 @@
       azimuth: 105,
       altitude: 24,
       name: '08:00 AM · Morning Rake',
-      cct: '4200K Morning Rake',
+      cct: '4200K Morning Daylight',
       kelvin: 4200,
-      badge: 'Low-Angle Raking Beam',
-      tint: 'rgba(217, 119, 6, 0.06)'
+      badge: 'Low-Angle Morning Beam (4200K)',
+      canvas: '#FAF5ED',
+      paper: '#F3ECE1',
+      tint: 'rgba(217, 119, 6, 0.08)'
     },
     noon: {
       azimuth: 180,
@@ -38,7 +44,9 @@
       name: '12:00 PM · High Noon',
       cct: '6500K Clear Sky Noon',
       kelvin: 6500,
-      badge: 'Direct Solar Incident',
+      badge: 'Zenith Direct Solar Beam (6500K)',
+      canvas: '#F8F9FA',
+      paper: '#EFF1F4',
       tint: 'rgba(59, 130, 246, 0.03)'
     },
     afternoon: {
@@ -47,8 +55,10 @@
       name: '16:30 PM · Western Rake',
       cct: '3800K Afternoon Sun',
       kelvin: 3800,
-      badge: 'Low-Angle Raking Beam',
-      tint: 'rgba(245, 158, 11, 0.06)'
+      badge: 'Raking Golden Beam (3800K)',
+      canvas: '#FAF2E4',
+      paper: '#F2E7D5',
+      tint: 'rgba(245, 158, 11, 0.08)'
     },
     dusk: {
       azimuth: 295,
@@ -56,8 +66,21 @@
       name: '19:30 PM · Golden Twilight',
       cct: '2700K Low Horizon Dusk',
       kelvin: 2700,
-      badge: 'Grazing Dusk Amber',
-      tint: 'rgba(217, 119, 6, 0.12)'
+      badge: 'Grazing Dusk Amber (2700K)',
+      canvas: '#F6E7D5',
+      paper: '#EED9C3',
+      tint: 'rgba(217, 119, 6, 0.16)'
+    },
+    night: {
+      azimuth: 345,
+      altitude: -14,
+      name: '22:00 PM · Nocturnal Mode',
+      cct: '3000K Artificial Luminaires',
+      kelvin: 3000,
+      badge: 'Electric Luminaire Integration (3000K)',
+      canvas: '#0D0E12',
+      paper: '#14161E',
+      tint: 'rgba(13, 14, 18, 0.5)'
     }
   };
 
@@ -89,156 +112,105 @@
     // Buttons
     const presetButtons = document.querySelectorAll('[data-preset]');
     const sweepToggleBtn = document.getElementById('solar-sweep-btn');
+    const liveSyncBtn = document.getElementById('btn-live-solar');
 
     // Dial Radius Configuration
     const HERO_RADIUS = 80; // px
     const NAV_RADIUS = 18;  // px
 
-    // ==========================================
-    // 3D INDIVIDUAL LETTER SHAPES INITIALIZATION
-    // Splits header text into standalone 3D architectural glyphs
-    // that cast independent directional shadows based on the sun's coordinates
-    // ==========================================
-    init3DTextShapes();
-
-    function init3DTextShapes() {
-      const targets = document.querySelectorAll('.hero-headline, .solar-3d-text, .monogram, .section-head-wrap h2, .subpage .sub-hero h1, .about-sticky h1, .instrument-content h2');
-
-      targets.forEach(el => {
-        if (el.dataset.split3d === 'true') return;
-        el.dataset.split3d = 'true';
-
-        // Accessibility: Preserve full original string
-        const cleanAria = el.textContent.trim().replace(/\s+/g, ' ');
-        if (!el.getAttribute('aria-label')) {
-          el.setAttribute('aria-label', cleanAria);
-        }
-
-        function processChild(node) {
-          if (node.nodeType === 3) { // Text node
-            const text = node.textContent;
-            if (!text) return null;
-
-            const frag = document.createDocumentFragment();
-            // Split tokens by whitespace while preserving spacing
-            const tokens = text.split(/(\s+)/);
-
-            tokens.forEach(token => {
-              if (!token) return;
-              if (/^\s+$/.test(token)) {
-                frag.appendChild(document.createTextNode(token));
-              } else {
-                const wordSpan = document.createElement('span');
-                wordSpan.className = 'solar-3d-word';
-
-                for (let i = 0; i < token.length; i++) {
-                  const char = token[i];
-                  const charSpan = document.createElement('span');
-                  charSpan.className = 'solar-3d-char';
-                  charSpan.dataset.char = char;
-                  charSpan.textContent = char;
-                  wordSpan.appendChild(charSpan);
-                }
-                frag.appendChild(wordSpan);
-              }
-            });
-            return frag;
-          } else if (node.nodeType === 1) { // Element node
-            if (node.tagName.toLowerCase() === 'br') {
-              return node.cloneNode(true);
-            }
-            const clone = node.cloneNode(false);
-            Array.from(node.childNodes).forEach(child => {
-              const res = processChild(child);
-              if (res) clone.appendChild(res);
-            });
-            return clone;
-          }
-          return null;
-        }
-
-        const frag = document.createDocumentFragment();
-        Array.from(el.childNodes).forEach(child => {
-          const res = processChild(child);
-          if (res) frag.appendChild(res);
-        });
-
-        el.innerHTML = '';
-        el.appendChild(frag);
-      });
-    }
-
     /**
-     * Calculate trigonometric cast shadows and CCT in a 60fps rAF loop
-     * Sharp architectural sun projection formula:
-     *   rad = azimuth * Math.PI / 180;
-     *   shadowX = -Math.sin(rad) * length;
-     *   shadowY = Math.cos(rad) * length;
+     * Calculate trigonometric cast shadows, dynamic CCT, and day/night mode
+     * in a hardware-accelerated 60fps loop.
      */
     function updateSolarPhysics(az, alt, animateDuration = 0) {
       solarState.azimuth = ((az % 360) + 360) % 360;
-      solarState.altitude = Math.max(3, Math.min(88, alt));
+      solarState.altitude = alt;
 
       const azimuth = solarState.azimuth;
       const altitude = solarState.altitude;
+      const root = document.documentElement;
 
-      // Trigonometric Ray Shadow Calculation
-      const rad = (azimuth * Math.PI) / 180;
-      const normAlt = Math.max(0.04, Math.min(1, altitude / 90));
+      const isNight = altitude <= 0;
 
-      // 1. CARD & SURFACE SHADOWS (Much sharper & high-contrast architectural projection)
-      // Length stretches from 16px at high noon to 84px at low grazing dusk
-      const length = 16 + (1 - normAlt) * 68;
-      const shadowX = -Math.sin(rad) * length;
-      const shadowY = Math.cos(rad) * length;
-      // Ultra-sharp blur: only 1.5px at noon, max 5.0px at lowest dusk
-      const shadowBlur = 1.5 + (1 - normAlt) * 3.5;
-      // High contrast opacity: 0.28 at noon, up to 0.44 at low raking sun
-      const shadowOpacity = (0.28 + (1 - normAlt) * 0.16).toFixed(3);
-
-      // 2. 3D INDIVIDUAL LETTER SHAPE SHADOWS
-      // Scaled proportionally for typography (5px to 31px projection)
-      const textLength = 5 + (1 - normAlt) * 26;
-      const textShadowX = -Math.sin(rad) * textLength;
-      const textShadowY = Math.cos(rad) * textLength;
-      // 3D extrusion bevel vector (1.2px to 3.0px)
-      const textBevelLength = 1.2 + (1 - normAlt) * 1.8;
-      const textBevelX = -Math.sin(rad) * textBevelLength;
-      const textBevelY = Math.cos(rad) * textBevelLength;
-      // Razor-sharp text blur (0.5px to 2.5px) and high opacity (0.45 to 0.75)
-      const textShadowBlur = 0.5 + (1 - normAlt) * 2.0;
-      const textShadowOpacity = (0.45 + (1 - normAlt) * 0.30).toFixed(3);
-
-      // Opposite subtle highlight (light striking leading edge)
-      const highlightX = (-shadowX * 0.08).toFixed(1);
-      const highlightY = (-shadowY * 0.08).toFixed(1);
-
-      // CCT and Ambient Lighting Interpolation
-      let cctText = '6500K Clear Sky Noon';
-      let cctKelvin = 6500;
-      let washTint = 'rgba(59, 130, 246, 0.02)';
-      let incidentMode = 'Direct Solar Incident';
-
-      if (altitude <= 14) {
-        cctText = '2700K Low Horizon Dusk';
-        cctKelvin = 2700;
-        washTint = 'rgba(217, 119, 6, 0.12)';
-        incidentMode = 'Grazing Dusk Amber (2700K)';
-      } else if (altitude <= 35) {
-        cctText = '3800K Warm Rake Angle';
-        cctKelvin = 3800;
-        washTint = 'rgba(245, 158, 11, 0.06)';
-        incidentMode = 'Low-Angle Raking Beam (3800K)';
-      } else if (altitude <= 60) {
-        cctText = '5000K Direct Solar Beam';
-        cctKelvin = 5000;
-        washTint = 'rgba(248, 247, 243, 0.03)';
-        incidentMode = 'Temperate Architectural Beam (5000K)';
+      // 1. NIGHT MODE TOGGLE
+      if (isNight) {
+        root.classList.add('solar-night');
       } else {
-        cctText = '6500K Clear Sky Noon';
-        cctKelvin = 6500;
-        washTint = 'rgba(59, 130, 246, 0.03)';
-        incidentMode = 'Zenith D65 Solar Beam (6500K)';
+        root.classList.remove('solar-night');
+      }
+
+      // 2. SHADOW CALCULATIONS
+      let shadowX, shadowY, shadowBlur, shadowOpacity;
+      let textShadowX, textShadowY, textShadowBlur, textShadowOpacity;
+      let bgCanvas, bgPaper, cctText, cctKelvin, washTint, incidentMode;
+
+      if (isNight) {
+        // Deep nocturnal artificial luminaire / moon casting
+        shadowX = 0;
+        shadowY = 14;
+        shadowBlur = 6;
+        shadowOpacity = 0.55;
+
+        // Hero headline shadow strictly behind letters
+        textShadowX = 0;
+        textShadowY = 8;
+        textShadowBlur = 2.0;
+        textShadowOpacity = 0.70;
+
+        bgCanvas = '#0D0E12';
+        bgPaper = '#14161E';
+        cctText = '3000K Electric Luminaires & Night';
+        cctKelvin = 3000;
+        washTint = 'rgba(13, 14, 18, 0.45)';
+        incidentMode = 'Electric Luminaire Integration (3000K Nocturnal)';
+      } else {
+        const rad = (azimuth * Math.PI) / 180;
+        const normAlt = Math.max(0.04, Math.min(1, altitude / 90));
+
+        // Surface & Card Sharp Sun Ray Shadow
+        const length = 14 + (1 - normAlt) * 54;
+        shadowX = -Math.sin(rad) * length;
+        shadowY = Math.cos(rad) * length;
+        shadowBlur = 1.5 + (1 - normAlt) * 3.0;
+        shadowOpacity = (0.24 + (1 - normAlt) * 0.14).toFixed(3);
+
+        // Hero Headline Single Cast Shadow (strictly BEHIND foreground text)
+        const textLength = 5 + (1 - normAlt) * 20;
+        textShadowX = -Math.sin(rad) * textLength;
+        textShadowY = Math.cos(rad) * textLength;
+        textShadowBlur = 1.0 + (1 - normAlt) * 2.0;
+        textShadowOpacity = (0.28 + (1 - normAlt) * 0.14).toFixed(3);
+
+        // Dynamic CCT & Material Color Shifting with Solar Elevation
+        if (altitude <= 12) {
+          bgCanvas = '#F6E7D5';
+          bgPaper = '#EED9C3';
+          cctText = '2700K Low Horizon Dusk';
+          cctKelvin = 2700;
+          washTint = 'rgba(217, 119, 6, 0.16)';
+          incidentMode = 'Grazing Dusk Amber (2700K)';
+        } else if (altitude <= 35) {
+          bgCanvas = '#FAF2E4';
+          bgPaper = '#F2E7D5';
+          cctText = '3800K Warm Rake Angle';
+          cctKelvin = 3800;
+          washTint = 'rgba(245, 158, 11, 0.08)';
+          incidentMode = 'Low-Angle Raking Beam (3800K)';
+        } else if (altitude <= 60) {
+          bgCanvas = '#FAF5ED';
+          bgPaper = '#F3ECE1';
+          cctText = '4800K Direct Solar Beam';
+          cctKelvin = 4800;
+          washTint = 'rgba(217, 119, 6, 0.04)';
+          incidentMode = 'Temperate Architectural Beam (4800K)';
+        } else {
+          bgCanvas = '#F8F9FA';
+          bgPaper = '#EFF1F4';
+          cctText = '6500K Clear Sky Noon';
+          cctKelvin = 6500;
+          washTint = 'rgba(59, 130, 246, 0.03)';
+          incidentMode = 'Zenith Direct Solar Beam (6500K)';
+        }
       }
 
       // Update Text Readouts
@@ -246,18 +218,17 @@
       const altRounded = Math.round(altitude);
 
       if (readoutAzimuth) readoutAzimuth.textContent = `${azRounded}° Azimuth`;
-      if (navReadoutAzimuth) navReadoutAzimuth.textContent = `${azRounded}° Az / ${altRounded}° Alt`;
-      if (readoutAltitude) readoutAltitude.textContent = `${altRounded}° Altitude`;
+      if (readoutAltitude) readoutAltitude.textContent = isNight ? `${altRounded}° (Below Horizon)` : `${altRounded}° Altitude`;
       if (readoutCct) readoutCct.textContent = cctText;
-      if (readoutStatus) readoutStatus.textContent = `${azRounded}° / ${altRounded}° · ${cctKelvin}K`;
-      if (dynamicBeamBadge) dynamicBeamBadge.textContent = incidentMode;
+      if (readoutStatus) readoutStatus.textContent = isNight ? `${azRounded}° / Night · ${cctKelvin}K` : `${azRounded}° / ${altRounded}° · ${cctKelvin}K`;
+      if (navReadoutAzimuth) navReadoutAzimuth.textContent = isNight ? `${azRounded}° Az / Night` : `${azRounded}° Az / ${altRounded}° Alt`;
+      if (dynamicBeamBadge && !solarState.isLiveSync) dynamicBeamBadge.textContent = incidentMode;
       if (ambientWash) ambientWash.style.background = washTint;
 
-      // Update Dial Visuals (Hero & Nav)
+      // Update Dial Positions (Hero & Nav)
       const dialRad = (azimuth - 90) * (Math.PI / 180);
-      const dialNormDist = (90 - altitude) / 90;
+      const dialNormDist = isNight ? 1.0 : Math.max(0, Math.min(1, (90 - altitude) / 90));
 
-      // Hero Dial Position
       if (heroSunPuck) {
         const heroDist = dialNormDist * HERO_RADIUS;
         const heroX = 100 + Math.cos(dialRad) * heroDist;
@@ -272,7 +243,6 @@
         }
       }
 
-      // Nav Dial Position
       if (navSunPuck) {
         const navDist = dialNormDist * NAV_RADIUS;
         const navX = 24 + Math.cos(dialRad) * navDist;
@@ -287,18 +257,14 @@
         }
       }
 
-      // Apply CSS custom variables to root with optional GSAP momentum smoothing
-      const root = document.documentElement;
-
+      // Apply CSS custom properties
       if (animateDuration > 0 && typeof gsap !== 'undefined') {
         const currentX = parseFloat(getComputedStyle(root).getPropertyValue('--sun-shadow-x')) || 0;
         const currentY = parseFloat(getComputedStyle(root).getPropertyValue('--sun-shadow-y')) || 16;
         const currentBlur = parseFloat(getComputedStyle(root).getPropertyValue('--sun-shadow-blur')) || 2;
         const currentTx = parseFloat(getComputedStyle(root).getPropertyValue('--text-shadow-x')) || 0;
-        const currentTy = parseFloat(getComputedStyle(root).getPropertyValue('--text-shadow-y')) || 8;
-        const currentTblur = parseFloat(getComputedStyle(root).getPropertyValue('--text-shadow-blur')) || 1;
-        const currentBvx = parseFloat(getComputedStyle(root).getPropertyValue('--text-bevel-x')) || 0;
-        const currentBvy = parseFloat(getComputedStyle(root).getPropertyValue('--text-bevel-y')) || 1.5;
+        const currentTy = parseFloat(getComputedStyle(root).getPropertyValue('--text-shadow-y')) || 12;
+        const currentTblur = parseFloat(getComputedStyle(root).getPropertyValue('--text-shadow-blur')) || 1.5;
 
         const proxy = {
           x: currentX,
@@ -306,9 +272,7 @@
           blur: currentBlur,
           tx: currentTx,
           ty: currentTy,
-          tblur: currentTblur,
-          bvx: currentBvx,
-          bvy: currentBvy
+          tblur: currentTblur
         };
 
         gsap.to(proxy, {
@@ -318,8 +282,6 @@
           tx: textShadowX,
           ty: textShadowY,
           tblur: textShadowBlur,
-          bvx: textBevelX,
-          bvy: textBevelY,
           duration: animateDuration,
           ease: 'power3.out',
           overwrite: 'auto',
@@ -330,17 +292,15 @@
               proxy.y,
               proxy.blur,
               shadowOpacity,
-              highlightX,
-              highlightY,
-              washTint,
-              azimuth,
-              altitude,
               proxy.tx,
               proxy.ty,
               proxy.tblur,
               textShadowOpacity,
-              proxy.bvx,
-              proxy.bvy
+              bgCanvas,
+              bgPaper,
+              washTint,
+              azimuth,
+              altitude
             );
           }
         });
@@ -351,17 +311,15 @@
           shadowY,
           shadowBlur,
           shadowOpacity,
-          highlightX,
-          highlightY,
-          washTint,
-          azimuth,
-          altitude,
           textShadowX,
           textShadowY,
           textShadowBlur,
           textShadowOpacity,
-          textBevelX,
-          textBevelY
+          bgCanvas,
+          bgPaper,
+          washTint,
+          azimuth,
+          altitude
         );
       }
     }
@@ -372,17 +330,15 @@
       sy,
       blur,
       opacity,
-      hx,
-      hy,
-      tint,
-      az,
-      alt,
       tsx,
       tsy,
       tblur,
       topacity,
-      tbx,
-      tby
+      canvas,
+      paper,
+      tint,
+      az,
+      alt
     ) {
       const sxFixed = typeof sx === 'number' ? sx.toFixed(2) : sx;
       const syFixed = typeof sy === 'number' ? sy.toFixed(2) : sy;
@@ -391,36 +347,24 @@
       const tsxFixed = typeof tsx === 'number' ? tsx.toFixed(2) : tsx;
       const tsyFixed = typeof tsy === 'number' ? tsy.toFixed(2) : tsy;
       const tblurFixed = typeof tblur === 'number' ? tblur.toFixed(2) : tblur;
-      const tbxFixed = typeof tbx === 'number' ? tbx.toFixed(2) : tbx;
-      const tbyFixed = typeof tby === 'number' ? tby.toFixed(2) : tby;
 
       // Cards & Panels Sharp Shadows
       root.style.setProperty('--sun-shadow-x', `${sxFixed}px`);
       root.style.setProperty('--sun-shadow-y', `${syFixed}px`);
       root.style.setProperty('--sun-shadow-blur', `${blurFixed}px`);
       root.style.setProperty('--sun-shadow-opacity', opacity);
-      root.style.setProperty('--sun-highlight-x', `${hx}px`);
-      root.style.setProperty('--sun-highlight-y', `${hy}px`);
 
-      // 3D Typographic Letterform Shadows & Bevels
+      // Hero Headline Directional Cast Shadow (strictly BEHIND text)
       root.style.setProperty('--text-shadow-x', `${tsxFixed}px`);
       root.style.setProperty('--text-shadow-y', `${tsyFixed}px`);
       root.style.setProperty('--text-shadow-blur', `${tblurFixed}px`);
       root.style.setProperty('--text-shadow-opacity', topacity);
-      root.style.setProperty('--text-bevel-x', `${tbxFixed}px`);
-      root.style.setProperty('--text-bevel-y', `${tbyFixed}px`);
 
-      // Backwards-compatible aliases
-      root.style.setProperty('--shadow-x', `${sxFixed}px`);
-      root.style.setProperty('--shadow-y', `${syFixed}px`);
-      root.style.setProperty('--shadow-blur', `${blurFixed}px`);
-      root.style.setProperty('--shadow-opacity', opacity);
-      root.style.setProperty('--ray-x', `${sxFixed}px`);
-      root.style.setProperty('--ray-y', `${syFixed}px`);
-      root.style.setProperty('--ray-blur', `${blurFixed}px`);
-      root.style.setProperty('--ray-opacity', opacity);
+      // Dynamic CCT Background Colors
+      if (canvas) root.style.setProperty('--bg-canvas', canvas);
+      if (paper) root.style.setProperty('--bg-paper', paper);
+      if (tint) root.style.setProperty('--cct-tint', tint);
 
-      root.style.setProperty('--cct-tint', tint);
       root.style.setProperty('--solar-azimuth', `${az.toFixed(1)}deg`);
       root.style.setProperty('--solar-altitude', `${alt.toFixed(1)}deg`);
     }
@@ -444,12 +388,22 @@
         let angleDeg = (angleRad * 180) / Math.PI + 90;
         if (angleDeg < 0) angleDeg += 360;
 
-        // Altitude from radial distance: center = 90° zenith, rim = 5° horizon
-        const dist = Math.min(maxRadius, Math.sqrt(dx * dx + dy * dy));
-        const computedAltitude = Math.max(4, 90 - (dist / maxRadius) * 85);
+        // Altitude from radial distance: center = 90° zenith, rim = 0° / night
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const normDist = Math.min(1.05, dist / maxRadius);
 
-        // Deactivate preset buttons during manual drag
+        let computedAltitude;
+        if (normDist >= 0.98) {
+          // Pulled to the outer rim dips into night mode
+          computedAltitude = -10;
+        } else {
+          computedAltitude = Math.max(3, 90 - normDist * 88);
+        }
+
+        // Deactivate presets & live sync during manual drag
         presetButtons.forEach(btn => btn.classList.remove('active'));
+        stopLiveSolarSync();
+
         if (solarState.isSweeping && solarState.sweepTimeline) {
           solarState.sweepTimeline.kill();
           solarState.isSweeping = false;
@@ -485,7 +439,7 @@
     setupDialDrag(navDial, NAV_RADIUS);
 
     // ==========================================
-    // PRESET BUTTONS
+    // PRESET BUTTONS (Morning, Noon, Afternoon, Dusk, Night)
     // ==========================================
     presetButtons.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -493,6 +447,7 @@
         const preset = SOLAR_PRESETS[key];
         if (!preset) return;
 
+        stopLiveSolarSync();
         presetButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
@@ -507,7 +462,7 @@
     });
 
     // ==========================================
-    // "SWEEP DAY" SOLAR CYCLE ANIMATION
+    // "SWEEP DAY" 24-HOUR SOLAR CYCLE ANIMATION
     // ==========================================
     if (sweepToggleBtn && typeof gsap !== 'undefined') {
       sweepToggleBtn.addEventListener('click', () => {
@@ -519,6 +474,7 @@
           return;
         }
 
+        stopLiveSolarSync();
         solarState.isSweeping = true;
         sweepToggleBtn.classList.add('active');
         sweepToggleBtn.textContent = 'Pause Solar Sweep';
@@ -533,17 +489,149 @@
           }
         });
 
-        // Dawn (100° Az, 20° Alt) -> Noon (180° Az, 76° Alt) -> Dusk (295° Az, 8° Alt)
+        // Dawn (100° Az, 20° Alt) -> Noon (180° Az, 76° Alt) -> Dusk (295° Az, 8° Alt) -> Night (340° Az, -14° Alt) -> Dawn
         solarState.sweepTimeline
-          .to(cycleObj, { az: 180, alt: 76, duration: 4.5, ease: 'sine.inOut' })
-          .to(cycleObj, { az: 295, alt: 8, duration: 4.5, ease: 'sine.inOut' })
-          .to(cycleObj, { az: 360, alt: 4, duration: 1.5, ease: 'power1.in' })
-          .set(cycleObj, { az: 90, alt: 10 })
-          .to(cycleObj, { az: 100, alt: 20, duration: 1.5, ease: 'power1.out' });
+          .to(cycleObj, { az: 180, alt: 76, duration: 4.0, ease: 'sine.inOut' })
+          .to(cycleObj, { az: 295, alt: 8, duration: 4.0, ease: 'sine.inOut' })
+          .to(cycleObj, { az: 345, alt: -14, duration: 2.5, ease: 'power1.inOut' })
+          .set(cycleObj, { az: 90, alt: -5 })
+          .to(cycleObj, { az: 100, alt: 20, duration: 2.0, ease: 'power1.out' });
       });
     }
 
-    // Initial Calibration (Noon)
+    // ==========================================
+    // REAL-TIME ASTRONOMICAL SOLAR TIME & LOCATION
+    // ==========================================
+    function calculateAstronomicalSolarPosition(lat, lon, date = new Date()) {
+      const startOfYear = new Date(date.getFullYear(), 0, 0);
+      const diff = date - startOfYear;
+      const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+      const hours = date.getHours() + date.getMinutes() / 60 + date.getSeconds() / 3600;
+      const tzOffsetHours = -date.getTimezoneOffset() / 60;
+      const standardMeridian = tzOffsetHours * 15;
+
+      const gamma = (2 * Math.PI / 365) * (dayOfYear - 1 + (hours - 12) / 24);
+
+      const eqtime = 229.18 * (0.000075 + 0.001868 * Math.cos(gamma) - 0.032077 * Math.sin(gamma)
+                     - 0.014615 * Math.cos(2 * gamma) - 0.040849 * Math.sin(2 * gamma));
+
+      const decl = 0.006918 - 0.399912 * Math.cos(gamma) + 0.070257 * Math.sin(gamma)
+                   - 0.006758 * Math.cos(2 * gamma) + 0.000907 * Math.sin(2 * gamma)
+                   - 0.002697 * Math.cos(3 * gamma) + 0.00148 * Math.sin(3 * gamma);
+
+      const timeOffset = eqtime + 4 * (lon - standardMeridian);
+      let tst = hours * 60 + timeOffset;
+      tst = ((tst % 1440) + 1440) % 1440;
+
+      let haDeg = (tst / 4) - 180;
+      const haRad = haDeg * (Math.PI / 180);
+      const latRad = lat * (Math.PI / 180);
+
+      const sinAlt = Math.sin(latRad) * Math.sin(decl) + Math.cos(latRad) * Math.cos(decl) * Math.cos(haRad);
+      const altitudeRad = Math.asin(Math.max(-1, Math.min(1, sinAlt)));
+      const altitudeDeg = altitudeRad * (180 / Math.PI);
+
+      const cosAz = (Math.sin(decl) - Math.sin(latRad) * Math.sin(altitudeRad)) / (Math.cos(latRad) * Math.cos(altitudeRad));
+      let azimuthDeg = Math.acos(Math.max(-1, Math.min(1, cosAz))) * (180 / Math.PI);
+
+      if (haDeg > 0) azimuthDeg = 360 - azimuthDeg;
+
+      return {
+        azimuth: ((azimuthDeg % 360) + 360) % 360,
+        altitude: altitudeDeg,
+        isNight: altitudeDeg <= 0
+      };
+    }
+
+    function initLiveSolarSync() {
+      if (!liveSyncBtn) return;
+
+      liveSyncBtn.addEventListener('click', () => {
+        if (solarState.isLiveSync) {
+          stopLiveSolarSync();
+          return;
+        }
+
+        startLiveSolarSync();
+      });
+    }
+
+    function startLiveSolarSync() {
+      solarState.isLiveSync = true;
+      if (liveSyncBtn) liveSyncBtn.classList.add('active');
+      presetButtons.forEach(b => b.classList.remove('active'));
+
+      if (solarState.isSweeping && solarState.sweepTimeline) {
+        solarState.sweepTimeline.kill();
+        solarState.isSweeping = false;
+        if (sweepToggleBtn) {
+          sweepToggleBtn.classList.remove('active');
+          sweepToggleBtn.textContent = 'Play Solar Sweep';
+        }
+      }
+
+      // Attempt browser geolocation with quick fallback
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            solarState.userLocation = {
+              lat: pos.coords.latitude,
+              lon: pos.coords.longitude,
+              label: `${pos.coords.latitude.toFixed(1)}°N, ${pos.coords.longitude.toFixed(1)}°W`
+            };
+            applyCurrentSolarPosition();
+          },
+          () => {
+            // Default to Julian's campus in Boulder, CO
+            solarState.userLocation = { lat: 40.015, lon: -105.27, label: 'Boulder, CO' };
+            applyCurrentSolarPosition();
+          },
+          { timeout: 4000 }
+        );
+      } else {
+        solarState.userLocation = { lat: 40.015, lon: -105.27, label: 'Boulder, CO' };
+        applyCurrentSolarPosition();
+      }
+
+      // Live 30s tracking interval
+      if (solarState.liveTimer) clearInterval(solarState.liveTimer);
+      solarState.liveTimer = setInterval(applyCurrentSolarPosition, 30000);
+    }
+
+    function applyCurrentSolarPosition() {
+      if (!solarState.isLiveSync) return;
+      const now = new Date();
+      const solar = calculateAstronomicalSolarPosition(
+        solarState.userLocation.lat,
+        solarState.userLocation.lon,
+        now
+      );
+
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      if (dynamicBeamBadge) {
+        if (solar.isNight) {
+          dynamicBeamBadge.textContent = `📍 Live Sun Sync: ${timeStr} (${solarState.userLocation.label}) · Night Mode`;
+        } else {
+          dynamicBeamBadge.textContent = `📍 Live Sun Sync: ${timeStr} (${solarState.userLocation.label}) · ${Math.round(solar.azimuth)}° Az / ${Math.round(solar.altitude)}° Alt`;
+        }
+      }
+
+      updateSolarPhysics(solar.azimuth, solar.altitude, 0.65);
+    }
+
+    function stopLiveSolarSync() {
+      solarState.isLiveSync = false;
+      if (liveSyncBtn) liveSyncBtn.classList.remove('active');
+      if (solarState.liveTimer) {
+        clearInterval(solarState.liveTimer);
+        solarState.liveTimer = null;
+      }
+    }
+
+    initLiveSolarSync();
+
+    // Initial Calibration (Noon Default)
     updateSolarPhysics(180, 75, 0);
   }
 

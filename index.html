@@ -61,8 +61,9 @@
         </div>
       </div>
 
-      <h1 class="hero-headline">
-        Space sculpted by light,<br>calibrated across <em>solar trajectories.</em>
+      <h1 class="hero-headline" aria-label="Space sculpted by light, calibrated across solar trajectories.">
+        <span class="headline-foreground">Space sculpted by light,<br>calibrated across <em>solar trajectories.</em></span>
+        <span class="headline-shadow-cast" aria-hidden="true">Space sculpted by light,<br>calibrated across <em>solar trajectories.</em></span>
       </h1>
 
       <p class="hero-lead-text">
@@ -99,10 +100,14 @@
           </p>
 
           <div class="preset-button-row" role="group" aria-label="Solar trajectory presets">
-            <button class="preset-btn" data-preset="morning">08:00 AM Dawn Rake</button>
+            <button class="preset-btn" data-preset="morning">08:00 AM Dawn</button>
             <button class="preset-btn active" data-preset="noon">12:00 PM High Noon</button>
             <button class="preset-btn" data-preset="afternoon">16:30 PM Western Rake</button>
             <button class="preset-btn" data-preset="dusk">19:30 PM Dusk</button>
+            <button class="preset-btn" data-preset="night">22:00 PM Night</button>
+            <button class="preset-btn live-geo-btn" id="btn-live-solar" title="Sync to your current local time and real-world sun coordinates">
+              <span class="live-dot" aria-hidden="true"></span> Live Sun Sync
+            </button>
             <button class="solar-sweep-btn" id="solar-sweep-btn">Play Solar Sweep</button>
           </div>
         </div>
